@@ -1,0 +1,91 @@
+{
+  "name": "notification-service",
+  "version": "1.0.0",
+  "description": "RESTful API of the microservice for notification.",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "gulp build",
+    "build:doc": "typedoc --options typedoc.json",
+    "start": "node dist/server.js",
+    "start:dev": "gulp dev",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "test": "nyc --clean --all --reporter=text mocha --opts test/mocha.opts test/**/*.spec.ts",
+    "test:integration": "mocha --opts test/mocha.opts test/integration/**/*.spec.ts",
+    "test:unit": "mocha --opts test/mocha.opts test/unit/**/*.spec.ts",
+    "test:cov": "nyc --clean --all --reporter=html --reporter=text mocha --opts test/mocha.opts test/**/*.spec.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "microservice",
+    "notification",
+    "email",
+    "sms",
+    "push"
+  ],
+  "author": "NUTES/UEPB",
+  "license": "Apache-2.0",
+  "nyc": {
+    "include": [
+      "**/*.tsx",
+      "**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "test/*",
+      "config/*"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "all": true
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "express-ip-access-control": "^1.0.5",
+    "helmet": "^3.18.0",
+    "inversify": "^5.0.1",
+    "inversify-express-utils": "^6.3.2",
+    "mongoose": "^5.5.12",
+    "morgan": "^1.9.1",
+    "nodemailer": "^6.2.1",
+    "query-strings-parser": "^2.0.0",
+    "reflect-metadata": "^0.1.13",
+    "swagger-ui-express": "^4.0.5",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^3.9.0"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.17.0",
+    "@types/chai": "^4.1.7",
+    "@types/express": "^4.16.1",
+    "@types/helmet": "^0.0.43",
+    "@types/mocha": "^5.2.6",
+    "@types/mongoose": "^5.5.0",
+    "@types/morgan": "^1.7.35",
+    "@types/swagger-ui-express": "^3.0.0",
+    "chai": "^4.2.0",
+    "gulp": "^4.0.2",
+    "gulp-nodemon": "^2.4.2",
+    "gulp-tslint": "^8.1.4",
+    "gulp-typescript": "^5.0.1",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "sinon": "^7.3.2",
+    "sinon-mongoose": "^2.3.0",
+    "supertest": "^4.0.2",
+    "ts-node": "^8.2.0",
+    "tslint": "^5.17.0",
+    "typedoc": "^0.14.2",
+    "typescript": "^3.5.1"
+  }
+}
