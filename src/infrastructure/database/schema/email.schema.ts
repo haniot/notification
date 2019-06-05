@@ -4,10 +4,7 @@ interface IEmailModel extends Mongoose.Document {
 }
 
 const addressObj = {
-    name: {
-        type: String,
-        required: true
-    },
+    name: { type: String },
     email: {
         type: String,
         required: true

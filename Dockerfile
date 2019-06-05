@@ -1,4 +1,4 @@
-FROM node:10.16.0
+FROM node:10.15.3
 
 # Create app directory
 RUN mkdir -p /usr/src/ns

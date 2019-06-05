@@ -7,34 +7,34 @@ export class EmailSendValidator {
 
         // validate null
         if (!email.subject) fields.push('subject')
-        if (email.reply && (!email.reply.name || !email.reply.email)) {
-            throw new ValidationException('The reply field requires that the object have name and email!')
+        if (email.reply &&  !email.reply.email) {
+            throw new ValidationException('The reply field requires that the object have email!')
         }
         if (!email.to) fields.push('to')
         else if (!email.to.length) {
             throw new ValidationException('The to field requires at least one recipient with ' +
-                'a name and an email address!')
+                'and an email address!')
         } else {
             for (const item of email.to) {
-                if (!item.name || !item.email) {
+                if (!item.email) {
                     throw new ValidationException('The to field requires an array of recipients ' +
-                        'with a name and email address!.')
+                        'with a email address!.')
                 }
             }
         }
         if (email.cc && email.cc.length) {
             for (const item of email.cc) {
-                if (!item.name || !item.email) {
+                if (!item.email) {
                     throw new ValidationException('The cc field requires an array of recipients ' +
-                        ' with a name and email address.')
+                        ' with a email address.')
                 }
             }
         }
         if (email.bcc && email.bcc.length) {
             for (const item of email.bcc) {
-                if (!item.name || !item.email) {
+                if (!item.email) {
                     throw new ValidationException('The bcc field requires an array of recipients ' +
-                        'with a name and email address.')
+                        'with a email address.')
                 }
             }
         }
