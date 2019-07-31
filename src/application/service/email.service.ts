@@ -58,4 +58,8 @@ export class EmailService implements IEmailService {
     public async update(item: Email): Promise<Email> {
         return this._emailRepository.update(item)
     }
+
+    public count(query: IQuery): Promise<number> {
+        return this._emailRepository.count(query)
+    }
 }

@@ -61,6 +61,8 @@ export class EmailController {
         try {
             const result: Array<Email> = await this._emailService
                 .getAllFromUser(req.params.user_id, new Query().fromJSON(req.query))
+            const count: number = await this._emailService.count(new Query())
+            res.setHeader('X-Total-Count', count)
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)

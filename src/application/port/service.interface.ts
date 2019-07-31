@@ -52,4 +52,13 @@ export interface IService<T> {
      * @throws {ValidationException | RepositoryException}
      */
     remove(id: string): Promise<boolean>
+
+    /**
+     * Returns the total of items according to the query.
+     *
+     * @param query Defines object to be used for queries.
+     * @return {Promise<number>}
+     * @throws {ValidationException | RepositoryException}
+     */
+    count(query: IQuery): Promise<number>
 }
