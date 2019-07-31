@@ -16,7 +16,7 @@ import { Query } from '../../infrastructure/repository/query/query'
  * @remarks To define paths, we use library inversify-express-utils.
  * @see {@link https://github.com/inversify/inversify-express-utils} for further information.
  */
-@controller('/users/:user_id/emails')
+@controller('/v1/users/:user_id/emails')
 export class EmailController {
 
     /**

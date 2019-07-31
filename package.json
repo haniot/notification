@@ -1,5 +1,5 @@
 {
-  "name": "notification-service",
+  "name": "notification",
   "version": "1.0.0",
   "description": "RESTful API of the microservice for notification.",
   "main": "dist/server.js",
@@ -9,14 +9,14 @@
     "start": "node dist/server.js",
     "start:dev": "gulp dev",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "test": "nyc --clean --all --reporter=text mocha --opts test/mocha.opts test/**/*.spec.ts",
+    "test": "nyc --clean --all --reporter=text-summary mocha --opts test/mocha.opts test/**/*.spec.ts",
     "test:integration": "mocha --opts test/mocha.opts test/integration/**/*.spec.ts",
     "test:unit": "mocha --opts test/mocha.opts test/unit/**/*.spec.ts",
     "test:cov": "nyc --clean --all --reporter=html --reporter=text mocha --opts test/mocha.opts test/**/*.spec.ts"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/haniot/notification"
   },
   "keywords": [
     "microservice",
@@ -27,34 +27,18 @@
   ],
   "author": "NUTES/UEPB",
   "license": "Apache-2.0",
-  "nyc": {
-    "include": [
-      "**/*.tsx",
-      "**/*.ts"
-    ],
-    "exclude": [
-      "**/*.d.ts",
-      "test/*",
-      "config/*"
-    ],
-    "extension": [
-      ".ts",
-      ".tsx"
-    ],
-    "reporter": [
-      "text-summary",
-      "html"
-    ],
-    "all": true
+  "bugs": {
+    "url": "https://github.com/haniot/notification/issues"
   },
+  "homepage": "https://github.com/haniot/notification#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
-    "express-ip-access-control": "^1.0.5",
     "helmet": "^3.18.0",
     "inversify": "^5.0.1",
     "inversify-express-utils": "^6.3.2",
+    "ip-allowed": "^1.1.1",
     "mongoose": "^5.5.12",
     "morgan": "^1.9.1",
     "nodemailer": "^6.2.1",

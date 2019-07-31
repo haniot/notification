@@ -1,13 +1,12 @@
 import 'reflect-metadata'
 import morgan from 'morgan'
-import accessControl from 'express-ip-access-control'
 import helmet from 'helmet'
-import dns from 'dns'
+import ipAllowed from 'ip-allowed'
 import bodyParser from 'body-parser'
 import HttpStatus from 'http-status-codes'
 import swaggerUi from 'swagger-ui-express'
 import qs from 'query-strings-parser'
-import express, { Application, Request, Response } from 'express'
+import express, { Application, NextFunction, Request, Response } from 'express'
 import { Container, inject, injectable } from 'inversify'
 import { InversifyExpressServer } from 'inversify-express-utils'
 import { ApiException } from './ui/exception/api.exception'
@@ -80,31 +79,10 @@ export class App {
      * @return Promise<void>
      */
     private async setupHostWhitelist(): Promise<void> {
-        let whitelist = Default.IP_WHITELIST
-
-        if (process.env.HOST_WHITELIST) {
-            whitelist = process.env.HOST_WHITELIST
-                .replace(/[\[\]]/g, '')
-                .split(',')
-                .map(item => item.trim())
-        }
-
-        // Accept requests from any origin.
-        if (whitelist.includes('*') ||
-            whitelist.includes('')) return Promise.resolve()
-
-        const promises = whitelist.map(this.getIPFromHost)
-        whitelist = await Promise.all(promises)
-
-        this.express.use(accessControl({
-            mode: 'allow',
-            allows: whitelist,
-            log: (clientIp, access) => {
-                if (!access) this._logger.warn(`Access denied for IP ${clientIp}`)
-            },
-            statusCode: 401,
-            message: new ApiException(401, 'UNAUTHORIZED',
-                'Client is not allowed to access the service...').toJson()
+        this.express.use(ipAllowed(process.env.HOST_WHITELIST || Default.HOST_WHITELIST, {
+            log: (clientIp, accessDenied) => {
+                if (accessDenied) this._logger.warn(`Client with IP address ${clientIp} is not allowed!`)
+            }
         }))
     }
 
@@ -146,24 +124,12 @@ export class App {
                     stream: { write: (str: string) => this._logger.info(str) }
                 }
             ))
+
+            // app.use((err, req, res, next) => {
+            //     next(err)
+            // })
         })
         this.express.use(inversifyExpress.build())
-    }
-
-    /**
-     *  Get DNS from a host name.
-     *
-     * @private
-     * @param host
-     * @return Promise<void>
-     */
-    private async getIPFromHost(host: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            dns.lookup(host, async (err, ip) => {
-                if (err) return reject(err)
-                return resolve(ip)
-            })
-        })
     }
 
     /**
@@ -181,7 +147,7 @@ export class App {
                 customfavIcon: Default.LOGO_URI,
                 customSiteTitle: `API Reference | ${Strings.APP.TITLE}`
             }
-            this.express.use('/reference', swaggerUi.serve, swaggerUi.setup(null, options))
+            this.express.use('/v1/reference', swaggerUi.serve, swaggerUi.setup(null, options))
         }
     }
 
@@ -193,17 +159,24 @@ export class App {
      */
     private setupErrorsHandler(): void {
         // Handle 404
-        this.express.use((req: Request, res: Response) => {
+        this.express.use((req, res) => {
             const errorMessage: ApiException = new ApiException(404, `${req.url} not found.`,
                 `Specified resource: ${req.url} was not found or does not exist.`)
             res.status(HttpStatus.NOT_FOUND).send(errorMessage.toJson())
         })
 
-        // Handle 500
-        this.express.use((err: any, req: Request, res: Response) => {
-            res.locals
-            const errorMessage: ApiException = new ApiException(err.code, err.message, err.description)
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(errorMessage.toJson())
+        // Handle 400, 500
+        this.express.use((err: any, req: Request, res: Response, next: NextFunction) => {
+            let statusCode = HttpStatus.INTERNAL_SERVER_ERROR
+            const errorMessage: ApiException = new ApiException(statusCode, err.message)
+            if (err && err.statusCode === HttpStatus.BAD_REQUEST) {
+                statusCode = HttpStatus.BAD_REQUEST
+                errorMessage.code = statusCode
+                errorMessage.message = 'Unable to process request body.'
+                errorMessage.description = 'Please verify that the JSON provided in'
+                    .concat(' the request body has a valid format and try again.')
+            }
+            res.status(statusCode).send(errorMessage.toJson())
         })
     }
 }
