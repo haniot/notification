@@ -4,8 +4,7 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { IEmailRepository } from '../../port/email.repository.interface'
-import { EmailSendValidator } from '../../domain/validator/email.send.validator'
-import { Email } from '../../domain/model/email'
+import { EmailWelcomeValidator } from '../../domain/validator/email.welcome.validator'
 
 export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
@@ -22,12 +21,23 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
 
     public async handle(event: EmailEvent): Promise<void> {
         try {
-            // 1. Convert json email to object.
-            const email: Email = new Email().fromJSON(event.email)
+            const email: any = event.email
 
-            // 2. Validate object based on create action.
-            EmailSendValidator.validate(email)
+            // 1. Validate object based on create action.
+            EmailWelcomeValidator.validate(email)
 
+            // 2 Configure email and send
+            const lang: string = email.lang ? email.lang : 'pt-BR'
+            await this._emailRepository.sendTemplate(
+                'welcome',
+                { name: email.to.name, email: email.to.email },
+                {
+                    name: email.to.name.split(' ')[0],
+                    email: email.to.email,
+                    password: email.to.password ? email.to.password : undefined
+                },
+                lang
+            )
             // 3. If got here, it's because the action was successful.
             this._logger.info(`Action for event ${event.event_name} successfully performed!`)
         } catch (err) {

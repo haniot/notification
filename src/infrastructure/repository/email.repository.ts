@@ -1,14 +1,16 @@
 import nodeMailer from 'nodemailer'
 import { inject, injectable } from 'inversify'
+import { Email } from '../../application/domain/model/email'
 import { BaseRepository } from './base/base.repository'
 import { EmailEntity } from '../entity/email.entity'
-import { Email } from '../../application/domain/model/email'
 import { IEmailRepository } from '../../application/port/email.repository.interface'
 import { Identifier } from '../../di/identifiers'
 import { ILogger } from '../../utils/custom.logger'
 import { IEntityMapper } from '../port/entity.mapper.interface'
 import { Address } from '../../application/domain/model/address'
 import { ValidationException } from '../../application/domain/exception/validation.exception'
+import EmailTemplate from 'email-templates'
+import path from 'path'
 
 /**
  * Implementation of the email repository.
@@ -38,7 +40,6 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
         email.from = new Address('HANIoT', process.env.SMTP_EMAIL)
         const emailSendNodeMailer: any = this.convertEmailToNodeMailer(email)
 
-        console.log('result', emailSendNodeMailer)
         try {
             await this.smtpTransport.sendMail(emailSendNodeMailer)
         } catch (err) {
@@ -53,6 +54,32 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
             return Promise.reject(err)
         }
         return super.create(email)
+    }
+
+    public sendTemplate(name: string, to: any, data: any, lang?: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const emailTemplate = new EmailTemplate({
+                transport: this.smtpTransport,
+                send: true,
+                preview: false,
+                views: { root: path.resolve(process.cwd(), 'dist', 'src', 'ui', 'templates', 'emails') }
+            })
+
+            emailTemplate
+                .send({
+                    template: name,
+                    message: {
+                        to: [{ name: to.email, address: to.email }],
+                        from: {
+                            name: 'HANIoT',
+                            address: process.env.SMTP_EMAIL
+                        }
+                    },
+                    locals: data
+                })
+                .then(resolve)
+                .catch(reject)
+        })
     }
 
     /**
@@ -141,4 +168,5 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
 
         return result
     }
+
 }
