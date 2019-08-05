@@ -19,39 +19,33 @@ import { EmailService } from '../application/service/email.service'
 import { EmailRepository } from '../infrastructure/repository/email.repository'
 import { Email } from '../application/domain/model/email'
 import { IEmailRepository } from '../application/port/email.repository.interface'
+import { ConnectionFactoryRabbitMQ } from '../infrastructure/eventbus/rabbitmq/connection.factory.rabbitmq'
+import { IConnectionEventBus } from '../infrastructure/port/connection.event.bus.interface'
+import { ConnectionRabbitMQ } from '../infrastructure/eventbus/rabbitmq/connection.rabbitmq'
+import { IEventBus } from '../infrastructure/port/event.bus.interface'
+import { EventBusRabbitMQ } from '../infrastructure/eventbus/rabbitmq/eventbus.rabbitmq'
+import { IntegrationEventRepository } from '../infrastructure/repository/integration.event.repository'
+import { IIntegrationEventRepository } from '../application/port/integration.event.repository.interface'
+import { IntegrationEventRepoModel } from '../infrastructure/database/schema/integration.event.schema'
+import { PublishEventBusTask } from '../background/task/publish.event.bus.task'
+import { IBackgroundTask } from '../application/port/background.task.interface'
+import { SubscribeEventBusTask } from '../background/task/subscribe.event.bus.task'
 
-export class DI {
-    private static instance: DI
-    private readonly container: Container
+class IoC {
+    private readonly _container: Container
 
     /**
      * Creates an instance of DI.
      *
      * @private
      */
-    private constructor() {
-        this.container = new Container()
+    constructor() {
+        this._container = new Container()
         this.initDependencies()
     }
 
-    /**
-     * Recover single instance of class.
-     *
-     * @static
-     * @return {App}
-     */
-    public static getInstance(): DI {
-        if (!this.instance) this.instance = new DI()
-        return this.instance
-    }
-
-    /**
-     * Get Container inversify.
-     *
-     * @returns {Container}
-     */
-    public getContainer(): Container {
-        return this.container
+    get container(): Container {
+        return this._container
     }
 
     /**
@@ -61,42 +55,63 @@ export class DI {
      * @return void
      */
     private initDependencies(): void {
-        this.container.bind(Identifier.APP).to(App).inSingletonScope()
+        this._container.bind(Identifier.APP).to(App).inSingletonScope()
 
         // Controllers
-        this.container.bind<HomeController>(Identifier.HOME_CONTROLLER)
+        this._container.bind<HomeController>(Identifier.HOME_CONTROLLER)
             .to(HomeController).inSingletonScope()
-        this.container.bind<EmailController>(Identifier.EMAIL_CONTROLLER)
+        this._container.bind<EmailController>(Identifier.EMAIL_CONTROLLER)
             .to(EmailController).inSingletonScope()
 
         // Services
-        this.container.bind<IEmailService>(Identifier.EMAIL_SERVICE)
+        this._container.bind<IEmailService>(Identifier.EMAIL_SERVICE)
             .to(EmailService).inSingletonScope()
 
         // Repositories
-        this.container.bind<IEmailRepository>(Identifier.EMAIL_REPOSITORY)
+        this._container.bind<IEmailRepository>(Identifier.EMAIL_REPOSITORY)
             .to(EmailRepository).inSingletonScope()
+        this._container
+            .bind<IIntegrationEventRepository>(Identifier.INTEGRATION_EVENT_REPOSITORY)
+            .to(IntegrationEventRepository).inSingletonScope()
 
         // Mongoose Schema
-        this.container.bind(Identifier.EMAIL_REPO_MODEL).toConstantValue(EmailRepoModel)
+        this._container.bind(Identifier.EMAIL_REPO_MODEL).toConstantValue(EmailRepoModel)
+        this._container.bind(Identifier.INTEGRATION_EVENT_REPO_MODEL).toConstantValue(IntegrationEventRepoModel)
 
         // Mappers
-        this.container
+        this._container
             .bind<IEntityMapper<Email, EmailEntity>>(Identifier.EMAIL_ENTITY_MAPPER)
             .to(EmailEntityMapper).inSingletonScope()
 
         // Background Services
-        this.container
+        this._container
             .bind<IConnectionFactory>(Identifier.MONGODB_CONNECTION_FACTORY)
             .to(ConnectionFactoryMongoDB).inSingletonScope()
-        this.container
+        this._container
             .bind<IConnectionDB>(Identifier.MONGODB_CONNECTION)
             .to(ConnectionMongoDB).inSingletonScope()
-        this.container
+        this._container
+            .bind<IConnectionFactory>(Identifier.RABBITMQ_CONNECTION_FACTORY)
+            .to(ConnectionFactoryRabbitMQ).inSingletonScope()
+        this._container
+            .bind<IConnectionEventBus>(Identifier.RABBITMQ_CONNECTION)
+            .to(ConnectionRabbitMQ)
+        this._container
+            .bind<IEventBus>(Identifier.RABBITMQ_EVENT_BUS)
+            .to(EventBusRabbitMQ).inSingletonScope()
+        this._container
             .bind(Identifier.BACKGROUND_SERVICE)
             .to(BackgroundService).inSingletonScope()
+        this._container
+            .bind<IBackgroundTask>(Identifier.PUBLISH_EVENT_BUS_TASK)
+            .to(PublishEventBusTask).inSingletonScope()
+        this._container
+            .bind<IBackgroundTask>(Identifier.SUBSCRIBE_EVENT_BUS_TASK)
+            .to(SubscribeEventBusTask).inSingletonScope()
 
         // Log
-        this.container.bind<ILogger>(Identifier.LOGGER).to(CustomLogger).inSingletonScope()
+        this._container.bind<ILogger>(Identifier.LOGGER).to(CustomLogger).inSingletonScope()
     }
 }
+
+export const DIContainer = new IoC().container

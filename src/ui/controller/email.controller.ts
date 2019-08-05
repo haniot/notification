@@ -116,8 +116,27 @@ export class EmailController {
      * @param email
      */
     private toJSONView(email: Email | Array<Email>): object {
-        if (email instanceof Array) return email.map(item => item.toJSON())
+        if (email instanceof Array) return email.map((item: Email) => {
+            return {
+                id: item.id,
+                to: item.to.map(value => value.toJSON()),
+                subject: item.subject,
+                text: this.getTextTrucated(item),
+                created_at: item.createdAt
+            }
+        })
         return email.toJSON()
+    }
+
+    /**
+     * Returns truncated string of the text or HTML of the email.
+     *
+     * @param email
+     */
+    private getTextTrucated(email: Email): string {
+        if (email.text) return email.text.slice(0, 500).concat('...')
+        else if (email.html) return email.html.slice(0, 500).concat('...')
+        return ''
     }
 
     /**

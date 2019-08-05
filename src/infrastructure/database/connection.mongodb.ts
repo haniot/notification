@@ -90,12 +90,19 @@ export class ConnectionMongoDB implements IConnectionDB {
     }
 
     /**
-     * Releases the resources.
+     *  Close connection..
      *
      * @return {Promise<void>}
      */
-    public async dispose(): Promise<void> {
-        if (this._connection) await this._connection.close()
-        this._connection = undefined
+    public dispose(): Promise<void> {
+        return new Promise<void>(async (resolve, reject) => {
+            if (!this._connection) return resolve()
+            this._connection.close()
+                .then(() => {
+                    this._connection = undefined
+                    return resolve()
+                })
+                .catch(reject)
+        })
     }
 }

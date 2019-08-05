@@ -1,5 +1,6 @@
 import { ValidationException } from '../exception/validation.exception'
 import { Email } from '../model/email'
+import { EmailValidator } from './email.validator'
 
 export class EmailSendValidator {
     public static validate(email: Email): void | ValidationException {
@@ -7,11 +8,14 @@ export class EmailSendValidator {
 
         // validate null
         if (!email.subject) fields.push('subject')
-        if (email.reply &&  !email.reply.email) {
-            throw new ValidationException('The reply field requires that the object have email!')
+        if (email.reply) {
+            if (!email.reply.email) {
+                throw new ValidationException('The reply field requires that the object have email!')
+            }
+            EmailValidator.validate(email.reply.email)
         }
         if (!email.to) fields.push('to')
-        else if (!email.to.length) {
+        if (!email.to.length) {
             throw new ValidationException('The to field requires at least one recipient with ' +
                 'and an email address!')
         } else {
@@ -19,6 +23,8 @@ export class EmailSendValidator {
                 if (!item.email) {
                     throw new ValidationException('The to field requires an array of recipients ' +
                         'with a email address!.')
+                } else {
+                    EmailValidator.validate(item.email)
                 }
             }
         }
@@ -27,6 +33,8 @@ export class EmailSendValidator {
                 if (!item.email) {
                     throw new ValidationException('The cc field requires an array of recipients ' +
                         ' with a email address.')
+                } else {
+                    EmailValidator.validate(item.email)
                 }
             }
         }
@@ -35,6 +43,8 @@ export class EmailSendValidator {
                 if (!item.email) {
                     throw new ValidationException('The bcc field requires an array of recipients ' +
                         'with a email address.')
+                } else {
+                    EmailValidator.validate(item.email)
                 }
             }
         }

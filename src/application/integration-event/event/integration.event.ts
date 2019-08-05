@@ -2,7 +2,7 @@ import { IJSONSerializable } from '../../domain/utils/json.serializable.interfac
 
 export abstract class IntegrationEvent<T> implements IJSONSerializable {
 
-    protected constructor(readonly event_name: string, readonly type: EventType, readonly timestamp?: Date) {
+    protected constructor(readonly event_name: string, readonly type: string, readonly timestamp?: Date) {
     }
 
     public toJSON(): any {
@@ -15,5 +15,5 @@ export abstract class IntegrationEvent<T> implements IJSONSerializable {
 }
 
 export enum EventType {
-    EMAILS = 'emails'
+    EMAIL = 'emails'
 }

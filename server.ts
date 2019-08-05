@@ -3,7 +3,7 @@ import http from 'http'
 import https from 'https'
 import { Application } from 'express'
 import { Identifier } from './src/di/identifiers'
-import { DI } from './src/di/di'
+import { DIContainer } from './src/di/di'
 import { ILogger } from './src/utils/custom.logger'
 import { BackgroundService } from './src/background/background.service'
 import { Default } from './src/utils/default'
@@ -21,9 +21,9 @@ import { App } from './src/app'
  */
 require('dotenv').config()
 
-const logger: ILogger = DI.getInstance().getContainer().get<ILogger>(Identifier.LOGGER)
-const app: Application = (DI.getInstance().getContainer().get<App>(Identifier.APP)).getExpress()
-const backgroundServices: BackgroundService = DI.getInstance().getContainer().get(Identifier.BACKGROUND_SERVICE)
+const logger: ILogger = DIContainer.get<ILogger>(Identifier.LOGGER)
+const app: Application = (DIContainer.get<App>(Identifier.APP)).getExpress()
+const backgroundServices: BackgroundService = DIContainer.get(Identifier.BACKGROUND_SERVICE)
 const port_http = process.env.PORT_HTTP || Default.PORT_HTTP
 const port_https = process.env.PORT_HTTPS || Default.PORT_HTTPS
 const https_options = {

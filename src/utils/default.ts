@@ -8,7 +8,7 @@
  * @abstract
  */
 export abstract class Default {
-    public static readonly APP_ID: string = 'notification-service'
+    public static readonly APP_ID: string = 'notification.service'
     public static readonly NODE_ENV: string = 'development' // development, test, production
     public static readonly PORT_HTTP: number = 7000
     public static readonly PORT_HTTPS: number = 7001
@@ -19,6 +19,9 @@ export abstract class Default {
     // MongoDB
     public static readonly MONGODB_URI: string = 'mongodb://127.0.0.1:27017/notification-service'
     public static readonly MONGODB_URI_TEST: string = 'mongodb://127.0.0.1:27017/notification-service-test'
+
+    // RabbitMQ
+    public static readonly RABBITMQ_URI: string = 'amqp://guest:guest@127.0.0.1:5672'
 
     // RabbitMQ
     public static readonly RABBITMQ_HOST: string = '127.0.0.1:5672'

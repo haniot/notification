@@ -7,11 +7,11 @@ import HttpStatus from 'http-status-codes'
 import swaggerUi from 'swagger-ui-express'
 import qs from 'query-strings-parser'
 import express, { Application, NextFunction, Request, Response } from 'express'
-import { Container, inject, injectable } from 'inversify'
+import { inject, injectable } from 'inversify'
 import { InversifyExpressServer } from 'inversify-express-utils'
 import { ApiException } from './ui/exception/api.exception'
 import { Default } from './utils/default'
-import { DI } from './di/di'
+import { DIContainer } from './di/di'
 import { Identifier } from './di/identifiers'
 import { ILogger } from './utils/custom.logger'
 import { Strings } from './utils/strings'
@@ -23,7 +23,6 @@ import { Strings } from './utils/strings'
  */
 @injectable()
 export class App {
-    private readonly container: Container
     private readonly express: Application
 
     /**
@@ -31,7 +30,6 @@ export class App {
      */
     constructor(@inject(Identifier.LOGGER) private readonly _logger: ILogger) {
         this.express = express()
-        this.container = DI.getInstance().getContainer()
         this.bootstrap()
     }
 
@@ -96,7 +94,7 @@ export class App {
      */
     private async setupInversifyExpress(): Promise<void> {
         const inversifyExpress: InversifyExpressServer = new InversifyExpressServer(
-            this.container, null, { rootPath: '/' })
+            DIContainer, null, { rootPath: '/' })
 
         inversifyExpress.setConfig((app: Application) => {
             // for handling query strings

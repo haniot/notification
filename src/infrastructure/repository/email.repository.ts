@@ -37,6 +37,8 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
     public async send(email: Email): Promise<Email> {
         email.from = new Address('HANIoT', process.env.SMTP_EMAIL)
         const emailSendNodeMailer: any = this.convertEmailToNodeMailer(email)
+
+        console.log('result', emailSendNodeMailer)
         try {
             await this.smtpTransport.sendMail(emailSendNodeMailer)
         } catch (err) {
@@ -47,6 +49,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
                     new ValidationException('There was a problem with your attachments!', message)
                 )
             }
+            this.logger.error(err)
             return Promise.reject(err)
         }
         return super.create(email)
@@ -58,10 +61,11 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
      * @return SMTP transport.
      */
     private createSmtpTransport(): any {
+        const smtpPort = Number(process.env.SMTP_PORT)
         return nodeMailer.createTransport({
             host: process.env.SMTP_HOST,
-            port: Number(process.env.SMTP_PORT),
-            secure: false, // true for 465, false for other ports
+            port: smtpPort,
+            secure: smtpPort === 465, // true for 465, false for other ports
             auth: {
                 user: process.env.SMTP_EMAIL,
                 pass: process.env.SMTP_PASSWORD

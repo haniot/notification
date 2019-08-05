@@ -1,6 +1,6 @@
 {
   "name": "notification",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "RESTful API of the microservice for notification.",
   "main": "dist/server.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "start:dev": "gulp dev",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "test": "nyc --clean --all --reporter=text-summary mocha --opts test/mocha.opts test/**/*.spec.ts",
+    "test:single": "mocha --opts test/mocha.opts",
     "test:integration": "mocha --opts test/mocha.opts test/integration/**/*.spec.ts",
     "test:unit": "mocha --opts test/mocha.opts test/unit/**/*.spec.ts",
     "test:cov": "nyc --clean --all --reporter=html --reporter=text mocha --opts test/mocha.opts test/**/*.spec.ts"
@@ -32,6 +33,7 @@
   },
   "homepage": "https://github.com/haniot/notification#readme",
   "dependencies": {
+    "amqp-client-node": "^1.0.0-beta.2",
     "body-parser": "^1.19.0",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
