@@ -2,10 +2,12 @@ import { inject, injectable } from 'inversify'
 import { Identifier } from '../../di/identifiers'
 import { IEventBus } from '../../infrastructure/port/event.bus.interface'
 import { ILogger } from '../../utils/custom.logger'
+import { IBackgroundTask } from '../../application/port/background.task.interface'
 import { Query } from '../../infrastructure/repository/query/query'
 import { IIntegrationEventRepository } from '../../application/port/integration.event.repository.interface'
 import { IntegrationEvent } from '../../application/integration-event/event/integration.event'
-import { IBackgroundTask } from '../../application/port/background.task.interface'
+import { EmailEvent } from '../../application/integration-event/event/email.event'
+import { Email } from '../../application/domain/model/email'
 
 @injectable()
 export class PublishEventBusTask implements IBackgroundTask {
@@ -20,7 +22,17 @@ export class PublishEventBusTask implements IBackgroundTask {
     }
 
     public run(): void {
-        this.publishSavedEvents()
+        // It publishes events, that for some reason could not
+        // e sent and were saved for later submission.
+        this._eventBus
+            .connectionPub
+            .open(0, 2000)
+            .then((conn) => {
+                conn.on('re_established_connection', () => this.internalPublishSavedEvents())
+            })
+            .catch(err => {
+                this._logger.error(`Error trying to get connection to Event Bus for event publishing. ${err.message}`)
+            })
     }
 
     public async stop(): Promise<void> {
@@ -28,63 +40,49 @@ export class PublishEventBusTask implements IBackgroundTask {
             await this._eventBus.dispose()
             if (this.handlerPub) clearInterval(this.handlerPub)
         } catch (err) {
-            return Promise.reject(new Error(`Error stopping EventBusTask! ${err.message}`))
+            return Promise.reject(new Error(`Error stopping PublishEventBusTask! ${err.message}`))
         }
     }
 
-    /**
-     * It publishes events, that for some reason could not
-     * be sent and were saved for later submission.
-     */
-    private publishSavedEvents(): void {
-        this._eventBus.connectionPub
-            .open(0, 1500)
-            .then(async () => {
-                this._logger.info('Connection to publish established successfully!')
-                await this.internalPublishSavedEvents(this.publishEvent, this._eventBus,
-                    this._integrationEventRepository, this._logger)
-
-                this.handlerPub = setInterval(this.internalPublishSavedEvents, 300000, // 5min
-                    this.publishEvent,
-                    this._eventBus,
-                    this._integrationEventRepository,
-                    this._logger)
-            })
-            .catch(err => {
-                this._logger.error(`Error trying to get connection to Event Bus for event publishing. ${err.message}`)
-            })
-    }
-
-    private async internalPublishSavedEvents(
-        publishEvent: any, eventBus: IEventBus, integrationEventRepository: IIntegrationEventRepository,
-        logger: ILogger): Promise<void> {
-        if (!eventBus.connectionPub.isOpen) return
+    private async internalPublishSavedEvents(): Promise<void> {
+        if (!this._eventBus.connectionPub.isOpen) return
 
         try {
-            const result: Array<any> = await integrationEventRepository.find(new Query())
+            const result: Array<any> = await this._integrationEventRepository.find(new Query())
             result.forEach((item: IntegrationEvent<any>) => {
                 const event: any = item.toJSON()
-                publishEvent(event, eventBus)
-                    .then(pubResult => {
-                        if (pubResult) {
-                            logger.info(`Event with name ${event.event_name}, which was saved, `
-                                .concat(`was successfully published to the event bus.`))
-                            integrationEventRepository.delete(event.id)
+
+                this._publishEvent(event)
+                    .then(success => {
+                        if (!success) {
+                            this._logger.info(`Event with name ${event.event_name}, which was saved, `
+                                .concat('was successfully published to the event bus.'))
+                            this._integrationEventRepository
+                                .delete(event.id)
                                 .catch(err => {
-                                    logger.error(`Error trying to remove saved event: ${err.message}`)
+                                    this._logger.error(`Error trying to remove saved event: ${err.message}`)
                                 })
                         }
                     })
                     .catch(() => {
-                        logger.error(`Error while trying to publish event saved with ID: ${event.id}`)
+                        this._logger.error('An error occurred while attempting to post the'
+                            .concat(`saved event by name ${event.event_name} and ID: ${event.id}`))
                     })
             })
         } catch (err) {
-            logger.error(`Error retrieving saved events: ${err.message}`)
+            this._logger.error(`Error retrieving saved events: ${err.message}`)
         }
     }
 
-    private publishEvent(event: any, eventBus: IEventBus): Promise<boolean> {
+    private _publishEvent(event: any): Promise<boolean> {
+        if (event.event_name === 'EmailSendEvent') {
+            const physicalActivitySaveEvent: EmailEvent = new EmailEvent(
+                event.event_name,
+                event.timestamp,
+                new Email().fromJSON(event.email)
+            )
+            return this._eventBus.publish(physicalActivitySaveEvent, event.__routing_key)
+        }
         return Promise.resolve(false)
     }
 }
