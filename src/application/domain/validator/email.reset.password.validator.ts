@@ -1,7 +1,7 @@
 import { ValidationException } from '../exception/validation.exception'
 import { EmailValidator } from './email.validator'
 
-export class EmailWelcomeValidator {
+export class EmailResetPasswordValidator {
     public static validate(email: any): void | ValidationException {
         const fields: Array<string> = []
         const INVALID_TO: string = 'The "to" field is not in valid format!'
@@ -17,6 +17,7 @@ export class EmailWelcomeValidator {
             }
             EmailValidator.validate(email.to.email)
         }
+        if (!email.action_url) fields.push('action_url')
 
         if (fields.length > 0) {
             throw new ValidationException('Required fields were not provided...',

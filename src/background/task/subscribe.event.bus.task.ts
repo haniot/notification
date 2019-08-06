@@ -7,6 +7,7 @@ import { EmailEvent } from '../../application/integration-event/event/email.even
 import { EmailSendEventHandler } from '../../application/integration-event/handler/email.send.event.handler'
 import { DIContainer } from '../../di/di'
 import { EmailWelcomeEventHandler } from '../../application/integration-event/handler/email.welcome.event.handler'
+import { EmailResetPasswordEventHandler } from '../../application/integration-event/handler/email.reset.password.event.handler'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -58,6 +59,13 @@ export class SubscribeEventBusTask implements IBackgroundTask {
                 )
             this._logger.info('Subscribe in EmailWelcomeEvent successful!')
 
+            await this._eventBus
+                .subscribe(
+                    new EmailEvent('EmailResetPasswordEvent'),
+                    new EmailResetPasswordEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                    'emails.reset-password'
+                )
+            this._logger.info('Subscribe in EmailResetPasswordEvent successful!')
         } catch (err) {
             this._logger.error(`An error occurred while subscribing to events. ${err.message}`)
         }

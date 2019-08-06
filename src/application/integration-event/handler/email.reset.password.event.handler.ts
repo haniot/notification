@@ -4,9 +4,9 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { IEmailRepository } from '../../port/email.repository.interface'
-import { EmailWelcomeValidator } from '../../domain/validator/email.welcome.validator'
+import { EmailResetPasswordValidator } from '../../domain/validator/email.reset.password.validator'
 
-export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailEvent> {
+export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
      * Creates an instance of EmailSendEventHandler.
      *
@@ -24,17 +24,17 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
             const email: any = event.email
 
             // 1. Validate object based on create action.
-            EmailWelcomeValidator.validate(email)
+            EmailResetPasswordValidator.validate(email)
 
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'
             await this._emailRepository.sendTemplate(
-                'welcome',
+                'reset-password',
                 { name: email.to.name, email: email.to.email },
                 {
-                    name: email.to.name.split(' ')[0],
+                    name: email.to.name,
                     email: email.to.email,
-                    password: email.password ? email.password : undefined
+                    action_url: email.action_url
                 },
                 lang
             )
