@@ -4,11 +4,11 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { IEmailRepository } from '../../port/email.repository.interface'
-import { EmailResetPasswordValidator } from '../../domain/validator/email.reset.password.validator'
+import { EmailUpdatePasswordValidator } from '../../domain/validator/email.update.password.validator'
 
-export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<EmailEvent> {
+export class EmailUpdatePasswordEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
-     * Creates an instance of EmailResetPasswordEventHandler.
+     * Creates an instance of EmailUpdatePasswordEventHandler.
      *
      * @param _emailRepository
      * @param _logger
@@ -24,17 +24,16 @@ export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<
             const email: any = event.email
 
             // 1. Validate object based on create action.
-            EmailResetPasswordValidator.validate(email)
+            EmailUpdatePasswordValidator.validate(email)
 
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'
             await this._emailRepository.sendTemplate(
-                'reset-password',
+                'updated-password',
                 { name: email.to.name, email: email.to.email },
                 {
                     name: email.to.name,
-                    email: email.to.email,
-                    action_url: email.action_url
+                    email: email.to.email
                 },
                 lang
             )

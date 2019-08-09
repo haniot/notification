@@ -153,11 +153,11 @@ describe('EVENT BUS', () => {
                     return { content: '123', original_query: query }
                 })
 
-                return eventBus.executeResource('notification.service',
+                return eventBus.executeResource('notification.rpc',
                     'resource.test.get', '?test=321')
                     .then(res => {
-                        expect(res.content).to.have.property('content', '123')
-                        expect(res.content).to.have.property('original_query', '?test=321')
+                        expect(res).to.have.property('content', '123')
+                        expect(res).to.have.property('original_query', '?test=321')
                     })
             } catch (err) {
                 throw new Error('Failure on EventBus test: ' + err.message)

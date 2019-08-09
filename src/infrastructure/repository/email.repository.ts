@@ -58,14 +58,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
 
     public sendTemplate(name: string, to: any, data: any, lang?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            const emailTemplate = new EmailTemplate({
-                transport: this.smtpTransport,
-                send: true,
-                preview: false,
-                views: { root: path.resolve(process.cwd(), 'dist', 'src', 'ui', 'templates', 'emails') }
-            })
-
-            emailTemplate
+            this.getEmailTemplateInstance()
                 .send({
                     template: name,
                     message: {
@@ -74,6 +67,27 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
                             name: 'HANIoT',
                             address: process.env.SMTP_EMAIL
                         }
+                    },
+                    locals: data
+                })
+                .then(resolve)
+                .catch(reject)
+        })
+    }
+
+    public sendTemplateAndAttachment(name: string, to: any, attachments: Array<any>,
+                                     data: any, lang?: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.getEmailTemplateInstance()
+                .send({
+                    template: name,
+                    message: {
+                        to: [{ name: to.email, address: to.email }],
+                        from: {
+                            name: 'HANIoT',
+                            address: process.env.SMTP_EMAIL
+                        },
+                        attachments
                     },
                     locals: data
                 })
@@ -169,4 +183,12 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
         return result
     }
 
+    private getEmailTemplateInstance(): any {
+        return new EmailTemplate({
+            transport: this.smtpTransport,
+            send: true,
+            preview: false,
+            views: { root: path.resolve(process.cwd(), 'dist', 'src', 'ui', 'templates', 'emails') }
+        })
+    }
 }

@@ -4,11 +4,11 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { IEmailRepository } from '../../port/email.repository.interface'
-import { EmailResetPasswordValidator } from '../../domain/validator/email.reset.password.validator'
+import { EmailPilotStudyDataValidator } from '../../domain/validator/email.pilot.study.data.validator'
 
-export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<EmailEvent> {
+export class EmailPilotStudyDataEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
-     * Creates an instance of EmailResetPasswordEventHandler.
+     * Creates an instance of EmailPilotStudyDataEventHandler.
      *
      * @param _emailRepository
      * @param _logger
@@ -24,16 +24,22 @@ export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<
             const email: any = event.email
 
             // 1. Validate object based on create action.
-            EmailResetPasswordValidator.validate(email)
+            EmailPilotStudyDataValidator.validate(email)
 
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'
-            await this._emailRepository.sendTemplate(
-                'reset-password',
+            await this._emailRepository.sendTemplateAndAttachment(
+                'pilot-study-data',
                 { name: email.to.name, email: email.to.email },
+                email.attachments.map(item => {
+                    item.contentType = item.content_type
+                    delete item.content_type
+                    return item
+                }),
                 {
                     name: email.to.name,
-                    email: email.to.email,
+                    pilot_study: email.pilot_study,
+                    request_date: new Date(email.request_date).toString(),
                     action_url: email.action_url
                 },
                 lang

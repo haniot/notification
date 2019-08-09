@@ -8,6 +8,8 @@ import { EmailSendEventHandler } from '../../application/integration-event/handl
 import { DIContainer } from '../../di/di'
 import { EmailWelcomeEventHandler } from '../../application/integration-event/handler/email.welcome.event.handler'
 import { EmailResetPasswordEventHandler } from '../../application/integration-event/handler/email.reset.password.event.handler'
+import { EmailUpdatePasswordEventHandler } from '../../application/integration-event/handler/email.update.password.event.handler'
+import { EmailPilotStudyDataEventHandler } from '../../application/integration-event/handler/email.pilot.study.data.event.handler'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -24,7 +26,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
         // connection, event registration is performed.
         this._eventBus
             .connectionSub
-            .open(0, 1000)
+            .open(1, 1000)
             .then(() => this.initializeSubscribe())
             .catch(err => {
                 this._logger.error(`Could not open connection to subscribe to message bus, ${err.message}`)
@@ -66,6 +68,22 @@ export class SubscribeEventBusTask implements IBackgroundTask {
                     'emails.reset-password'
                 )
             this._logger.info('Subscribe in EmailResetPasswordEvent successful!')
+
+            await this._eventBus
+                .subscribe(
+                    new EmailEvent('EmailUpdatePasswordEvent'),
+                    new EmailUpdatePasswordEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                    'emails.update-password'
+                )
+            this._logger.info('Subscribe in EmailUpdatePasswordEvent successful!')
+
+            await this._eventBus
+                .subscribe(
+                    new EmailEvent('EmailPilotStudyDataEvent'),
+                    new EmailPilotStudyDataEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                    'emails.pilotstudies.data'
+                )
+            this._logger.info('Subscribe in EmailPilotStudyDataEvent successful!')
         } catch (err) {
             this._logger.error(`An error occurred while subscribing to events. ${err.message}`)
         }

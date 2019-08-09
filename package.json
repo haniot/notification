@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/haniot/notification#readme",
   "dependencies": {
-    "amqp-client-node": "^1.0.0-beta.2",
+    "amqp-client-node": "^1.0.0",
     "body-parser": "^1.19.0",
     "dotenv": "^8.0.0",
     "email-templates": "^6.0.0",
