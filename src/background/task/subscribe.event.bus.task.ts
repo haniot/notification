@@ -26,8 +26,11 @@ export class SubscribeEventBusTask implements IBackgroundTask {
         // connection, event registration is performed.
         this._eventBus
             .connectionSub
-            .open(1, 1000)
-            .then(() => this.initializeSubscribe())
+            .open(0, 1000)
+            .then(async () => {
+                this._logger.info('Connection to subscribe opened successfully!')
+                await this.initializeSubscribe()
+            })
             .catch(err => {
                 this._logger.error(`Could not open connection to subscribe to message bus, ${err.message}`)
             })

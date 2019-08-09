@@ -28,6 +28,7 @@ export class PublishEventBusTask implements IBackgroundTask {
             .connectionPub
             .open(0, 2000)
             .then((conn) => {
+                this._logger.info('Connection to publish opened successfully!')
                 conn.on('re_established_connection', () => this.internalPublishSavedEvents())
             })
             .catch(err => {
