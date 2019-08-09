@@ -32,6 +32,4 @@ export abstract class Default {
     public static readonly SSL_CERT_PATH: string = '.certs/server.crt'
 
     public static readonly HOST_WHITELIST: Array<string> = ['*']
-
-    public static DASH_URL: string = 'https://haniot.nutes.uepb.edu.br'
 }

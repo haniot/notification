@@ -1,6 +1,6 @@
 {
   "name": "notification",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "RESTful API of the microservice for notification.",
   "main": "dist/server.js",
   "scripts": {

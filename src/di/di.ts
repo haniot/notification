@@ -27,7 +27,6 @@ import { EventBusRabbitMQ } from '../infrastructure/eventbus/rabbitmq/eventbus.r
 import { IntegrationEventRepository } from '../infrastructure/repository/integration.event.repository'
 import { IIntegrationEventRepository } from '../application/port/integration.event.repository.interface'
 import { IntegrationEventRepoModel } from '../infrastructure/database/schema/integration.event.schema'
-import { PublishEventBusTask } from '../background/task/publish.event.bus.task'
 import { IBackgroundTask } from '../application/port/background.task.interface'
 import { SubscribeEventBusTask } from '../background/task/subscribe.event.bus.task'
 
@@ -102,9 +101,6 @@ class IoC {
         this._container
             .bind(Identifier.BACKGROUND_SERVICE)
             .to(BackgroundService).inSingletonScope()
-        this._container
-            .bind<IBackgroundTask>(Identifier.PUBLISH_EVENT_BUS_TASK)
-            .to(PublishEventBusTask).inSingletonScope()
         this._container
             .bind<IBackgroundTask>(Identifier.SUBSCRIBE_EVENT_BUS_TASK)
             .to(SubscribeEventBusTask).inSingletonScope()

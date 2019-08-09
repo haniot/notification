@@ -5,7 +5,6 @@ import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { IEmailRepository } from '../../port/email.repository.interface'
 import { EmailWelcomeValidator } from '../../domain/validator/email.welcome.validator'
-import { Default } from '../../../utils/default'
 
 export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailEvent> {
     /**
@@ -36,7 +35,7 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
                     name: email.to.name.split(' ')[0],
                     email: email.to.email,
                     password: email.password ? email.password : undefined,
-                    action_url: process.env.DASH_URL || Default.DASH_URL
+                    action_url: email.action_url
                 },
                 lang
             )
