@@ -1,14 +1,16 @@
 import nodeMailer from 'nodemailer'
 import { inject, injectable } from 'inversify'
+import { Email } from '../../application/domain/model/email'
 import { BaseRepository } from './base/base.repository'
 import { EmailEntity } from '../entity/email.entity'
-import { Email } from '../../application/domain/model/email'
 import { IEmailRepository } from '../../application/port/email.repository.interface'
 import { Identifier } from '../../di/identifiers'
 import { ILogger } from '../../utils/custom.logger'
 import { IEntityMapper } from '../port/entity.mapper.interface'
 import { Address } from '../../application/domain/model/address'
 import { ValidationException } from '../../application/domain/exception/validation.exception'
+import EmailTemplate from 'email-templates'
+import path from 'path'
 
 /**
  * Implementation of the email repository.
@@ -37,6 +39,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
     public async send(email: Email): Promise<Email> {
         email.from = new Address('HANIoT', process.env.SMTP_EMAIL)
         const emailSendNodeMailer: any = this.convertEmailToNodeMailer(email)
+
         try {
             await this.smtpTransport.sendMail(emailSendNodeMailer)
         } catch (err) {
@@ -47,9 +50,50 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
                     new ValidationException('There was a problem with your attachments!', message)
                 )
             }
+            this.logger.error(err)
             return Promise.reject(err)
         }
         return super.create(email)
+    }
+
+    public sendTemplate(name: string, to: any, data: any, lang?: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.getEmailTemplateInstance()
+                .send({
+                    template: name,
+                    message: {
+                        to: [{ name: to.email, address: to.email }],
+                        from: {
+                            name: 'HANIoT',
+                            address: process.env.SMTP_EMAIL
+                        }
+                    },
+                    locals: data
+                })
+                .then(resolve)
+                .catch(reject)
+        })
+    }
+
+    public sendTemplateAndAttachment(name: string, to: any, attachments: Array<any>,
+                                     data: any, lang?: string): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.getEmailTemplateInstance()
+                .send({
+                    template: name,
+                    message: {
+                        to: [{ name: to.email, address: to.email }],
+                        from: {
+                            name: 'HANIoT',
+                            address: process.env.SMTP_EMAIL
+                        },
+                        attachments
+                    },
+                    locals: data
+                })
+                .then(resolve)
+                .catch(reject)
+        })
     }
 
     /**
@@ -58,10 +102,11 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
      * @return SMTP transport.
      */
     private createSmtpTransport(): any {
+        const smtpPort = Number(process.env.SMTP_PORT)
         return nodeMailer.createTransport({
             host: process.env.SMTP_HOST,
-            port: Number(process.env.SMTP_PORT),
-            secure: false, // true for 465, false for other ports
+            port: smtpPort,
+            secure: smtpPort === 465, // true for 465, false for other ports
             auth: {
                 user: process.env.SMTP_EMAIL,
                 pass: process.env.SMTP_PASSWORD
@@ -136,5 +181,14 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
         }) : undefined
 
         return result
+    }
+
+    private getEmailTemplateInstance(): any {
+        return new EmailTemplate({
+            transport: this.smtpTransport,
+            send: true,
+            preview: false,
+            views: { root: path.resolve(process.cwd(), 'dist', 'src', 'ui', 'templates', 'emails') }
+        })
     }
 }

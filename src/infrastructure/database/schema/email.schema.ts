@@ -28,8 +28,7 @@ const emailSchema = new Mongoose.Schema({
             content_type: { type: String }
         }],
         user_id: {
-            type: Mongoose.Schema.Types.ObjectId,
-            required: true
+            type: Mongoose.Schema.Types.ObjectId
         }
     },
     {

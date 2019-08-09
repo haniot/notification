@@ -23,9 +23,12 @@ export class Email extends Entity implements IJSONSerializable, IJSONDeserializa
     private _attachments?: Array<Attachment>
     private _createdAt?: string
     private _userId!: string // required
+    private _template: string
+    private _link?: string
 
     constructor() {
         super()
+        this._template = 'default'
     }
 
     get from(): Address {
@@ -116,11 +119,27 @@ export class Email extends Entity implements IJSONSerializable, IJSONDeserializa
         this._userId = value
     }
 
+    get template(): string {
+        return this._template
+    }
+
+    set template(value: string) {
+        this._template = value
+    }
+
+    get link(): string | undefined {
+        return this._link
+    }
+
+    set link(value: string | undefined) {
+        this._link = value
+    }
+
     public toJSON(): any {
         return {
             id: super.id,
-            from: this.from,
-            reply: this.reply,
+            from: this.from.toJSON(),
+            reply: this.reply ? this.reply.toJSON() : this.reply,
             to: this.to ? this.to.map(item => item.toJSON()) : [],
             cc: this.cc ? this.cc.map(item => item.toJSON()) : [],
             bcc: this.bcc ? this.bcc.map(item => item.toJSON()) : [],
@@ -156,7 +175,13 @@ export class Email extends Entity implements IJSONSerializable, IJSONDeserializa
             this.attachments = json.attachments.map(item => new Attachment().fromJSON(item))
         }
         if (json.user_id !== undefined) this.userId = json.user_id
+        if (json.template !== undefined) this.template = json.template
+        if (json.link !== undefined) this.link = json.link
 
         return this
     }
+}
+
+export enum EmailTemplate {
+    DEFAULT = 'default'
 }

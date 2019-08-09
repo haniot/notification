@@ -19,8 +19,9 @@ gulp.task('ts-lint', () => {
 // COPY FILES
 gulp.task('copy-files', () => {
     const COPY_FILES = ['package.json']
-    return gulp.src(COPY_FILES)
-        .pipe(gulp.dest('dist'))
+    const COPY_TEMPLATE = ['./src/ui/templates/**/*']
+    return gulp.src(COPY_FILES).pipe(gulp.dest('dist')) &&
+        gulp.src(COPY_TEMPLATE).pipe(gulp.dest('dist/src/ui/templates'))
 })
 
 // WATCH
