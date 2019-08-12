@@ -109,14 +109,17 @@ head
                                                                                     p(style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:150%;color:#333333;font-size: 13px; text-align: center;") Acesse agora mesmo o dashboard para ter acesso as&nbsp;funcionalidades.
                                                                                     p(style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:150%;color:#333333;font-size: 13px;")
                                                                                         br
-                                                                                    p(style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:150%;color:#333333;font-size: 13px;")
-                                                                                        strong Email:&nbsp;
-                                                                                        span(style="font-family: 'courier new', courier, 'lucida sans typewriter', 'lucida typewriter', monospace; background-color: #d3d3d3;") #{email}
-                                                                                    p(style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:150%;color:#333333;font-size: 13px;")
-                                                                                        strong Password:&nbsp;
-                                                                                        span(style="font-family: 'courier new', courier, 'lucida sans typewriter', 'lucida typewriter', monospace; background-color: #d3d3d3;") #{password}
-                                                                                    p(style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:150%;color:#333333;")
-                                                                                        br
+
+                                                                                    if password
+                                                                                        p(style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:150%;color:#333333;font-size: 13px;")
+                                                                                            strong Email:&nbsp;
+                                                                                            span(style="font-family: 'courier new', courier, 'lucida sans typewriter', 'lucida typewriter', monospace; background-color: #d3d3d3;") #{email}
+                                                                                        p(style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:150%;color:#333333;font-size: 13px;")
+                                                                                            strong Senha:&nbsp;
+                                                                                            span(style="font-family: 'courier new', courier, 'lucida sans typewriter', 'lucida typewriter', monospace; background-color: #d3d3d3;") #{password}
+                                                                                        p(style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:150%;color:#333333;")
+                                                                                            br
+
                                                                             tr(style='border-collapse:collapse;')
                                                                                 td.esd-block-button.es-p10(align='center', style='Margin: 0; padding: 10px;')
                                                                                     span
