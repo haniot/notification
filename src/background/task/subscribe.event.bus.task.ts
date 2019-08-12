@@ -10,6 +10,8 @@ import { EmailWelcomeEventHandler } from '../../application/integration-event/ha
 import { EmailResetPasswordEventHandler } from '../../application/integration-event/handler/email.reset.password.event.handler'
 import { EmailUpdatePasswordEventHandler } from '../../application/integration-event/handler/email.update.password.event.handler'
 import { EmailPilotStudyDataEventHandler } from '../../application/integration-event/handler/email.pilot.study.data.event.handler'
+import { UserDeleteEvent } from '../../application/integration-event/event/user.delete.event'
+import { UserDeleteEventHandler } from '../../application/integration-event/handler/user.delete.event.handler'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -87,6 +89,14 @@ export class SubscribeEventBusTask implements IBackgroundTask {
                     'emails.pilotstudies.data'
                 )
             this._logger.info('Subscribe in EmailPilotStudyDataEvent successful!')
+
+            await this._eventBus
+                .subscribe(
+                    new UserDeleteEvent(),
+                    new UserDeleteEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                    'users.delete'
+                )
+            this._logger.info('Subscribe in UserDeleteEvent successful!')
         } catch (err) {
             this._logger.error(`An error occurred while subscribing to events. ${err.message}`)
         }

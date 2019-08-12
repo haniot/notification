@@ -22,12 +22,19 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
     private readonly smtpTransport: any
 
     constructor(
-        @inject(Identifier.EMAIL_REPO_MODEL) readonly userModel: any,
-        @inject(Identifier.EMAIL_ENTITY_MAPPER) readonly userMapper: IEntityMapper<Email, EmailEntity>,
+        @inject(Identifier.EMAIL_REPO_MODEL) readonly emailModel: any,
+        @inject(Identifier.EMAIL_ENTITY_MAPPER) readonly emailMapper: IEntityMapper<Email, EmailEntity>,
         @inject(Identifier.LOGGER) readonly logger: ILogger
     ) {
-        super(userModel, userMapper, logger)
+        super(emailModel, emailMapper, logger)
         this.smtpTransport = this.createSmtpTransport()
+        this.smtpTransport.verify((err, success) => {
+            if (err) {
+                this.logger.error(`Invalid SMTP Credentials. ${err.message}`)
+                return
+            }
+            this.logger.info('SMTP credentials successfully verified!')
+        })
     }
 
     /**
@@ -108,8 +115,8 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
             port: smtpPort,
             secure: smtpPort === 465, // true for 465, false for other ports
             auth: {
-                user: process.env.SMTP_EMAIL,
-                pass: process.env.SMTP_PASSWORD
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS
             },
             tls: {
                 // do not fail on invalid certs
@@ -191,4 +198,13 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
             views: { root: path.resolve(process.cwd(), 'dist', 'src', 'ui', 'templates', 'emails') }
         })
     }
+
+    public removeAllFromUser(userId: string): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            this.emailModel.deleteMany({ user_id: userId })
+                .then((result) => resolve(!!result))
+                .catch(err => reject(this.mongoDBErrorListener(err)))
+        })
+    }
+
 }

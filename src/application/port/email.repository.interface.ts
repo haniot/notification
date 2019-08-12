@@ -41,4 +41,13 @@ export interface IEmailRepository extends IRepository<Email> {
      */
     sendTemplateAndAttachment(name: string, to: any, attachments: Array<any>,
                               data: any, lang?: string): Promise<void>
+
+    /**
+     * Remove all emails sent by the user
+     *
+     * @param userId
+     * @return {Promise<void>}
+     * @throws {ValidationException | RepositoryException}
+     */
+    removeAllFromUser(userId: string): Promise<boolean>
 }

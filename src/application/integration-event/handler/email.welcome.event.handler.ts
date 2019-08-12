@@ -28,11 +28,12 @@ export class EmailWelcomeEventHandler implements IIntegrationEventHandler<EmailE
 
             // 2 Configure email and send
             const lang: string = email.lang ? email.lang : 'pt-BR'
+            const nameList = email.to.name.split(' ')
             await this._emailRepository.sendTemplate(
                 'welcome',
                 { name: email.to.name, email: email.to.email },
                 {
-                    name: email.to.name.split(' ')[0],
+                    name: `${nameList[0]} ${(nameList.length > 1 ? nameList[1] : '')}`,
                     email: email.to.email,
                     password: email.password ? email.password : undefined,
                     action_url: email.action_url

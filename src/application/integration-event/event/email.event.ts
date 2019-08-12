@@ -10,7 +10,7 @@ export class EmailEvent extends IntegrationEvent<Email> {
         if (!this.email) return {}
         return {
             ...super.toJSON(),
-            ...{ email: this.email.toJSON() }
+            email: this.email.toJSON()
         }
     }
 }
