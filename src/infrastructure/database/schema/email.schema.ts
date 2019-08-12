@@ -5,10 +5,7 @@ interface IEmailModel extends Mongoose.Document {
 
 const addressObj = {
     name: { type: String },
-    email: {
-        type: String,
-        required: true
-    }
+    email: { type: String }
 }
 
 const emailSchema = new Mongoose.Schema({
@@ -16,10 +13,7 @@ const emailSchema = new Mongoose.Schema({
         to: [addressObj],
         cc: [addressObj],
         bcc: [addressObj],
-        subject: {
-            type: String,
-            required: true
-        },
+        subject: { type: String },
         text: { type: String },
         html: { type: String },
         attachments: [{

@@ -46,6 +46,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
     public async send(email: Email): Promise<Email> {
         email.from = new Address('HANIoT', process.env.SMTP_EMAIL)
         const emailSendNodeMailer: any = this.convertEmailToNodeMailer(email)
+        console.log(emailSendNodeMailer)
 
         try {
             await this.smtpTransport.sendMail(emailSendNodeMailer)
