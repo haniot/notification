@@ -20,23 +20,36 @@ export class EmailService implements IEmailService {
     }
 
     public async send(email: Email): Promise<Email> {
-        EmailSendValidator.validate(email)
-        return this._emailRepository.send(email)
+        try {
+            EmailSendValidator.validate(email)
+
+            return this._emailRepository.send(email)
+        } catch (e) {
+            return Promise.reject(e)
+        }
     }
 
     public async getAllFromUser(userId: string, query: IQuery): Promise<Array<Email>> {
-        ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
+        try {
+            ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
 
-        query.addFilter({ user_id: userId })
-        return this._emailRepository.find(query)
+            query.addFilter({ user_id: userId })
+            return this._emailRepository.find(query)
+        } catch (e) {
+            return Promise.reject(e)
+        }
     }
 
     public async getByIdAndFromUser(emailId: string, userId: string, query: IQuery): Promise<Email> {
-        ObjectIdValidator.validate(emailId, Strings.ERROR_MESSAGE.UUID_NOT_VALID_FORMAT)
-        ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
+        try {
+            ObjectIdValidator.validate(emailId, Strings.ERROR_MESSAGE.UUID_NOT_VALID_FORMAT)
+            ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
 
-        query.addFilter({ _id: emailId, user_id: userId })
-        return this._emailRepository.findOne(query)
+            query.addFilter({ _id: emailId, user_id: userId })
+            return this._emailRepository.findOne(query)
+        } catch (e) {
+            return Promise.reject(e)
+        }
     }
 
     public async getAll(query: IQuery): Promise<Array<Email>> {
