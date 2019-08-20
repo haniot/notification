@@ -1,7 +1,7 @@
 {
   "name": "notification",
   "version": "1.1.0",
-  "description": "RESTful API of the microservice for notification.",
+  "description": "Microservice for sending messages: email, sms or push. In this version only the sending of email will be available.",
   "main": "dist/server.js",
   "scripts": {
     "build": "gulp build",
@@ -9,16 +9,20 @@
     "start": "node dist/server.js",
     "start:dev": "gulp dev",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
-    "test": "nyc --clean --all --reporter=text-summary mocha --opts test/mocha.opts test/**/*.spec.ts",
+    "test": "nyc --clean --reporter=text-summary mocha --opts test/mocha.opts test/**/*.spec.ts",
+    "test:unit": "nyc --clean --all --reporter=text-summary mocha --opts test/mocha.opts test/unit/**/*.spec.ts",
+    "test:integration": "nyc --clean --all --reporter=text-summary mocha --opts test/mocha.opts test/integration/**/*.spec.ts",
     "test:single": "mocha --opts test/mocha.opts",
-    "test:integration": "mocha --opts test/mocha.opts test/integration/**/*.spec.ts",
-    "test:unit": "mocha --opts test/mocha.opts test/unit/**/*.spec.ts",
     "test:cov": "nyc --clean --all --reporter=html --reporter=text mocha --opts test/mocha.opts test/**/*.spec.ts"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/haniot/notification"
   },
+  "bugs": {
+    "url": "https://github.com/haniot/notification/issues"
+  },
+  "homepage": "https://github.com/haniot/notification#readme",
   "keywords": [
     "microservice",
     "notification",
@@ -28,10 +32,6 @@
   ],
   "author": "NUTES/UEPB",
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/haniot/notification/issues"
-  },
-  "homepage": "https://github.com/haniot/notification#readme",
   "nyc": {
     "include": [
       "**/*.tsx",
@@ -75,7 +75,7 @@
     "@types/body-parser": "^1.17.0",
     "@types/chai": "^4.1.7",
     "@types/express": "^4.16.1",
-    "@types/helmet": "^0.0.43",
+    "@types/helmet": "^0.0.44",
     "@types/mocha": "^5.2.6",
     "@types/mongoose": "^5.5.0",
     "@types/morgan": "^1.7.35",

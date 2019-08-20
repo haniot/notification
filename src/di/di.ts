@@ -24,9 +24,6 @@ import { IConnectionEventBus } from '../infrastructure/port/connection.event.bus
 import { ConnectionRabbitMQ } from '../infrastructure/eventbus/rabbitmq/connection.rabbitmq'
 import { IEventBus } from '../infrastructure/port/event.bus.interface'
 import { EventBusRabbitMQ } from '../infrastructure/eventbus/rabbitmq/eventbus.rabbitmq'
-import { IntegrationEventRepository } from '../infrastructure/repository/integration.event.repository'
-import { IIntegrationEventRepository } from '../application/port/integration.event.repository.interface'
-import { IntegrationEventRepoModel } from '../infrastructure/database/schema/integration.event.schema'
 import { IBackgroundTask } from '../application/port/background.task.interface'
 import { SubscribeEventBusTask } from '../background/task/subscribe.event.bus.task'
 
@@ -69,13 +66,9 @@ class IoC {
         // Repositories
         this._container.bind<IEmailRepository>(Identifier.EMAIL_REPOSITORY)
             .to(EmailRepository).inSingletonScope()
-        this._container
-            .bind<IIntegrationEventRepository>(Identifier.INTEGRATION_EVENT_REPOSITORY)
-            .to(IntegrationEventRepository).inSingletonScope()
 
         // Mongoose Schema
         this._container.bind(Identifier.EMAIL_REPO_MODEL).toConstantValue(EmailRepoModel)
-        this._container.bind(Identifier.INTEGRATION_EVENT_REPO_MODEL).toConstantValue(IntegrationEventRepoModel)
 
         // Mappers
         this._container

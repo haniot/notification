@@ -148,13 +148,13 @@ describe('EVENT BUS', () => {
         it('should return a requested resource.', async () => {
             try {
                 await eventBus.connectionRpcClient.open(1, 500)
-
                 await eventBus.provideResource('resource.test.get', (query: string) => {
                     return { content: '123', original_query: query }
                 })
 
                 return eventBus.executeResource('notification.rpc',
-                    'resource.test.get', '?test=321')
+                    'resource.test.get',
+                    '?test=321')
                     .then(res => {
                         expect(res).to.have.property('content', '123')
                         expect(res).to.have.property('original_query', '?test=321')

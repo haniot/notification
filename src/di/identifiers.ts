@@ -15,11 +15,9 @@ export abstract class Identifier {
 
     // Repositories
     public static readonly EMAIL_REPOSITORY: any = Symbol.for('EmailRepository')
-    public static readonly INTEGRATION_EVENT_REPOSITORY: any = Symbol.for('IntegrationEventRepository')
 
     // Models
     public static readonly EMAIL_REPO_MODEL: any = Symbol.for('EmailRepoModel')
-    public static readonly INTEGRATION_EVENT_REPO_MODEL: any = Symbol.for('IntegrationEventRepoModel')
 
     // Mappers
     public static readonly EMAIL_ENTITY_MAPPER: any = Symbol.for('EmailEntityMapper')

@@ -24,8 +24,8 @@ req_extensions = v3_req
 [req_distinguished_name]
 C  = BR
 ST = PB
-L  = HANIoT
-O  = HANIoT
+L  = PB
+O  = HANIoT CA
 CN = haniot.nutes.uepb.edu.br
 # Allow client and server auth. You may want to only allow server auth.
 # Link to SAN names.
@@ -56,7 +56,7 @@ openssl req \
   -days 120 \
   -nodes \
   -x509 \
-  -subj "//C=BR\ST=PB\L=HANIoT\O=HANIoT CA" \
+  -subj "//C=BR\ST=PB\L=PB\O=HANIoT CA\CN=haniot.nutes.uepb.edu.br" \
   -keyout "${DIR}/ca.key" \
   -out "${DIR}/ca.crt"
 # For each server/service you want to secure with your CA, repeat the
