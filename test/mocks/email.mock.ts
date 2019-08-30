@@ -11,8 +11,8 @@ export class EmailMock extends Email {
 
     private generateUser(): void {
         super.id = GeneratorMock.generateObjectId()
-        super.from = new Address('NOTIFICATION/HANIoT', process.env.SMTP_EMAIL)
-        super.reply = new Address('NOTIFICATION/HANIoT', process.env.SMTP_EMAIL)
+        super.from = new Address('NOTIFICATION/HANIoT', process.env.SMTP_USER)
+        super.reply = new Address('NOTIFICATION/HANIoT', process.env.SMTP_USER)
         super.to = new Array(new Address(`Test ${super.id}`, `${super.id}@mail.com`))
         super.subject = GeneratorMock.generateLoremIpsum(Math.floor(Math.random() * 100))
         super.text = GeneratorMock.generateLoremIpsum(Math.floor(Math.random() * 500))

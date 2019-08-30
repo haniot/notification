@@ -10,6 +10,7 @@ const addressObj = {
 
 const emailSchema = new Mongoose.Schema({
         reply: addressObj,
+        from: addressObj,
         to: [addressObj],
         cc: [addressObj],
         bcc: [addressObj],

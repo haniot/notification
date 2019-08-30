@@ -24,7 +24,7 @@ export class EmailEntityMapper implements IEntityMapper<Email, EmailEntity> {
         const result: EmailEntity = new EmailEntity()
 
         if (item.id) result.id = item.id
-        if (item.from) result.from = item.from
+        if (item.from) result.from = item.from.toJSON()
         if (item.reply) result.reply = item.reply.toJSON()
         result.to = item.to ? item.to.map(elem => elem.toJSON()) : []
         result.cc = item.cc ? item.cc.map(elem => elem.toJSON()) : []

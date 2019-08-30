@@ -138,7 +138,6 @@ export class Email extends Entity implements IJSONSerializable, IJSONDeserializa
     public toJSON(): any {
         return {
             id: super.id,
-            from: this.from.toJSON(),
             reply: this.reply ? this.reply.toJSON() : this.reply,
             to: this.to ? this.to.map(item => item.toJSON()) : [],
             cc: this.cc ? this.cc.map(item => item.toJSON()) : [],
