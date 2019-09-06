@@ -13,7 +13,7 @@ export class ConnectionFactoryRabbitMQ implements IConnectionFactory {
      * @return Promise<Connection>
      */
     public async createConnection(_retries: number, _interval: number): Promise<any> {
-        return amqpClient.createConnetion(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+        return amqpClient.createConnection(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
             { retries: _retries, interval: _interval })
     }
 }
