@@ -44,10 +44,8 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
      * @return Promise<Email>
      */
     public async send(email: Email): Promise<Email> {
-        email.from = new Address('HANIoT', process.env.SMTP_EMAIL)
+        email.from = new Address('HANIoT', process.env.SMTP_USER)
         const emailSendNodeMailer: any = this.convertEmailToNodeMailer(email)
-        console.log(emailSendNodeMailer)
-
         try {
             await this.smtpTransport.sendMail(emailSendNodeMailer)
         } catch (err) {
@@ -73,7 +71,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
                         to: [{ name: to.email, address: to.email }],
                         from: {
                             name: 'HANIoT',
-                            address: process.env.SMTP_EMAIL
+                            address: process.env.SMTP_USER
                         }
                     },
                     locals: data
@@ -93,7 +91,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
                         to: [{ name: to.email, address: to.email }],
                         from: {
                             name: 'HANIoT',
-                            address: process.env.SMTP_EMAIL
+                            address: process.env.SMTP_USER
                         },
                         attachments
                     },
