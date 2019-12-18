@@ -31,6 +31,8 @@ export class BackgroundService {
     public async stopServices(): Promise<void> {
         try {
             await this._mongodb.dispose()
+
+            await this._subscribeTask.stop()
         } catch (err) {
             return Promise.reject(new Error(`Error stopping background services! ${err.message}`))
         }
