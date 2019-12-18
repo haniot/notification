@@ -12,6 +12,8 @@ import { EmailUpdatePasswordEventHandler } from '../../application/integration-e
 import { EmailPilotStudyDataEventHandler } from '../../application/integration-event/handler/email.pilot.study.data.event.handler'
 import { UserDeleteEvent } from '../../application/integration-event/event/user.delete.event'
 import { UserDeleteEventHandler } from '../../application/integration-event/handler/user.delete.event.handler'
+import fs from 'fs'
+import { Default } from '../../utils/default'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -22,13 +24,19 @@ export class SubscribeEventBusTask implements IBackgroundTask {
     }
 
     public run(): void {
+        // To use SSL/TLS, simply mount the uri with the amqps protocol and pass the CA.
+        const rabbitUri = process.env.RABBITMQ_URI || Default.RABBITMQ_URI
+        const rabbitOptions: any = { sslOptions: { ca: [] } }
+        if (rabbitUri.indexOf('amqps') === 0) {
+            rabbitOptions.sslOptions.ca = [fs.readFileSync(process.env.RABBITMQ_CA_PATH || Default.RABBITMQ_CA_PATH)]
+        }
         // Before performing the subscribe is trying to connect to the bus.
         // If there is no connection, infinite attempts will be made until
         // the connection is established successfully. Once you have the
         // connection, event registration is performed.
         this._eventBus
             .connectionSub
-            .open(0, 1000)
+            .open(rabbitUri, rabbitOptions)
             .then(async () => {
                 this._logger.info('Connection to subscribe opened successfully!')
                 await this.initializeSubscribe()

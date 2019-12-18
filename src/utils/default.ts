@@ -30,6 +30,6 @@ export abstract class Default {
     // To generate self-signed certificates, see: https://devcenter.heroku.com/articles/ssl-certificate-self
     public static readonly SSL_KEY_PATH: string = '.certs/server.key'
     public static readonly SSL_CERT_PATH: string = '.certs/server.crt'
+    public static readonly RABBITMQ_CA_PATH: string = '.certs/ca.crt'
 
-    public static readonly HOST_WHITELIST: Array<string> = ['*']
 }

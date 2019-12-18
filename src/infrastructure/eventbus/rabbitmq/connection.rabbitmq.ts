@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify'
 import { IConnectionEventBus } from '../../port/connection.event.bus.interface'
-import { IConnectionFactory } from '../../port/connection.factory.interface'
+import { IConnectionFactory, IEventBusOptions } from '../../port/connection.factory.interface'
 import { Identifier } from '../../../di/identifiers'
 import { EventBusException } from '../../../application/domain/exception/eventbus.exception'
 
@@ -30,16 +30,16 @@ export class ConnectionRabbitMQ implements IConnectionEventBus {
      * are made to connect according to the parameter {@link _options}
      * which sets the total number of retries and the delayIConnectionEventBus
      *
-     * @param retries Total attempts to be made until give up reconnecting
-     * @param interval Interval in milliseconds between each attempt
+     * @param uri This specification defines an "amqp" URI scheme.
+     * @param options {IEventBusOptions} Connection setup Options.
      * @return Promise<void>
      */
-    public open(retries: number, interval: number): Promise<IConnectionEventBus> {
+    public open(uri: string, options?: IEventBusOptions): Promise<IConnectionEventBus> {
         return new Promise<IConnectionEventBus>((resolve, reject) => {
             if (this._connection && this._connection.isOpen) return resolve(this._connection)
 
             this._connectionFactory
-                .createConnection(retries, interval)
+                .createConnection(uri, options)
                 .then(connection => {
                     this._connection = connection
                     return resolve(this._connection)

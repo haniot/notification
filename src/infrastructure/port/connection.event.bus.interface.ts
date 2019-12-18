@@ -1,7 +1,9 @@
+import { IEventBusOptions } from './connection.factory.interface'
+
 export interface IConnectionEventBus {
     isOpen: boolean
 
-    open(retries: number, interval: number): Promise<any>
+    open(uri: string, options?: IEventBusOptions): Promise<any>
 
     close(): Promise<boolean>
 
