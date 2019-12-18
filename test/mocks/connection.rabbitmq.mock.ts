@@ -1,6 +1,6 @@
 import { IConnectionEventBus } from '../../src/infrastructure/port/connection.event.bus.interface'
 import { Connection } from './connection.mock'
-import { IConnectionFactory } from '../../src/infrastructure/port/connection.factory.interface'
+import { IConnectionFactory, IEventBusOptions } from '../../src/infrastructure/port/connection.factory.interface'
 
 export class ConnectionRabbitmqMock implements IConnectionEventBus {
     private _connection?: Connection
@@ -30,9 +30,9 @@ export class ConnectionRabbitmqMock implements IConnectionEventBus {
         this._isOpen = value
     }
 
-    public open(retries: number, interval: number): Promise<void> {
+    public open(uri: string, options?: IEventBusOptions): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.connectionFactory.createConnection(1, 500)
+            this.connectionFactory.createConnection(uri, options)
                 .then(conn => {
                     this._connection = conn
                     return resolve()

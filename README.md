@@ -25,7 +25,6 @@ Application settings are defined by environment variables.. To define the settin
 | `NODE_ENV` | Defines the environment in which the application runs. You can set: `test` _(in this environment, the database defined in `MONGODB_URI_TEST` is used and the logs are disabled for better visualization of the test output)_, `development` _(in this environment, all log levels are enabled)_ and `production` _(in this environment, only the warning and error logs are enabled)_. | `development` |
 | `PORT_HTTP` | Port used to listen for HTTP requests. Any request received on this port is redirected to the HTTPS port. | `7000` |
 | `PORT_HTTPS` | Port used to listen for HTTPS requests. Do not forget to provide the private key and the SSL/TLS certificate. See the topic [generate certificates](#generate-certificates). | `7001` |
-| `HOST_WHITELIST` | Access control based on IP addresses. Only allow IP requests in the unlock list. You can define IP or host, for example: `[127.0.0.1, api.haniot.com]`. To accept requests from any customer, use the character `*`. | `[*]` |
 | `SSL_KEY_PATH` | SSL/TLS certificate private key. | `.certs/server.key` |
 | `SSL_CERT_PATH` | SSL/TLS certificate. | `.certs/server.crt` |
 | `RABBITMQ_URI` | URI containing the parameters for connection to the message channel RabbitMQ. The [URI specifications ](https://www.rabbitmq.com/uri-spec.html) defined by RabbitMQ are accepted. For example: `amqp://user:pass@host:port/vhost`. | `amqp://guest:guest`<br/>`@127.0.0.1:5672/haniot` |
@@ -113,7 +112,6 @@ You can also create the container by passing the settings that are desired by th
 docker run --rm \
   -e PORT_HTTP=8080 \
   -e PORT_HTTPS=8081 \
-  -e HOST_WHITELIST="[localhost]" \
   -e SSL_KEY_PATH=.certs/server.key \
   -e SSL_CERT_PATH=.certs/server.crt \
   -e RABBITMQ_URI="amqp://guest:guest@192.168.0.1:5672/haniot" \
