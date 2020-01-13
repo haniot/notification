@@ -5,5 +5,5 @@ import { IDBOptions } from './connection.factory.interface'
 export interface IConnectionDB extends IDisposable {
     eventConnection: EventEmitter
 
-    tryConnect(uri: string, options?: IDBOptions): void
+    tryConnect(uri: string, options?: IDBOptions): Promise<void>
 }

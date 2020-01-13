@@ -4,8 +4,6 @@ import { HomeController } from '../ui/controller/home.controller'
 import { Identifier } from './identifiers'
 import { EmailEntity } from '../infrastructure/entity/email.entity'
 import { IEntityMapper } from '../infrastructure/port/entity.mapper.interface'
-import { ConnectionFactoryMongoDB } from '../infrastructure/database/connection.factory.mongodb'
-import { ConnectionMongoDB } from '../infrastructure/database/connection.mongodb'
 import { IConnectionDB } from '../infrastructure/port/connection.db.interface'
 import { IConnectionFactory } from '../infrastructure/port/connection.factory.interface'
 import { BackgroundService } from '../background/background.service'
@@ -26,6 +24,8 @@ import { IEventBus } from '../infrastructure/port/event.bus.interface'
 import { EventBusRabbitMQ } from '../infrastructure/eventbus/rabbitmq/eventbus.rabbitmq'
 import { IBackgroundTask } from '../application/port/background.task.interface'
 import { SubscribeEventBusTask } from '../background/task/subscribe.event.bus.task'
+import { ConnectionFactoryMongodb } from '../infrastructure/database/connection.factory.mongodb'
+import { ConnectionMongodb } from '../infrastructure/database/connection.mongodb'
 
 class IoC {
     private readonly _container: Container
@@ -78,10 +78,10 @@ class IoC {
         // Background Services
         this._container
             .bind<IConnectionFactory>(Identifier.MONGODB_CONNECTION_FACTORY)
-            .to(ConnectionFactoryMongoDB).inSingletonScope()
+            .to(ConnectionFactoryMongodb).inSingletonScope()
         this._container
             .bind<IConnectionDB>(Identifier.MONGODB_CONNECTION)
-            .to(ConnectionMongoDB).inSingletonScope()
+            .to(ConnectionMongodb).inSingletonScope()
         this._container
             .bind<IConnectionFactory>(Identifier.RABBITMQ_CONNECTION_FACTORY)
             .to(ConnectionFactoryRabbitMQ).inSingletonScope()

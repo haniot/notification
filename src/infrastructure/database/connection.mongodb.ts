@@ -14,19 +14,15 @@ import { EventEmitter } from 'events'
  * @implements {IConnectionDB}
  */
 @injectable()
-export class ConnectionMongoDB implements IConnectionDB {
+export class ConnectionMongodb implements IConnectionDB {
     private _connection?: Connection
-    private readonly _eventConnection: EventEmitter
+    private _eventConnection: EventEmitter
 
     constructor(
         @inject(Identifier.MONGODB_CONNECTION_FACTORY) private readonly _connectionFactory: IConnectionFactory,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
         this._eventConnection = new EventEmitter()
-    }
-
-    get conn(): Connection | undefined {
-        return this._connection
     }
 
     get eventConnection(): EventEmitter {
@@ -42,8 +38,6 @@ export class ConnectionMongoDB implements IConnectionDB {
      * a new attempt will be made every 2 seconds. After the successful
      * connection, reconnection will be automatically managed by the MongoDB driver.
      *
-     * @param uri MongoDB URI connection
-     * @param options MongoDB connection options
      * @return {Promise<void>}
      */
     public async tryConnect(uri: string, options?: IDBOptions): Promise<void> {
@@ -77,7 +71,7 @@ export class ConnectionMongoDB implements IConnectionDB {
             return
         }
 
-        connection.on('connected', () => {
+        connection.on('connected', (con) => {
             this._logger.warn('Reconnection established with MongoDB...')
             this._eventConnection.emit('connected')
         })
@@ -90,19 +84,12 @@ export class ConnectionMongoDB implements IConnectionDB {
     }
 
     /**
-     *  Close connection..
+     * Releases the resources.
      *
      * @return {Promise<void>}
      */
-    public dispose(): Promise<void> {
-        return new Promise<void>(async (resolve, reject) => {
-            if (!this._connection) return resolve()
-            this._connection.close()
-                .then(() => {
-                    this._connection = undefined
-                    return resolve()
-                })
-                .catch(reject)
-        })
+    public async dispose(): Promise<void> {
+        if (this._connection) await this._connection.close()
+        this._connection = undefined
     }
 }
