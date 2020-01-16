@@ -23,8 +23,8 @@ export abstract class Identifier {
     public static readonly EMAIL_ENTITY_MAPPER: any = Symbol.for('EmailEntityMapper')
 
     // Background Services
-    public static readonly MONGODB_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryMongoDB')
-    public static readonly MONGODB_CONNECTION: any = Symbol.for('ConnectionMongoDB')
+    public static readonly MONGODB_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryMongodb')
+    public static readonly MONGODB_CONNECTION: any = Symbol.for('ConnectionMongodb')
     public static readonly RABBITMQ_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryRabbitMQ')
     public static readonly RABBITMQ_CONNECTION: any = Symbol.for('ConnectionRabbitMQ')
     public static readonly RABBITMQ_EVENT_BUS: any = Symbol.for('EventBusRabbitMQ')
@@ -32,7 +32,7 @@ export abstract class Identifier {
     public static readonly SUBSCRIBE_EVENT_BUS_TASK: any = Symbol.for('SubscribeEventBusTask')
 
     // Tasks
-    public static readonly EVENT_BUS_TASK: any = Symbol.for('SubscribeEventTask')
+    public static readonly EVENT_BUS_TASK: any = Symbol.for('SubscribeEventBusTask')
 
     // Log
     public static readonly LOGGER: any = Symbol.for('CustomLogger')

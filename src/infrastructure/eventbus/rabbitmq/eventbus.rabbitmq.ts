@@ -5,11 +5,10 @@ import { IConnectionEventBus } from '../../port/connection.event.bus.interface'
 import { IntegrationEvent } from '../../../application/integration-event/event/integration.event'
 import { IIntegrationEventHandler } from '../../../application/integration-event/handler/integration.event.handler.interface'
 import { Identifier } from '../../../di/identifiers'
-import { IDisposable } from '../../port/disposable.interface'
 import { EventBusException } from '../../../application/domain/exception/eventbus.exception'
 
 @injectable()
-export class EventBusRabbitMQ implements IEventBus, IDisposable {
+export class EventBusRabbitMQ implements IEventBus {
     private readonly RABBITMQ_QUEUE_NAME: string = 'notification'
     private readonly RABBITMQ_RPC_QUEUE_NAME: string = 'notification.rpc'
     private readonly RABBITMQ_RPC_EXCHANGE_NAME: string = 'notification.rpc'

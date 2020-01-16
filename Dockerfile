@@ -1,4 +1,4 @@
-FROM node:10.16.3
+FROM node:12.13.1
 
 # Create app directory
 RUN mkdir -p /usr/src/ns
@@ -10,10 +10,6 @@ RUN npm install
 
 # Copy app source
 COPY . /usr/src/ns
-
-# Create self-signed certificates
-RUN chmod +x ./create-self-signed-certs.sh
-RUN ./create-self-signed-certs.sh
 
 # Build app
 RUN npm run build

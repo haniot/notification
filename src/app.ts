@@ -1,7 +1,6 @@
 import 'reflect-metadata'
 import morgan from 'morgan'
 import helmet from 'helmet'
-import ipAllowed from 'ip-allowed'
 import bodyParser from 'body-parser'
 import HttpStatus from 'http-status-codes'
 import swaggerUi from 'swagger-ui-express'
@@ -60,28 +59,12 @@ export class App {
      */
     private async initMiddleware(): Promise<void> {
         try {
-            await this.setupHostWhitelist()
             await this.setupInversifyExpress()
             this.setupSwaggerUI()
             this.setupErrorsHandler()
         } catch (err) {
             this._logger.error(`Fatal error in middleware configuration: ${(err && err.message) ? err.message : ''}`)
         }
-    }
-
-    /**
-     * Access control based on host addresses.
-     * Only allow requests from the hosts that are on the permissions list.
-     *
-     * @private
-     * @return Promise<void>
-     */
-    private async setupHostWhitelist(): Promise<void> {
-        this.express.use(ipAllowed(process.env.HOST_WHITELIST || Default.HOST_WHITELIST, {
-            log: (clientIp, accessDenied) => {
-                if (accessDenied) this._logger.warn(`Client with IP address ${clientIp} is not allowed!`)
-            }
-        }))
     }
 
     /**
@@ -145,7 +128,7 @@ export class App {
                 customfavIcon: Default.LOGO_URI,
                 customSiteTitle: `API Reference | ${Strings.APP.TITLE}`
             }
-            this.express.use('/v1/reference', swaggerUi.serve, swaggerUi.setup(null, options))
+            this.express.use('/v1/reference', swaggerUi.serve, swaggerUi.setup({}, options))
         }
     }
 

@@ -4,6 +4,7 @@ import { Identifier } from '../../../src/di/identifiers'
 import { EventBusRabbitMQ } from '../../../src/infrastructure/eventbus/rabbitmq/eventbus.rabbitmq'
 import { IntegrationEvent } from '../../../src/application/integration-event/event/integration.event'
 import { IIntegrationEventHandler } from '../../../src/application/integration-event/handler/integration.event.handler.interface'
+import { Default } from '../../../src/utils/default'
 
 const eventBus: EventBusRabbitMQ = DIContainer.get(Identifier.RABBITMQ_EVENT_BUS)
 
@@ -46,7 +47,8 @@ describe('EVENT BUS', () => {
 
         it('should connect successfully to publish.', async () => {
             try {
-                await eventBus.connectionPub.open(1, 500)
+                await eventBus.connectionPub.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
                 expect(eventBus.connectionPub.isOpen).to.eql(true)
             } catch (err) {
                 throw new Error('Failure on EventBus test: ' + err.message)
@@ -56,7 +58,8 @@ describe('EVENT BUS', () => {
 
         it('should connect successfully to subscribe.', async () => {
             try {
-                await eventBus.connectionSub.open(1, 500)
+                await eventBus.connectionSub.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
                 expect(eventBus.connectionSub.isOpen).to.eql(true)
             } catch (err) {
                 throw new Error('Failure on EventBus test: ' + err.message)
@@ -67,7 +70,8 @@ describe('EVENT BUS', () => {
     describe('SUBSCRIBE', () => {
         it('should return true to subscribe in TestOneEvent', async () => {
             try {
-                await eventBus.connectionSub.open(1, 500)
+                await eventBus.connectionSub.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
 
                 return eventBus
                     .subscribe(createEventFake('TestOneEvent'), createHandlerEventFake(),
@@ -82,7 +86,8 @@ describe('EVENT BUS', () => {
 
         it('should return true to subscribe in TestTwoEvent', async () => {
             try {
-                await eventBus.connectionSub.open(1, 500)
+                await eventBus.connectionSub.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
 
                 return eventBus
                     .subscribe(createEventFake('TestTwoEvent'), createHandlerEventFake(),
@@ -99,7 +104,8 @@ describe('EVENT BUS', () => {
     describe('PUBLISH', () => {
         it('should return true for published TestOneEvent.', async () => {
             try {
-                await eventBus.connectionPub.open(1, 500)
+                await eventBus.connectionPub.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
 
                 return eventBus.publish(
                     createEventFake('TestOneEvent'),
@@ -114,7 +120,8 @@ describe('EVENT BUS', () => {
 
         it('should return true for published TestTwoEvent.', async () => {
             try {
-                await eventBus.connectionPub.open(1, 500)
+                await eventBus.connectionPub.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
 
                 return eventBus.publish(
                     createEventFake('TestTwoEvent'),
@@ -131,7 +138,8 @@ describe('EVENT BUS', () => {
     describe('RPC', () => {
         it('should return true when initializing a resource provider.', async () => {
             try {
-                await eventBus.connectionRpcServer.open(1, 500)
+                await eventBus.connectionRpcServer.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
 
                 return eventBus
                     .provideResource('resource.get', (query: string) => {
@@ -147,7 +155,8 @@ describe('EVENT BUS', () => {
 
         it('should return a requested resource.', async () => {
             try {
-                await eventBus.connectionRpcClient.open(1, 500)
+                await eventBus.connectionRpcClient.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
                 await eventBus.provideResource('resource.test.get', (query: string) => {
                     return { content: '123', original_query: query }
                 })
@@ -166,7 +175,8 @@ describe('EVENT BUS', () => {
 
         it('should return time out for a requested resource that is not being provided.', async () => {
             try {
-                await eventBus.connectionRpcClient.open(1, 500)
+                await eventBus.connectionRpcClient.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
 
                 return eventBus.executeResource('notification.service',
                     'resource.find', '')
