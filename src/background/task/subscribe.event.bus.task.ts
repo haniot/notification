@@ -12,8 +12,6 @@ import { EmailUpdatePasswordEventHandler } from '../../application/integration-e
 import { EmailPilotStudyDataEventHandler } from '../../application/integration-event/handler/email.pilot.study.data.event.handler'
 import { UserDeleteEvent } from '../../application/integration-event/event/user.delete.event'
 import { UserDeleteEventHandler } from '../../application/integration-event/handler/user.delete.event.handler'
-import fs from 'fs'
-import { Default } from '../../utils/default'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -24,26 +22,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
     }
 
     public run(): void {
-        // To use SSL/TLS, simply mount the uri with the amqps protocol and pass the CA.
-        const rabbitUri = process.env.RABBITMQ_URI || Default.RABBITMQ_URI
-        const rabbitOptions: any = { sslOptions: { ca: [] } }
-        if (rabbitUri.indexOf('amqps') === 0) {
-            rabbitOptions.sslOptions.ca = [fs.readFileSync(process.env.RABBITMQ_CA_PATH || Default.RABBITMQ_CA_PATH)]
-        }
-        // Before performing the subscribe is trying to connect to the bus.
-        // If there is no connection, infinite attempts will be made until
-        // the connection is established successfully. Once you have the
-        // connection, event registration is performed.
-        this._eventBus
-            .connectionSub
-            .open(rabbitUri, rabbitOptions)
-            .then(async () => {
-                this._logger.info('Connection to subscribe opened successfully!')
-                await this.initializeSubscribe()
-            })
-            .catch(err => {
-                this._logger.error(`Could not open connection to subscribe to message bus, ${err.message}`)
-            })
+        this.initializeSubscribe()
     }
 
     public async stop(): Promise<void> {
@@ -57,56 +36,89 @@ export class SubscribeEventBusTask implements IBackgroundTask {
     /**
      * Subscribe for all events.
      */
-    private async initializeSubscribe(): Promise<void> {
-        try {
-            await this._eventBus.subscribe(
-                new EmailEvent('EmailSendEvent'),
+    private initializeSubscribe(): void {
+        /**
+         * Subscribe in EmailEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailSendEvent'),
                 new EmailSendEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
-                'emails.send'
-            )
-            this._logger.info('Subscribe in EmailSendEvent successful!')
+                'emails.send')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailSendEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailSendEvent! ${err.message}`)
+            })
 
-            await this._eventBus
-                .subscribe(
-                    new EmailEvent('EmailWelcomeEvent'),
-                    new EmailWelcomeEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
-                    'emails.welcome'
-                )
-            this._logger.info('Subscribe in EmailWelcomeEvent successful!')
+        /**
+         * Subscribe in EmailEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailWelcomeEvent'),
+                new EmailWelcomeEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                'emails.welcome')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailWelcomeEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailWelcomeEvent! ${err.message}`)
+            })
 
-            await this._eventBus
-                .subscribe(
-                    new EmailEvent('EmailResetPasswordEvent'),
-                    new EmailResetPasswordEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
-                    'emails.reset-password'
-                )
-            this._logger.info('Subscribe in EmailResetPasswordEvent successful!')
+        /**
+         * Subscribe in EmailResetPasswordEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailResetPasswordEvent'),
+                new EmailResetPasswordEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                'emails.reset-password')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailResetPasswordEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailResetPasswordEvent! ${err.message}`)
+            })
 
-            await this._eventBus
-                .subscribe(
-                    new EmailEvent('EmailUpdatePasswordEvent'),
-                    new EmailUpdatePasswordEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
-                    'emails.update-password'
-                )
-            this._logger.info('Subscribe in EmailUpdatePasswordEvent successful!')
+        /**
+         * Subscribe in EmailUpdatePasswordEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailUpdatePasswordEvent'),
+                new EmailUpdatePasswordEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                'emails.update-password')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailUpdatePasswordEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailUpdatePasswordEvent! ${err.message}`)
+            })
 
-            await this._eventBus
-                .subscribe(
-                    new EmailEvent('EmailPilotStudyDataEvent'),
-                    new EmailPilotStudyDataEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
-                    'emails.pilotstudies.data'
-                )
-            this._logger.info('Subscribe in EmailPilotStudyDataEvent successful!')
+        /**
+         * Subscribe in EmailPilotStudyDataEvent
+         */
+        this._eventBus
+            .subscribe(new EmailEvent('EmailPilotStudyDataEvent'),
+                new EmailPilotStudyDataEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                'emails.pilotstudies-data')
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in EmailPilotStudyDataEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe EmailPilotStudyDataEvent! ${err.message}`)
+            })
 
-            await this._eventBus
-                .subscribe(
-                    new UserDeleteEvent(),
-                    new UserDeleteEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
-                    'users.delete'
-                )
-            this._logger.info('Subscribe in UserDeleteEvent successful!')
-        } catch (err) {
-            this._logger.error(`An error occurred while subscribing to events. ${err.message}`)
-        }
+        /**
+         * Subscribe in UserDeleteEvent
+         */
+        this._eventBus
+            .subscribe(new UserDeleteEvent(),
+                new UserDeleteEventHandler(DIContainer.get(Identifier.EMAIL_REPOSITORY), this._logger),
+                UserDeleteEvent.ROUTING_KEY)
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in UserDeleteEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe UserDeleteEvent! ${err.message}`)
+            })
     }
 }

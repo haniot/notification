@@ -7,7 +7,7 @@ import { Pagination } from './pagination'
  * @example
  * ```typescript
  * const fields: Array<string> = new Array('name', 'email')
- * const ordination: Map<string, string> = new Map().set('created_at', 'desc') // descending order
+ * const ordination: Map<string, string> = new Map().set('created_at', '-1') // descending order
  * const pagination: Pagination = new Pagination(1, 10)
  * const filters: object = {
  *      created_at: { $gte: '2018-07-30T00:00:00.000Z' },
@@ -21,7 +21,7 @@ import { Pagination } from './pagination'
  */
 export class Query implements IQuery {
     private _fields!: Array<string> // Defines the attributes that should be returned.
-    private _ordination!: Map<string, string> // Defines the attributes and how they should be sorted (ascending or descending).
+    private _ordination!: Map<string, number> // Defines the attributes and how they should be sorted (ascending or descending).
     private _pagination!: IPagination // Defines maximum page and number of data to be returned.
     private _filters!: object // Defines rules for filtering, such as filtering by some attribute.
 
@@ -33,10 +33,10 @@ export class Query implements IQuery {
      * @param pagination
      * @param filters
      */
-    constructor(fields?: Array<string>, ordination?: Map<string, string>,
+    constructor(fields?: Array<string>, ordination?: Map<string, number>,
                 pagination?: IPagination, filters?: object) {
         this.fields = fields ? fields : []
-        this.ordination = ordination ? ordination : new Map().set('created_at', 'desc')
+        this.ordination = ordination ? ordination : new Map()
         this.pagination = pagination ? pagination : new Pagination()
         this.filters = filters ? filters : {}
     }
@@ -49,11 +49,11 @@ export class Query implements IQuery {
         this._fields = value
     }
 
-    get ordination(): Map<string, string> {
+    get ordination(): Map<string, number> {
         return this._ordination
     }
 
-    set ordination(value: Map<string, string>) {
+    set ordination(value: Map<string, number>) {
         this._ordination = value
     }
 
@@ -73,7 +73,7 @@ export class Query implements IQuery {
         this._filters = value
     }
 
-    public addOrdination(field: string, order: string): void {
+    public addOrdination(field: string, order: number): void {
         if (!this.ordination) this.ordination = new Map()
         this.ordination.set(field, order)
     }
@@ -93,9 +93,10 @@ export class Query implements IQuery {
         }
 
         if (json.sort || json.ordination) {
-            const __ordination: Map<string, string> = new Map()
+            const __ordination: Map<string, number> = new Map()
             Object.keys((json.sort || json.ordination))
-                .reduce((prev, elem) => __ordination.set(elem, (json.sort[elem] || json.ordination[elem])), {})
+                .reduce((prev, elem) => __ordination
+                    .set(elem, (json.sort ? json.sort[elem] : json.ordination[elem])), {})
             this.ordination = __ordination
         }
 
@@ -108,9 +109,9 @@ export class Query implements IQuery {
     public toJSON(): any {
         return {
             fields: this.fields ? [...this.fields].reduce((obj, value, key) => (obj[value] = 1, obj), {}) : [],
-            ordination: this.fields ?
-                [...this.ordination.entries()].reduce((obj, [key, value]) => (obj[key] = value, obj), {}) :
-                new Map(),
+            ordination: this.ordination.size > 0 ?
+                [...this.ordination.entries()]
+                    .reduce((obj, [key, value]) => (obj[key] = value, obj), {}) : { created_at: -1 },
             pagination: this.pagination.toJSON(),
             filters: this.filters
         }

@@ -168,7 +168,7 @@ export class EventBusRabbitMQ implements IEventBus {
         return Promise.resolve()
     }
 
-    public enableLogger(): void {
-        amqpClient.logger('info')
+    public enableLogger(level?: string): void {
+        amqpClient.logger(!level ? 'warn' : level)
     }
 }

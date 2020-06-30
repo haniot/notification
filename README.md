@@ -11,14 +11,14 @@ Service for sending messages: **email**, **sms** or **push**. In this version on
  See the [documentation](https://github.com/haniot/notification/wiki) for more information.
 
 ## Prerequisites
-- [Node 8.0.0+](https://nodejs.org/en/download/)
-- [MongoDB Server 3.0.0+](https://www.mongodb.com/download-center/community)
+- [Node 12.0.0+](https://nodejs.org/en/download/)
+- [MongoDB Server 4.0.0+](https://www.mongodb.com/download-center/community)
 - [RabbitMQ 3.7.0+](https://www.rabbitmq.com/download.html)
 
 ---
 
 ## Set the environment variables
-Application settings are defined by environment variables.. To define the settings, make a copy of the `.env.example` file, naming for `.env`. After that, open and edit the settings as needed. The following environments variables are available:
+Application settings are defined by environment variables. To define the settings, make a copy of the `.env.example` file, naming for `.env`. After that, open and edit the settings as needed. The following environments variables are available:
 
 | VARIABLE | DESCRIPTION  | DEFAULT |
 |-----|-----|-----|
@@ -27,14 +27,19 @@ Application settings are defined by environment variables.. To define the settin
 | `PORT_HTTPS` | Port used to listen for HTTPS requests. Do not forget to provide the private key and the SSL/TLS certificate. See the topic [generate certificates](#generate-certificates). | `7001` |
 | `SSL_KEY_PATH` | SSL/TLS certificate private key. | `.certs/server.key` |
 | `SSL_CERT_PATH` | SSL/TLS certificate. | `.certs/server.crt` |
-| `RABBITMQ_URI` | URI containing the parameters for connection to the message channel RabbitMQ. The [URI specifications ](https://www.rabbitmq.com/uri-spec.html) defined by RabbitMQ are accepted. For example: `amqp://user:pass@host:port/vhost`. | `amqp://guest:guest`<br/>`@127.0.0.1:5672` |
-| `RABBITMQ_CA_PATH` | RabbitMQ SSL certificate path. | `.certs/ca.crt` |
-| `MONGODB_URI` | Database connection URI used if the application is running in development or production environment. The [URI specifications ](https://docs.mongodb.com/manual/reference/connection-string) defined by MongoDB are accepted. For example: `mongodb://user:pass@host:port/database?options`. | `mongodb://127.0.0.1:27017`<br/>`/notification-service` |
-| `MONGODB_URI_TEST` | Database connection URI used if the application is running in test environment. The [URI specifications ](https://docs.mongodb.com/manual/reference/connection-string) defined by MongoDB are accepted. For example: `mongodb://user:pass@host:port/database?options`. | `mongodb://127.0.0.1:27017`<br/>`/notification-service-test` |
 | `SMTP_HOST` | SMTP protocol host for sending emails. | `YOUR_SMTP_HOST` |
 | `SMTP_PORT` | SMTP port for sending emails. | `587` |
 | `SMTP_USER` | User/email who will authenticate to the SMTP host.  | `YOUR_SMTP_USER` |
 | `SMTP_PASS` | Password who will authenticate to the SMTP host. | `YOUR_SMTP_PASS` |
+| `MONGODB_URI` | Database connection URI used if the application is running in development or production environment. The [URI specifications ](https://docs.mongodb.com/manual/reference/connection-string) defined by MongoDB are accepted. For example: `mongodb://user:pass@host:port/database?options`. | `mongodb://127.0.0.1:27017`<br/>`/mhealth-service` |
+| `MONGODB_URI_TEST` | Database connection URI used if the application is running in test environment. The [URI specifications ](https://docs.mongodb.com/manual/reference/connection-string) defined by MongoDB are accepted. For example: `mongodb://user:pass@host:port/database?options`. | `mongodb://127.0.0.1:27017`<br/>`/mhealth-service-test` |
+| `MONGODB_ENABLE_TLS` | Enables/Disables connection to TLS. When TLS is used for connection, client certificates are required (`MONGODB_KEY_PATH`, `MONGODB_CA_PATH`). | `false` |
+| `MONGODB_KEY_PATH` | Client certificate and key in .pem format to connect to MongoDB | `.certs/mongodb/client.pem` |
+| `MONGODB_CA_PATH` | MongoDB Certificate of the Authentication entity (CA) | `.certs/mongodb/ca.pem` |
+| `RABBITMQ_URI` | URI for connection to RabbitMQ. The [URI specifications ](https://www.rabbitmq.com/uri-spec.html). For example: `amqp://user:pass@host:port/vhost`. When TLS is used for conection the protocol is amqps and client certificates are required (`RABBITMQ_CERT_PATH`, `RABBITMQ_KEY_PATH`, `RABBITMQ_CA_PATH`) | `amqp://guest:guest`<br/>`@127.0.0.1:5672` |
+| `RABBITMQ_CERT_PATH` | RabbitMQ Certificate | `.certs/rabbitmq/cert.pem` |
+| `RABBITMQ_KEY_PATH` | RabbitMQ Key | `.certs/rabbitmq/key.pem` |
+| `RABBITMQ_CA_PATH` | RabbitMQ Certificate of the Authentication entity (CA). | `.certs/rabbitmq/ca.pem` |
 
 ## Generate Certificates
 For development and testing environments the easiest and fastest way is to generate your own self-signed certificates. These certificates can be used to encrypt data as well as certificates signed by a CA, but users will receive a warning that the certificate is not trusted for their computer or browser. Therefore, self-signed certificates should only be used in non-production environments, that is, development and testing environments. To do this, run the `create-self-signed-certs.sh` script in the root of the repository.
@@ -111,25 +116,26 @@ This command will download the latest image and create a container with the defa
 You can also create the container by passing the settings that are desired by the environment variables. The supported settings are the same as those defined in ["Set the environment variables"](#set-the-environment-variables). See the following example:
 ```sh
 docker run --rm \
-  -e PORT_HTTP=8080 \
-  -e PORT_HTTPS=8081 \
-  -e SSL_KEY_PATH=.certs/server.key \
-  -e SSL_CERT_PATH=.certs/server.crt \
-  -e RABBITMQ_URI="amqp://guest:guest@192.168.0.1:5672" \
-  -e MONGODB_URI="mongodb://192.168.0.2:27017/notification-service" \
+  -e PORT_HTTP=7080 \
+  -e PORT_HTTPS=7081 \
+  -v $(pwd)/.certs:/etc \  
+  -e SSL_KEY_PATH=/etc/server.key \
+  -e SSL_CERT_PATH=/etc/server.crt \
+  -e MONGODB_ENABLE_TLS=false \
+  -e MONGODB_URI="mongodb://HOSTNAME:27017/haniot-ds-agent" \
+  -e RABBITMQ_URI="amqp://guest:guest@HOSTNAME:5672" \ 
   -e SMTP_HOST="SMTP.office365.com" \
   -e SMTP_PORT=587 \  
   -e SMTP_USER="YOUR_SMTP_USER@outlook.com" \    
-  -e SMTP_PASS="YOUR_SMTP_PASS" \      
+  -e SMTP_PASS="YOUR_SMTP_PASS" \     
+  --name haniot-notification \        
   haniot/notification-service
 ```
 If the MongoDB or RabbitMQ instance is in the host local, add the `--net=host` statement when creating the container, this will cause the docker container to communicate with its local host.
 ```sh
 docker run --rm \
   --net=host \
-  -e RABBITMQ_URI="amqp://guest:guest@localhost:5672" \
-  -e MONGODB_URI="mongodb://localhost:27017/notification-service" \
-  haniot/notification-service
+  ...
 ```
 To generate your own docker image, run the following command:
 ```sh
@@ -139,10 +145,10 @@ docker build -t image_name:tag .
 [//]: # (These are reference links used in the body of this note.)
 [license-image]: https://img.shields.io/badge/license-Apache%202-blue.svg
 [license-url]: https://github.com/haniot/notification/blob/master/LICENSE
-[node-image]: https://img.shields.io/badge/node-%3E%3D%208.0.0-brightgreen.svg
+[node-image]: https://img.shields.io/badge/node-%3E%3D%2012.0.0-brightgreen.svg
 [node-url]: https://nodejs.org
-[travis-image]: https://travis-ci.org/haniot/notification.svg?branch=master
-[travis-url]: https://travis-ci.org/haniot/notification
+[travis-image]: https://travis-ci.com/haniot/notification.svg?branch=master
+[travis-url]: https://travis-ci.com/haniot/notification
 [coverage-image]: https://coveralls.io/repos/github/haniot/notification/badge.svg
 [coverage-url]: https://coveralls.io/github/haniot/notification?branch=master
 [known-vulnerabilities-image]: https://snyk.io/test/github/haniot/notification/badge.svg

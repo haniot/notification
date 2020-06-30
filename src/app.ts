@@ -57,14 +57,10 @@ export class App {
      * @private
      * @return void
      */
-    private async initMiddleware(): Promise<void> {
-        try {
-            await this.setupInversifyExpress()
-            this.setupSwaggerUI()
-            this.setupErrorsHandler()
-        } catch (err) {
-            this._logger.error(`Fatal error in middleware configuration: ${(err && err.message) ? err.message : ''}`)
-        }
+    private initMiddleware(): void {
+        this.setupInversifyExpress()
+        this.setupSwaggerUI()
+        this.setupErrorsHandler()
     }
 
     /**
@@ -73,9 +69,9 @@ export class App {
      * Other middleware are also injected, such as query-strings-parser, helmet, body-parser, morgan...
      *
      * @private
-     * @return Promise<void>
+     * @return void
      */
-    private async setupInversifyExpress(): Promise<void> {
+    private setupInversifyExpress(): void {
         const inversifyExpress: InversifyExpressServer = new InversifyExpressServer(
             DIContainer, null, { rootPath: '/' })
 
@@ -85,8 +81,7 @@ export class App {
             app.use(qs({
                 use_page: true,
                 default: {
-                    pagination: { limit: 100 },
-                    sort: { created_at: 'desc' }
+                    pagination: { page: 1, limit: 100 }
                 }
             }))
 
@@ -120,16 +115,13 @@ export class App {
      * @return Promise<void>
      */
     private setupSwaggerUI(): void {
-        // Middleware swagger. It should not run in the test environment.
-        if ((process.env.NODE_ENV || Default.NODE_ENV) !== 'test') {
-            const options = {
-                swaggerUrl: Default.SWAGGER_URI,
-                customCss: '.swagger-ui .topbar { display: none }',
-                customfavIcon: Default.LOGO_URI,
-                customSiteTitle: `API Reference | ${Strings.APP.TITLE}`
-            }
-            this.express.use('/v1/reference', swaggerUi.serve, swaggerUi.setup({}, options))
+        const options = {
+            swaggerUrl: Default.SWAGGER_URI,
+            customCss: '.swagger-ui .topbar { display: none }',
+            customfavIcon: Default.LOGO_URI,
+            customSiteTitle: `API Reference | ${Strings.APP.TITLE}`
         }
+        this.express.use('/v1/reference', swaggerUi.serve, swaggerUi.setup({}, options))
     }
 
     /**
@@ -141,9 +133,11 @@ export class App {
     private setupErrorsHandler(): void {
         // Handle 404
         this.express.use((req, res) => {
-            const errorMessage: ApiException = new ApiException(404, `${req.url} not found.`,
-                `Specified resource: ${req.url} was not found or does not exist.`)
-            res.status(HttpStatus.NOT_FOUND).send(errorMessage.toJson())
+            const errorMessage: ApiException = new ApiException(
+                404,
+                Strings.ERROR_MESSAGE.ENDPOINT_NOT_FOUND.replace('{0}', req.url)
+            )
+            res.status(HttpStatus.NOT_FOUND).send(errorMessage.toJSON())
         })
 
         // Handle 400, 500
@@ -153,11 +147,10 @@ export class App {
             if (err && err.statusCode === HttpStatus.BAD_REQUEST) {
                 statusCode = HttpStatus.BAD_REQUEST
                 errorMessage.code = statusCode
-                errorMessage.message = 'Unable to process request body.'
-                errorMessage.description = 'Please verify that the JSON provided in'
-                    .concat(' the request body has a valid format and try again.')
+                errorMessage.message = Strings.ERROR_MESSAGE.REQUEST_BODY_INVALID
+                errorMessage.description = Strings.ERROR_MESSAGE.REQUEST_BODY_INVALID_DESC
             }
-            res.status(statusCode).send(errorMessage.toJson())
+            res.status(statusCode).send(errorMessage.toJSON())
         })
     }
 }

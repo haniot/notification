@@ -6,10 +6,9 @@ export class JsonUtils {
      */
     public static isJsonString(str): boolean {
         try {
-            JSON.parse(str)
+            return typeof JSON.parse(str) === 'object'
         } catch (e) {
             return false
         }
-        return true
     }
 }
