@@ -44,7 +44,7 @@ export class EmailController {
             return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
-            return res.status(handlerError.code).send(handlerError.toJson())
+            return res.status(handlerError.code).send(handlerError.toJSON())
         }
     }
 
@@ -66,7 +66,7 @@ export class EmailController {
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
-            return res.status(handlerError.code).send(handlerError.toJson())
+            return res.status(handlerError.code).send(handlerError.toJSON())
         } finally {
             req.query = {}
         }
@@ -89,7 +89,7 @@ export class EmailController {
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
-            return res.status(handlerError.code).send(handlerError.toJson())
+            return res.status(handlerError.code).send(handlerError.toJSON())
         }
     }
 
@@ -106,7 +106,7 @@ export class EmailController {
             return res.status(HttpStatus.NO_CONTENT).send()
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
-            return res.status(handlerError.code).send(handlerError.toJson())
+            return res.status(handlerError.code).send(handlerError.toJSON())
         }
     }
 
@@ -147,6 +147,6 @@ export class EmailController {
             HttpStatus.NOT_FOUND,
             Strings.EMAIL.NOT_FOUND,
             Strings.EMAIL.NOT_FOUND_DESCRIPTION
-        ).toJson()
+        ).toJSON()
     }
 }

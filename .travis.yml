@@ -1,0 +1,26 @@
+language: node_js
+node_js:
+  - "12"
+  - "13"
+env:
+  - NODE_ENV=test RABBITMQ_URI=amqp://guest:guest@localhost:5672/haniot MONGODB_ENABLE_TLS=false MONGODB_URI_TEST=mongodb://localhost:27017/notification-test
+addons:
+  apt:
+    packages:
+      - rabbitmq-server
+services:
+  - rabbitmq
+  - mongodb
+sudo: false
+before_script:
+  - sudo rabbitmqctl add_vhost haniot
+  - sudo rabbitmqctl set_permissions -p haniot guest ".*" ".*" ".*"
+  - npm install && npm install coveralls mocha-lcov-reporter --save-dev
+script:
+  - npm test
+after_success:
+  - nyc report --reporter=text-lcov | coveralls
+notifications:
+  email:
+    on_success: never
+    on_failure: always

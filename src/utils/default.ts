@@ -8,7 +8,7 @@
  * @abstract
  */
 export abstract class Default {
-    public static readonly APP_ID: string = 'notification.service'
+    public static readonly APP_ID: string = 'notification.app'
     public static readonly NODE_ENV: string = 'development' // development, test, production
     public static readonly PORT_HTTP: number = 7000
     public static readonly PORT_HTTPS: number = 7001
@@ -21,7 +21,7 @@ export abstract class Default {
     public static readonly MONGODB_URI_TEST: string = 'mongodb://127.0.0.1:27017/notification-service-test'
 
     // RabbitMQ
-    public static readonly RABBITMQ_URI: string = 'amqp://guest:guest@127.0.0.1:5672/haniot'
+    public static readonly RABBITMQ_URI: string = 'amqp://guest:guest@localhost:5672'
 
     // Log
     public static readonly LOG_DIR: string = 'logs'
@@ -30,6 +30,4 @@ export abstract class Default {
     // To generate self-signed certificates, see: https://devcenter.heroku.com/articles/ssl-certificate-self
     public static readonly SSL_KEY_PATH: string = '.certs/server.key'
     public static readonly SSL_CERT_PATH: string = '.certs/server.crt'
-    public static readonly RABBITMQ_CA_PATH: string = '.certs/ca.crt'
-
 }

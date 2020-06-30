@@ -8,11 +8,11 @@ import { IJSONDeserializable } from '../domain/utils/json.deserializable.interfa
  */
 export interface IQuery extends IJSONSerializable, IJSONDeserializable<IQuery> {
     fields: Array<string>
-    ordination: Map<string, string>
+    ordination: Map<string, number>
     pagination: IPagination
     filters: object
 
-    addOrdination(field: string, order: string): void
+    addOrdination(field: string, order: number): void
 
     addFilter(filter: object): void
 }
