@@ -13,7 +13,9 @@
     "test:unit": "nyc --clean --all --reporter=text-summary mocha test/unit/**/*.spec.ts",
     "test:integration": "nyc --clean --all --reporter=text-summary mocha test/integration/**/*.spec.ts",
     "test:single": "mocha",
-    "test:cov": "nyc --clean --all --reporter=html --reporter=text mocha test/**/*.spec.ts"
+    "test:cov": "nyc --clean --all --reporter=html --reporter=text mocha test/**/*.spec.ts",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -68,7 +70,8 @@
     "reflect-metadata": "^0.1.13",
     "swagger-ui-express": "^4.1.4",
     "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.0"
+    "winston-daily-rotate-file": "^4.5.0",
+    "snyk": "^1.352.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.0",
@@ -93,5 +96,6 @@
     "tslint": "^6.1.2",
     "typedoc": "^0.17.8",
     "typescript": "^3.9.5"
-  }
+  },
+  "snyk": true
 }
