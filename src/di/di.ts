@@ -26,6 +26,11 @@ import { IBackgroundTask } from '../application/port/background.task.interface'
 import { SubscribeEventBusTask } from '../background/task/subscribe.event.bus.task'
 import { ConnectionFactoryMongodb } from '../infrastructure/database/connection.factory.mongodb'
 import { ConnectionMongodb } from '../infrastructure/database/connection.mongodb'
+import { EmailTemplateRepository } from '../infrastructure/repository/email.template.repository'
+import { IEmailTemplateRepository } from '../application/port/email.template.repository.interface'
+import { IEmailTemplateService } from '../application/port/email.template.service.interface'
+import { EmailTemplateService } from '../application/service/email.template.service'
+import { EmailTemplateController } from '../ui/controller/email.template.controller'
 
 class IoC {
     private readonly _container: Container
@@ -58,14 +63,20 @@ class IoC {
             .to(HomeController).inSingletonScope()
         this._container.bind<EmailController>(Identifier.EMAIL_CONTROLLER)
             .to(EmailController).inSingletonScope()
+        this._container.bind<EmailTemplateController>(Identifier.EMAIL_TEMPLATE_CONTROLLER)
+            .to(EmailTemplateController).inSingletonScope()
 
         // Services
+        this._container.bind<IEmailTemplateService>(Identifier.EMAIL_TEMPLATE_SERVICE)
+            .to(EmailTemplateService).inSingletonScope()
         this._container.bind<IEmailService>(Identifier.EMAIL_SERVICE)
             .to(EmailService).inSingletonScope()
 
         // Repositories
         this._container.bind<IEmailRepository>(Identifier.EMAIL_REPOSITORY)
             .to(EmailRepository).inSingletonScope()
+        this._container.bind<IEmailTemplateRepository>(Identifier.EMAIL_TEMPLATE_REPOSITORY)
+            .to(EmailTemplateRepository).inSingletonScope()
 
         // Mongoose Schema
         this._container.bind(Identifier.EMAIL_REPO_MODEL).toConstantValue(EmailRepoModel)

@@ -81,8 +81,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
         })
     }
 
-    public sendTemplateAndAttachment(name: string, to: any, attachments: Array<any>,
-                                     data: any, lang?: string): Promise<void> {
+    public sendTemplateAndAttachment(name: string, to: any, attachments: Array<any>, data: any, lang?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             this.getEmailTemplateInstance()
                 .send({
