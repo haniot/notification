@@ -1,4 +1,4 @@
-import { User } from '../../domain/model/User'
+import { User } from '../../domain/model/user'
 import { ValidationException } from '../../domain/exception/validation.exception'
 import { ObjectIdValidator } from '../../domain/validator/object.id.validator'
 

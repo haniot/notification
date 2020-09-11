@@ -28,21 +28,13 @@ describe('EVENT BUS', () => {
         it('should return false when trying to publish up without connection.', () => {
             return eventBus
                 .publish({} as IntegrationEvent<any>, '')
-                .then((result: boolean) => {
-                    expect(result).to.eql(false)
-                })
+                .catch(err => expect(err.message).to.eql('No connection open!'))
         })
 
         it('should return false when trying to subscribe up without connection.', () => {
             return eventBus
-                .subscribe(
-                    {} as IntegrationEvent<any>,
-                    {} as IIntegrationEventHandler<any>,
-                    ''
-                )
-                .then((result: boolean) => {
-                    expect(result).to.eql(false)
-                })
+                .subscribe({} as IntegrationEvent<any>, {} as IIntegrationEventHandler<any>, '')
+                .catch(err => expect(err.message).to.eql('No connection open!'))
         })
 
         it('should connect successfully to publish.', async () => {

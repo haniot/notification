@@ -181,6 +181,6 @@ export class Email extends Entity implements IJSONSerializable, IJSONDeserializa
     }
 }
 
-export enum EmailTemplate {
+export enum EmailTemplateType {
     DEFAULT = 'default'
 }
