@@ -10,20 +10,25 @@ export abstract class Identifier {
     public static readonly HOME_CONTROLLER: any = Symbol.for('HomeController')
     public static readonly EMAIL_CONTROLLER: any = Symbol.for('EmailController')
     public static readonly EMAIL_TEMPLATE_CONTROLLER: any = Symbol.for('EmailTemplateController')
+    public static readonly USERS_PUSH_TOKENS_CONTROLLER: any = Symbol.for('UsersPushTokensController')
 
     // Services
     public static readonly EMAIL_SERVICE: any = Symbol.for('EmailService')
     public static readonly EMAIL_TEMPLATE_SERVICE: any = Symbol.for('EmailTemplateService')
+    public static readonly PUSH_TOKEN_SERVICE: any = Symbol.for('PushTokenService')
 
     // Repositories
     public static readonly EMAIL_REPOSITORY: any = Symbol.for('EmailRepository')
     public static readonly EMAIL_TEMPLATE_REPOSITORY: any = Symbol.for('EmailTemplateRepository')
+    public static readonly PUSH_TOKEN_REPOSITORY: any = Symbol.for('PushTokenRepository')
 
     // Models
     public static readonly EMAIL_REPO_MODEL: any = Symbol.for('EmailRepoModel')
+    public static readonly PUSH_TOKEN_REPO_MODEL: any = Symbol.for('PushTokenRepoModel')
 
     // Mappers
     public static readonly EMAIL_ENTITY_MAPPER: any = Symbol.for('EmailEntityMapper')
+    public static readonly PUSH_TOKEN_ENTITY_MAPPER: any = Symbol.for('PushTokenEntityMapper')
 
     // Background Services
     public static readonly MONGODB_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryMongodb')

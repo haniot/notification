@@ -21,6 +21,10 @@ export abstract class Strings {
         NOT_FOUND: 'Email not found!',
         NOT_FOUND_DESCRIPTION: 'Email not found or already removed. A new operation for the same resource is not required.'
     }
+    public static readonly PUSH_TOKEN: any = {
+        NOT_FOUND: 'Push token not found!',
+        NOT_FOUND_DESCRIPTION: 'Push token not found or already removed. A new operation for the same resource is not required.'
+    }
 
     public static readonly EMAIL_TEMPLATE: any = {
         NOT_FOUND: 'Email template not found!',
