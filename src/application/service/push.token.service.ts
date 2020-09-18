@@ -49,4 +49,5 @@ export class PushTokenService implements IPushTokenService {
             return Promise.reject(err)
         }
     }
+
 }

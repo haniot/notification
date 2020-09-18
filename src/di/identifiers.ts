@@ -11,24 +11,33 @@ export abstract class Identifier {
     public static readonly EMAIL_CONTROLLER: any = Symbol.for('EmailController')
     public static readonly EMAIL_TEMPLATE_CONTROLLER: any = Symbol.for('EmailTemplateController')
     public static readonly USERS_PUSH_TOKENS_CONTROLLER: any = Symbol.for('UsersPushTokensController')
+    public static readonly PUSH_CONTROLLER: any = Symbol.for('PushController')
+    public static readonly USERS_PUSH_CONTROLLER: any = Symbol.for('UsersPushController')
 
     // Services
     public static readonly EMAIL_SERVICE: any = Symbol.for('EmailService')
     public static readonly EMAIL_TEMPLATE_SERVICE: any = Symbol.for('EmailTemplateService')
     public static readonly PUSH_TOKEN_SERVICE: any = Symbol.for('PushTokenService')
+    public static readonly PUSH_TOPIC_SERVICE: any = Symbol.for('PushTopicService')
+    public static readonly PUSH_NOTIFICATION_SERVICE: any = Symbol.for('PushNotificationService')
 
     // Repositories
     public static readonly EMAIL_REPOSITORY: any = Symbol.for('EmailRepository')
     public static readonly EMAIL_TEMPLATE_REPOSITORY: any = Symbol.for('EmailTemplateRepository')
     public static readonly PUSH_TOKEN_REPOSITORY: any = Symbol.for('PushTokenRepository')
+    public static readonly PUSH_CLIENT_REPOSITORY: any = Symbol.for('PushClientRepository')
+    public static readonly PUSH_NOTIFICATION_REPOSITORY: any = Symbol.for('PushNotificationRepository')
 
     // Models
     public static readonly EMAIL_REPO_MODEL: any = Symbol.for('EmailRepoModel')
     public static readonly PUSH_TOKEN_REPO_MODEL: any = Symbol.for('PushTokenRepoModel')
+    public static readonly PUSH_NOTIFICATION_REPO_MODEL: any = Symbol.for('PushNotificationRepoModel')
 
     // Mappers
     public static readonly EMAIL_ENTITY_MAPPER: any = Symbol.for('EmailEntityMapper')
     public static readonly PUSH_TOKEN_ENTITY_MAPPER: any = Symbol.for('PushTokenEntityMapper')
+    public static readonly PUSH_TOPIC_ENTITY_MAPPER: any = Symbol.for('PushTopicEntityMapper')
+    public static readonly PUSH_NOTIFICATION_ENTITY_MAPPER: any = Symbol.for('PushNotificationEntityMapper')
 
     // Background Services
     public static readonly MONGODB_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryMongodb')

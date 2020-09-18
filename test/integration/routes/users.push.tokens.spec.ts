@@ -187,6 +187,20 @@ describe('Routes: UsersPushTokens', () => {
                     })
             })
         })
+
+        context('when there are validation errors', () => {
+            it('should return status code 400 and message from invalid user id', () => {
+                return request
+                    .get('/v1/users/123/push/tokens')
+                    .set('Content-Type', 'application/json')
+                    .expect(400)
+                    .then(res => {
+                        expect(res.body).to.have.property('message', 'Some ID provided does not have a valid format!')
+                        expect(res.body).to.have.property('description',
+                            'A 24-byte hex ID similar to this: 507f191e810c19729de860ea is expected.')
+                    })
+            })
+        })
     })
 
     describe('DELETE /v1/users/:user_id/push/:client_type/tokens', () => {

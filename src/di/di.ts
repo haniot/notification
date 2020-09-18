@@ -40,6 +40,21 @@ import { PushTokenRepository } from '../infrastructure/repository/push.token.rep
 import { IPushTokenService } from '../application/port/push.token.service.interface'
 import { PushTokenService } from '../application/service/push.token.service'
 import { UsersPushTokensController } from '../ui/controller/users.push.tokens.controller'
+import { PushTopic } from '../application/domain/model/push.topic'
+import { PushTopicEntity } from '../infrastructure/entity/push.topic.entity'
+import { PushTopicEntityMapper } from '../infrastructure/entity/mapper/push.topic.entity.mapper'
+import { IPushClientRepository } from '../application/port/push.client.repository.interface'
+import { PushClientRepository } from '../infrastructure/repository/push.client.repository'
+import { PushController } from '../ui/controller/push.controller'
+import { UsersPushController } from '../ui/controller/users.push.controller'
+import { IPushNotificationService } from '../application/port/push.notification.service.interface'
+import { PushNotificationService } from '../application/service/push.notification.service'
+import { IPushNotificationRepository } from '../application/port/push.notification.repository.interface'
+import { PushNotificationRepository } from '../infrastructure/repository/push.notification.repository'
+import { PushNotificationRepoModel } from '../infrastructure/database/schema/push.notification.schema'
+import { PushNotification } from '../application/domain/model/push.notification'
+import { PushNotificationEntity } from '../infrastructure/entity/push.notification.entity'
+import { PushNotificationEntityMapper } from '../infrastructure/entity/mapper/push.notification.entity.mapper'
 
 class IoC {
     private readonly _container: Container
@@ -76,6 +91,10 @@ class IoC {
             .to(EmailTemplateController).inSingletonScope()
         this._container.bind<UsersPushTokensController>(Identifier.USERS_PUSH_TOKENS_CONTROLLER)
             .to(UsersPushTokensController).inSingletonScope()
+        this._container.bind<PushController>(Identifier.PUSH_CONTROLLER)
+            .to(PushController).inSingletonScope()
+        this._container.bind<UsersPushController>(Identifier.USERS_PUSH_CONTROLLER)
+            .to(UsersPushController).inSingletonScope()
 
         // Services
         this._container.bind<IEmailTemplateService>(Identifier.EMAIL_TEMPLATE_SERVICE)
@@ -84,6 +103,8 @@ class IoC {
             .to(EmailService).inSingletonScope()
         this._container.bind<IPushTokenService>(Identifier.PUSH_TOKEN_SERVICE)
             .to(PushTokenService).inSingletonScope()
+        this._container.bind<IPushNotificationService>(Identifier.PUSH_NOTIFICATION_SERVICE)
+            .to(PushNotificationService).inSingletonScope()
 
         // Repositories
         this._container.bind<IEmailRepository>(Identifier.EMAIL_REPOSITORY)
@@ -92,10 +113,15 @@ class IoC {
             .to(EmailTemplateRepository).inSingletonScope()
         this._container.bind<IPushTokenRepository>(Identifier.PUSH_TOKEN_REPOSITORY)
             .to(PushTokenRepository).inSingletonScope()
+        this._container.bind<IPushClientRepository>(Identifier.PUSH_CLIENT_REPOSITORY)
+            .to(PushClientRepository).inSingletonScope()
+        this._container.bind<IPushNotificationRepository>(Identifier.PUSH_NOTIFICATION_REPOSITORY)
+            .to(PushNotificationRepository).inSingletonScope()
 
         // Mongoose Schema
         this._container.bind(Identifier.EMAIL_REPO_MODEL).toConstantValue(EmailRepoModel)
         this._container.bind(Identifier.PUSH_TOKEN_REPO_MODEL).toConstantValue(PushTokenRepoModel)
+        this._container.bind(Identifier.PUSH_NOTIFICATION_REPO_MODEL).toConstantValue(PushNotificationRepoModel)
 
         // Mappers
         this._container
@@ -104,6 +130,12 @@ class IoC {
         this._container
             .bind<IEntityMapper<PushToken, PushTokenEntity>>(Identifier.PUSH_TOKEN_ENTITY_MAPPER)
             .to(PushTokenEntityMapper).inSingletonScope()
+        this._container
+            .bind<IEntityMapper<PushTopic, PushTopicEntity>>(Identifier.PUSH_TOPIC_ENTITY_MAPPER)
+            .to(PushTopicEntityMapper).inSingletonScope()
+        this._container
+            .bind<IEntityMapper<PushNotification, PushNotificationEntity>>(Identifier.PUSH_NOTIFICATION_ENTITY_MAPPER)
+            .to(PushNotificationEntityMapper).inSingletonScope()
 
         // Background Services
         this._container
