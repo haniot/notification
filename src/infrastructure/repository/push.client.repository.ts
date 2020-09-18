@@ -1,18 +1,12 @@
 import { IPushClientRepository } from '../../application/port/push.client.repository.interface'
-import { inject, injectable } from 'inversify'
+import { injectable } from 'inversify'
 import * as admin from 'firebase-admin'
-import { Identifier } from '../../di/identifiers'
-import { ILogger } from '../../utils/custom.logger'
 import fs from 'fs'
 
 
 @injectable()
 export class PushClientRepository implements IPushClientRepository {
     protected _firebase_admin?: any
-
-    constructor(@inject(Identifier.LOGGER) private readonly _logger: ILogger) {
-        this.initializeAdmin().then().catch()
-    }
 
     public send(payload: any): Promise<any> {
         return new Promise<void>((resolve, reject) => {
@@ -30,7 +24,7 @@ export class PushClientRepository implements IPushClientRepository {
         })
     }
 
-    private async initializeAdmin(): Promise<void> {
+    public async run(): Promise<void> {
         try {
             const google_app_credentials_path = process.env.GOOGLE_APPLICATION_CREDENTIALS
             if (!google_app_credentials_path) {
@@ -40,10 +34,9 @@ export class PushClientRepository implements IPushClientRepository {
             this._firebase_admin = await admin.initializeApp({
                 credential: admin.credential.cert(credentials_file)
             })
-            this._logger.info('Connection with the Google Firebase successful!')
             return Promise.resolve()
         } catch (err) {
-            this._logger.error(`Could not initalize the Firebase SDK: ${err.message}`)
+           return Promise.reject(err)
         }
     }
 
