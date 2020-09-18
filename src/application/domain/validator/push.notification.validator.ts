@@ -21,6 +21,12 @@ export class PushNotificationValidator {
         else EnumValuesValidator.validate(item.keep_it, 'keep_it', ChoiceTypes)
         if (!item.to) fields.push('to')
         else {
+            if (!item.to.length) {
+                throw new ValidationException(
+                    'At least one recipient is required.',
+                    'Please enter at least one user id for direct notifications or at least one topic name for topic notifications.'
+                )
+            }
             if (item.type === NotificationTypes.DIRECT) item.to.map(user_id => ObjectIdValidator.validate(user_id))
         }
         if (!item.message) fields.push('message')

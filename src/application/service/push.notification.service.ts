@@ -40,8 +40,11 @@ export class PushNotificationService implements IPushNotificationService {
                         'Please submit a valid user id and try again.')
                 }
             }
-            // await mount the payload and send the notification
-            if (item.keep_it === ChoiceTypes.YES) {
+            // Await mount the payload and send the notification
+            await this.sendNotification(item)
+
+            // If the notification is of the direct type and is to be maintained, save it in the database
+            if (item.type === NotificationTypes.DIRECT && item.keep_it === ChoiceTypes.YES) {
                 item.is_read = ChoiceTypes.NO
                 const result: PushNotification = await this._pushNotificationRepo.create(item)
                 item.id = result.id
@@ -98,4 +101,39 @@ export class PushNotificationService implements IPushNotificationService {
         }
     }
 
+    private async sendNotification(notification: PushNotification): Promise<void> {
+        try {
+            const payloads: Array<any> = await this.mountPayloads(notification)
+            for await(const payload of payloads) {
+                const result: any = await this._pushClientRepo.send(payload)
+                console.log('the result of sending is', result)
+            }
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
+    private async mountPayloads(item: PushNotification): Promise<Array<any>> {
+        try {
+            const result: Array<any> = []
+            // IF the type of notification is direct, the 'to' parameter should be an array of ids
+            if (item.type === NotificationTypes.DIRECT) {
+                for await(const owner_id of item.to!) {
+                    // Get all push tokens from user, for any type of client
+                    const push_tokens: Array<PushToken> = await this._pushTokenRepo.getUserTokens(owner_id)
+                    if (push_tokens?.length > 0) {
+                        push_tokens.forEach(push_token => result.push({ token: push_token.token, data: item.message }))
+                    }
+                }
+                return Promise.resolve(result)
+            }
+
+            // If the type of notification is topic, the 'to' parameters should be an array of topic names
+            item.to!.forEach(topic => result.push({ topic, data: item.message }))
+            return Promise.resolve(result)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
 }

@@ -11,7 +11,6 @@ import { PushToken, PushTokenClientTypes } from '../../../src/application/domain
 import { PushTokenMock } from '../../mocks/push.token.mock'
 import { PushNotificationRepoModel } from '../../../src/infrastructure/database/schema/push.notification.schema'
 import { expect } from 'chai'
-import { ChoiceTypes } from '../../../src/application/domain/utils/choice.types'
 import { GeneratorMock } from '../../mocks/generator.mock'
 
 const dbConnection: IConnectionDB = DIContainer.get(Identifier.MONGODB_CONNECTION)
@@ -20,7 +19,6 @@ const request = require('supertest')(app.getExpress())
 
 describe('Routes: Push', () => {
     const direct_notification: PushNotification = new PushNotificationMock(NotificationTypes.DIRECT)
-    const topic_notification: PushNotificationMock = new PushNotificationMock(NotificationTypes.TOPIC, ['default'])
     const push_token: PushToken = new PushTokenMock(PushTokenClientTypes.MOBILE)
 
     before(async () => {
@@ -48,65 +46,6 @@ describe('Routes: Push', () => {
     })
 
     describe('POST /v1/push', () => {
-        context('when send a direct push notification and keep it', () => {
-            it('should return status code 201 and the notification', () => {
-                return request
-                    .post('/v1/push')
-                    .send(direct_notification.toJSON())
-                    .set('Content-Type', 'application/json')
-                    .expect(201)
-                    .then(res => {
-                        expect(res.body).to.have.property('type', direct_notification.type)
-                        expect(res.body).to.have.property('is_read', ChoiceTypes.NO)
-                        expect(res.body).to.have.deep.property('to', direct_notification.to)
-                        expect(res.body.message).to.have.property('type', direct_notification.message?.type)
-                        expect(res.body.message.pt).to.have.property('title', direct_notification.message?.pt?.title)
-                        expect(res.body.message.pt).to.have.property('text', direct_notification.message?.pt?.text)
-                        expect(res.body.message.eng).to.have.property('title', direct_notification.message?.eng?.title)
-                        expect(res.body.message.eng).to.have.property('text', direct_notification.message?.eng?.text)
-                        direct_notification.id = res.body.id
-                    })
-            })
-        })
-
-        context('when send a direct push notification but not want keep it', () => {
-            it('should return status code 201 and the notification', () => {
-                return request
-                    .post('/v1/push')
-                    .send({ ...direct_notification.toJSON(), keep_it: ChoiceTypes.NO })
-                    .set('Content-Type', 'application/json')
-                    .expect(201)
-                    .then(res => {
-                        expect(res.body).to.have.property('type', direct_notification.type)
-                        expect(res.body).to.have.deep.property('to', direct_notification.to)
-                        expect(res.body.message).to.have.property('type', direct_notification.message?.type)
-                        expect(res.body.message.pt).to.have.property('title', direct_notification.message?.pt?.title)
-                        expect(res.body.message.pt).to.have.property('text', direct_notification.message?.pt?.text)
-                        expect(res.body.message.eng).to.have.property('title', direct_notification.message?.eng?.title)
-                        expect(res.body.message.eng).to.have.property('text', direct_notification.message?.eng?.text)
-                    })
-            })
-        })
-
-        context('when send a topic push notification', () => {
-            it('should return status code 201 and the notification', () => {
-                return request
-                    .post('/v1/push')
-                    .send(topic_notification.toJSON())
-                    .set('Content-Type', 'application/json')
-                    .expect(201)
-                    .then(res => {
-                        expect(res.body).to.have.property('type', topic_notification.type)
-                        expect(res.body).to.have.deep.property('to', topic_notification.to)
-                        expect(res.body.message).to.have.property('type', topic_notification.message?.type)
-                        expect(res.body.message.pt).to.have.property('title', topic_notification.message?.pt?.title)
-                        expect(res.body.message.pt).to.have.property('text', topic_notification.message?.pt?.text)
-                        expect(res.body.message.eng).to.have.property('title', topic_notification.message?.eng?.title)
-                        expect(res.body.message.eng).to.have.property('text', topic_notification.message?.eng?.text)
-                    })
-            })
-        })
-
         context('when there are validation errors', () => {
             it('should return status code 400 and message from missing parameters', () => {
                 return request

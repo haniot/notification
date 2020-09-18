@@ -16,14 +16,6 @@ export class PushClientRepository implements IPushClientRepository {
         })
     }
 
-    public sendToTopic(name: string, payload: any): Promise<any> {
-        return new Promise<void>((resolve, reject) => {
-            this._firebase_admin.messaging().sendToTopic(name, payload)
-                .then(res => resolve(res))
-                .catch(err => reject(err))
-        })
-    }
-
     public async run(): Promise<void> {
         try {
             const google_app_credentials_path = process.env.GOOGLE_APPLICATION_CREDENTIALS
