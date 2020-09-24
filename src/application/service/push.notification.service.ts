@@ -25,14 +25,11 @@ export class PushNotificationService implements IPushNotificationService {
         try {
             PushNotificationValidator.validate(item)
             if (item.type === NotificationTypes.DIRECT) {
-                // List to store all users tokens
-                const users_tokens: Array<string> = []
                 // List to store all users ids that does not have saved push tokens
                 const users_not_exists: Array<string> = []
                 for await (const id of item.to!) {
                     const push_tokens: Array<PushToken> = await this._pushTokenRepo.getUserTokens(id)
                     if (!push_tokens?.length) users_not_exists.push(id)
-                    else push_tokens.forEach(push_token => users_tokens.push(push_token.token!))
                 }
                 if (users_not_exists.length > 0) {
                     throw new ValidationException(
@@ -104,10 +101,7 @@ export class PushNotificationService implements IPushNotificationService {
     private async sendNotification(notification: PushNotification): Promise<void> {
         try {
             const payloads: Array<any> = await this.mountPayloads(notification)
-            for await(const payload of payloads) {
-                const result: any = await this._pushClientRepo.send(payload)
-                console.log('the result of sending is', result)
-            }
+            for await(const payload of payloads) await this._pushClientRepo.send(payload)
             return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)
@@ -117,23 +111,40 @@ export class PushNotificationService implements IPushNotificationService {
     private async mountPayloads(item: PushNotification): Promise<Array<any>> {
         try {
             const result: Array<any> = []
+            // Transform the message from object to json
+            const message: any = item.message?.toJSON()
             // IF the type of notification is direct, the 'to' parameter should be an array of ids
             if (item.type === NotificationTypes.DIRECT) {
                 for await(const owner_id of item.to!) {
                     // Get all push tokens from user, for any type of client
                     const push_tokens: Array<PushToken> = await this._pushTokenRepo.getUserTokens(owner_id)
-                    if (push_tokens?.length > 0) {
-                        push_tokens.forEach(push_token => result.push({ token: push_token.token, data: item.message }))
-                    }
+                    // Create a notification payload for each push token
+                    push_tokens.forEach(push_token => {
+                        result.push({
+                            token: push_token.token,
+                            data: { type: message.type, body: this.serializePayloadBody(message) }
+                        })
+                    })
                 }
                 return Promise.resolve(result)
             }
 
             // If the type of notification is topic, the 'to' parameters should be an array of topic names
-            item.to!.forEach(topic => result.push({ topic, data: item.message }))
+            item.to!.forEach(topic => result.push({
+                topic,
+                data: { type: message.type, body: this.serializePayloadBody(message) }
+            }))
             return Promise.resolve(result)
         } catch (err) {
             return Promise.reject(err)
         }
     }
+
+    private serializePayloadBody(payload: any): any {
+        return JSON.stringify({
+            pt: payload.pt,
+            eng: payload.eng
+        })
+    }
+
 }
