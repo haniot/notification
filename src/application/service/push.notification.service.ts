@@ -17,7 +17,7 @@ export class PushNotificationService implements IPushNotificationService {
     constructor(
         @inject(Identifier.PUSH_NOTIFICATION_REPOSITORY) private readonly _pushNotificationRepo: IPushNotificationRepository,
         @inject(Identifier.PUSH_TOKEN_REPOSITORY) private readonly _pushTokenRepo: IPushTokenRepository,
-        @inject(Identifier.PUSH_CLIENT_REPOSITORY) /*private*/ readonly _pushClientRepo: IPushClientRepository
+        @inject(Identifier.PUSH_CLIENT_REPOSITORY) private readonly _pushClientRepo: IPushClientRepository
     ) {
     }
 
