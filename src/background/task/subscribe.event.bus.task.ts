@@ -12,6 +12,8 @@ import { EmailUpdatePasswordEventHandler } from '../../application/integration-e
 import { EmailPilotStudyDataEventHandler } from '../../application/integration-event/handler/email.pilot.study.data.event.handler'
 import { UserDeleteEvent } from '../../application/integration-event/event/user.delete.event'
 import { UserDeleteEventHandler } from '../../application/integration-event/handler/user.delete.event.handler'
+import { PushNotificationSendEvent } from '../../application/integration-event/event/push.notification.send.event'
+import { PushNotificationSendEventHandler } from '../../application/integration-event/handler/push.notification.send.event.handler'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -119,6 +121,19 @@ export class SubscribeEventBusTask implements IBackgroundTask {
             })
             .catch(err => {
                 this._logger.error(`Error in Subscribe UserDeleteEvent! ${err.message}`)
+            })
+        /**
+         * Subscribe in UserDeleteEvent
+         */
+        this._eventBus
+            .subscribe(new PushNotificationSendEvent(),
+                new PushNotificationSendEventHandler(DIContainer.get(Identifier.PUSH_NOTIFICATION_SERVICE), this._logger),
+                PushNotificationSendEvent.ROUTING_KEY)
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in PushNotificationSendEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe PushNotificationSendEvent! ${err.message}`)
             })
     }
 }
