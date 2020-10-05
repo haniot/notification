@@ -3,12 +3,12 @@ import { Identifier } from '../../../di/identifiers'
 import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { IPushNotificationService } from '../../port/push.notification.service.interface'
-import { PushNotificationSendEvent } from '../event/push.notification.send.event'
+import { PushSendEvent } from '../event/push.send.event'
 import { PushNotification } from '../../domain/model/push.notification'
 
-export class PushNotificationSendEventHandler implements IIntegrationEventHandler<PushNotificationSendEvent> {
+export class PushSendEventHandler implements IIntegrationEventHandler<PushSendEvent> {
     /**
-     * Creates an instance of PushNotificationSendEventHandler.
+     * Creates an instance of PushSendEventHandler.
      *
      * @param _pushService
      * @param _logger
@@ -19,7 +19,7 @@ export class PushNotificationSendEventHandler implements IIntegrationEventHandle
     ) {
     }
 
-    public async handle(event: PushNotificationSendEvent): Promise<void> {
+    public async handle(event: PushSendEvent): Promise<void> {
         try {
             const push: PushNotification = new PushNotification().fromJSON(event.push)
 

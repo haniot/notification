@@ -12,8 +12,8 @@ import { EmailUpdatePasswordEventHandler } from '../../application/integration-e
 import { EmailPilotStudyDataEventHandler } from '../../application/integration-event/handler/email.pilot.study.data.event.handler'
 import { UserDeleteEvent } from '../../application/integration-event/event/user.delete.event'
 import { UserDeleteEventHandler } from '../../application/integration-event/handler/user.delete.event.handler'
-import { PushNotificationSendEvent } from '../../application/integration-event/event/push.notification.send.event'
-import { PushNotificationSendEventHandler } from '../../application/integration-event/handler/push.notification.send.event.handler'
+import { PushSendEvent } from '../../application/integration-event/event/push.send.event'
+import { PushSendEventHandler } from '../../application/integration-event/handler/push.send.event.handler'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -40,7 +40,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
      */
     private initializeSubscribe(): void {
         /**
-         * Subscribe in EmailEvent
+         * Subscribe in EmailSendEvent
          */
         this._eventBus
             .subscribe(new EmailEvent('EmailSendEvent'),
@@ -54,7 +54,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
             })
 
         /**
-         * Subscribe in EmailEvent
+         * Subscribe in EmailWelcomeEvent
          */
         this._eventBus
             .subscribe(new EmailEvent('EmailWelcomeEvent'),
@@ -126,14 +126,14 @@ export class SubscribeEventBusTask implements IBackgroundTask {
          * Subscribe in UserDeleteEvent
          */
         this._eventBus
-            .subscribe(new PushNotificationSendEvent(),
-                new PushNotificationSendEventHandler(DIContainer.get(Identifier.PUSH_NOTIFICATION_SERVICE), this._logger),
-                PushNotificationSendEvent.ROUTING_KEY)
+            .subscribe(new PushSendEvent(),
+                new PushSendEventHandler(DIContainer.get(Identifier.PUSH_NOTIFICATION_SERVICE), this._logger),
+                PushSendEvent.ROUTING_KEY)
             .then((result: boolean) => {
-                if (result) this._logger.info('Subscribe in PushNotificationSendEvent successful!')
+                if (result) this._logger.info('Subscribe in PushSendEvent successful!')
             })
             .catch(err => {
-                this._logger.error(`Error in Subscribe PushNotificationSendEvent! ${err.message}`)
+                this._logger.error(`Error in Subscribe PushSendEvent! ${err.message}`)
             })
     }
 }
