@@ -1,9 +1,10 @@
 import Mongoose from 'mongoose'
+import { ChoiceTypes } from '../../../application/domain/utils/choice.types'
 
-interface IPushNotificationModel extends Mongoose.Document {
+interface IPushModel extends Mongoose.Document {
 }
 
-const schema: any = {
+const pushSchema: any = {
     type: String,
     keep_it: String,
     to: [String],
@@ -12,7 +13,10 @@ const schema: any = {
         pt: Object,
         eng: Object
     },
-    is_read: String
+    is_read: {
+        type: String,
+        default: ChoiceTypes.NO
+    }
 }
 
 const options: any = {
@@ -27,5 +31,4 @@ const options: any = {
     }
 }
 
-export const PushNotificationRepoModel =
-    Mongoose.model<IPushNotificationModel>('PushNotification', new Mongoose.Schema(schema, options))
+export const PushRepoModel = Mongoose.model<IPushModel>('Push', new Mongoose.Schema(pushSchema, options))

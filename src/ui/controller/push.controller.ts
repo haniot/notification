@@ -4,22 +4,22 @@ import { controller, httpDelete, httpPost, request, response } from 'inversify-e
 import { Request, Response } from 'express'
 import { Identifier } from '../../di/identifiers'
 import { ApiExceptionManager } from '../exception/api.exception.manager'
-import { IPushNotificationService } from '../../application/port/push.notification.service.interface'
-import { PushNotification } from '../../application/domain/model/push.notification'
+import { IPushService } from '../../application/port/push.service.interface'
+import { Push } from '../../application/domain/model/push'
 
 @controller('/v1/push')
 export class PushController {
 
     constructor(
-        @inject(Identifier.PUSH_NOTIFICATION_SERVICE) private readonly _pushService: IPushNotificationService
+        @inject(Identifier.PUSH_SERVICE) private readonly _pushService: IPushService
     ) {
     }
 
     @httpPost('/')
     public async sendPush(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
-            const push: PushNotification = new PushNotification().fromJSON(req.body)
-            const result: PushNotification = await this._pushService.send(push)
+            const push: Push = new Push().fromJSON(req.body)
+            const result: Push = await this._pushService.send(push)
             return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
@@ -49,7 +49,7 @@ export class PushController {
         }
     }
 
-    private toJSONView(push: PushNotification | Array<PushNotification>): object {
+    private toJSONView(push: Push | Array<Push>): object {
         if (push instanceof Array) return push.map(item => this.toJSONView(item))
         const result: any = push.toJSON()
         delete result.keep_it

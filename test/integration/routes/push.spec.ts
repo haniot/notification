@@ -5,11 +5,11 @@ import { App } from '../../../src/app'
 import { Config } from '../../../src/utils/config'
 import { DatabaseUtils } from '../../utils/database.utils'
 import { PushTokenRepoModel } from '../../../src/infrastructure/database/schema/push.token.schema'
-import { NotificationTypes, PushNotification } from '../../../src/application/domain/model/push.notification'
-import { PushNotificationMock } from '../../mocks/push.notification.mock'
+import { PushTypes, Push } from '../../../src/application/domain/model/push'
+import { PushMock } from '../../mocks/push.mock'
 import { PushToken, PushTokenClientTypes } from '../../../src/application/domain/model/push.token'
 import { PushTokenMock } from '../../mocks/push.token.mock'
-import { PushNotificationRepoModel } from '../../../src/infrastructure/database/schema/push.notification.schema'
+import { PushRepoModel } from '../../../src/infrastructure/database/schema/push.schema'
 import { expect } from 'chai'
 import { GeneratorMock } from '../../mocks/generator.mock'
 
@@ -18,7 +18,7 @@ const app: App = DIContainer.get(Identifier.APP)
 const request = require('supertest')(app.getExpress())
 
 describe('Routes: Push', () => {
-    const direct_notification: PushNotification = new PushNotificationMock(NotificationTypes.DIRECT)
+    const direct_push: Push = new PushMock(PushTypes.DIRECT)
     const push_token: PushToken = new PushTokenMock(PushTokenClientTypes.MOBILE)
 
     before(async () => {
@@ -26,9 +26,9 @@ describe('Routes: Push', () => {
                 const mongoConfigs = Config.getMongoConfig()
                 await dbConnection.tryConnect(mongoConfigs.uri, mongoConfigs.options)
                 await DatabaseUtils.deleteMany(PushTokenRepoModel)
-                await DatabaseUtils.deleteMany(PushNotificationRepoModel)
+                await DatabaseUtils.deleteMany(PushRepoModel)
                 const token: any = await DatabaseUtils.create(PushTokenRepoModel, push_token.toJSON())
-                direct_notification.to = [token.user_id]
+                direct_push.to = [token.user_id]
             } catch (err) {
                 throw new Error('Failure on UsersPushTokens test: ' + err.message)
             }
@@ -38,7 +38,7 @@ describe('Routes: Push', () => {
     after(async () => {
         try {
             await DatabaseUtils.deleteMany(PushTokenRepoModel)
-            await DatabaseUtils.deleteMany(PushNotificationRepoModel)
+            await DatabaseUtils.deleteMany(PushRepoModel)
             await dbConnection.dispose()
         } catch (err) {
             throw new Error('Failure on UsersPushTokens test: ' + err.message)
@@ -56,7 +56,7 @@ describe('Routes: Push', () => {
                     .then(res => {
                         expect(res.body).to.have.property('message', 'Required fields were not provided...')
                         expect(res.body).to.have.property('description',
-                            'Push Notification validation: type, keep_it, to, message required.')
+                            'Push validation: type, keep_it, to, message required.')
                     })
             })
 
@@ -64,7 +64,7 @@ describe('Routes: Push', () => {
                 const random_id: string = GeneratorMock.generateObjectId()
                 return request
                     .post('/v1/push')
-                    .send({ ...direct_notification.toJSON(), to: [random_id] })
+                    .send({ ...direct_push.toJSON(), to: [random_id] })
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .then(res => {
@@ -80,7 +80,7 @@ describe('Routes: Push', () => {
         context('when want signalize that the push token are read', () => {
             it('should return status code 204 and no content', () => {
                 return request
-                    .post(`/v1/push/${direct_notification.id}/read`)
+                    .post(`/v1/push/${direct_push.id}/read`)
                     .set('Content-Type', 'application/json')
                     .expect(204)
                     .then(res => {
@@ -88,7 +88,7 @@ describe('Routes: Push', () => {
                     })
             })
         })
-        context('when the push notification does not exists', () => {
+        context('when the push does not exists', () => {
             it('should return status code 204 and no content', () => {
                 return request
                     .post(`/v1/push/${GeneratorMock.generateObjectId()}/read`)
@@ -116,10 +116,10 @@ describe('Routes: Push', () => {
     })
 
     describe('DELETE /v1/push/:push_id', () => {
-        context('when delete a saved push notification', () => {
+        context('when delete a saved push', () => {
             it('should return status code 204 and no content', () => {
                 return request
-                    .delete(`/v1/push/${direct_notification.id}`)
+                    .delete(`/v1/push/${direct_push.id}`)
                     .set('Content-Type', 'application/json')
                     .expect(204)
                     .then(res => {
@@ -131,7 +131,7 @@ describe('Routes: Push', () => {
         context('when the push token is already removed', () => {
             it('should return status code 204 and no content', () => {
                 return request
-                    .delete(`/v1/push/${direct_notification.id}`)
+                    .delete(`/v1/push/${direct_push.id}`)
                     .set('Content-Type', 'application/json')
                     .expect(204)
                     .then(res => {

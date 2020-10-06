@@ -1,18 +1,18 @@
 import { injectable } from 'inversify'
 import { IEntityMapper } from '../../port/entity.mapper.interface'
-import { PushNotification } from '../../../application/domain/model/push.notification'
-import { PushNotificationEntity } from '../push.notification.entity'
+import { Push } from '../../../application/domain/model/push'
+import { PushEntity } from '../push.entity'
 import { PushMessage } from '../../../application/domain/model/push.message'
 
 @injectable()
-export class PushNotificationEntityMapper implements IEntityMapper<PushNotification, PushNotificationEntity> {
+export class PushEntityMapper implements IEntityMapper<Push, PushEntity> {
     public transform(item: any): any {
-        if (item instanceof PushNotification) return this.modelToModelEntity(item)
+        if (item instanceof Push) return this.modelToModelEntity(item)
         return this.jsonToModel(item) // json
     }
 
-    public modelToModelEntity(item: PushNotification): PushNotificationEntity {
-        const result: PushNotificationEntity = new PushNotificationEntity()
+    public modelToModelEntity(item: Push): PushEntity {
+        const result: PushEntity = new PushEntity()
 
         if (item.id) result.id = item.id
         if (item.type) result.type = item.type
@@ -24,8 +24,8 @@ export class PushNotificationEntityMapper implements IEntityMapper<PushNotificat
         return result
     }
 
-    public jsonToModel(json: any): PushNotification {
-        const result: PushNotification = new PushNotification()
+    public jsonToModel(json: any): Push {
+        const result: Push = new Push()
         if (!json) return result
 
         if (json.id) result.id = json.id

@@ -1,11 +1,10 @@
-import { IPushNotificationService } from '../port/push.notification.service.interface'
+import { IPushService } from '../port/push.service.interface'
 import { inject, injectable } from 'inversify'
-import { NotificationTypes, PushNotification } from '../domain/model/push.notification'
+import { PushTypes, Push } from '../domain/model/push'
 import { IQuery } from '../port/query.interface'
-import { PushNotificationValidator } from '../domain/validator/push.notification.validator'
+import { PushValidator } from '../domain/validator/push.validator'
 import { Identifier } from '../../di/identifiers'
-import { IPushNotificationRepository } from '../port/push.notification.repository.interface'
-import { IPushClientRepository } from '../port/push.client.repository.interface'
+import { IPushRepository } from '../port/push.repository.interface'
 import { ChoiceTypes } from '../domain/utils/choice.types'
 import { ObjectIdValidator } from '../domain/validator/object.id.validator'
 import { IPushTokenRepository } from '../port/push.token.repository.interface'
@@ -13,18 +12,17 @@ import { ValidationException } from '../domain/exception/validation.exception'
 import { PushToken } from '../domain/model/push.token'
 
 @injectable()
-export class PushNotificationService implements IPushNotificationService {
+export class PushService implements IPushService {
     constructor(
-        @inject(Identifier.PUSH_NOTIFICATION_REPOSITORY) private readonly _pushNotificationRepo: IPushNotificationRepository,
-        @inject(Identifier.PUSH_TOKEN_REPOSITORY) private readonly _pushTokenRepo: IPushTokenRepository,
-        @inject(Identifier.PUSH_CLIENT_REPOSITORY) private readonly _pushClientRepo: IPushClientRepository
+        @inject(Identifier.PUSH_REPOSITORY) private readonly _pushRepo: IPushRepository,
+        @inject(Identifier.PUSH_TOKEN_REPOSITORY) private readonly _pushTokenRepo: IPushTokenRepository
     ) {
     }
 
-    public async send(item: PushNotification): Promise<PushNotification> {
+    public async send(item: Push): Promise<Push> {
         try {
-            PushNotificationValidator.validate(item)
-            if (item.type === NotificationTypes.DIRECT) {
+            PushValidator.validate(item)
+            if (item.type === PushTypes.DIRECT) {
                 // List to store all users ids that does not have saved push tokens
                 const users_not_exists: Array<string> = []
                 for await (const id of item.to!) {
@@ -37,13 +35,12 @@ export class PushNotificationService implements IPushNotificationService {
                         'Please submit a valid user id and try again.')
                 }
             }
-            // Await mount the payload and send the notification
-            await this.sendNotification(item)
+            // Await mount the payload and send the push
+            await this.sendPush(item)
 
-            // If the notification is of the direct type and is to be maintained, save it in the database
-            if (item.type === NotificationTypes.DIRECT && item.keep_it === ChoiceTypes.YES) {
-                item.is_read = ChoiceTypes.NO
-                const result: PushNotification = await this._pushNotificationRepo.create(item)
+            // If the push is of the direct type and is to be maintained, save it in the database
+            if (item.type === PushTypes.DIRECT && item.keep_it === ChoiceTypes.YES) {
+                const result: Push = await this._pushRepo.create(item)
                 item.id = result.id
             }
             return Promise.resolve(item)
@@ -52,25 +49,25 @@ export class PushNotificationService implements IPushNotificationService {
         }
     }
 
-    public async add(item: PushNotification): Promise<PushNotification> {
+    public async add(item: Push): Promise<Push> {
         throw new Error('Not implemented')
     }
 
     public count(query: IQuery): Promise<number> {
         query.addFilter({ keep_it: ChoiceTypes.YES })
-        return this._pushNotificationRepo.count(query)
+        return this._pushRepo.count(query)
     }
 
-    public getAll(query: IQuery): Promise<Array<PushNotification>> {
+    public getAll(query: IQuery): Promise<Array<Push>> {
         query.addFilter({ keep_it: ChoiceTypes.YES })
-        return this._pushNotificationRepo.find(query)
+        return this._pushRepo.find(query)
     }
 
-    public getById(id: string, query: IQuery): Promise<PushNotification> {
+    public getById(id: string, query: IQuery): Promise<Push> {
         try {
             ObjectIdValidator.validate(id)
             query.addFilter({ _id: id, keep_it: ChoiceTypes.YES })
-            return this._pushNotificationRepo.findOne(query)
+            return this._pushRepo.findOne(query)
         } catch (err) {
             return Promise.reject(err)
         }
@@ -79,46 +76,46 @@ export class PushNotificationService implements IPushNotificationService {
     public remove(id: string): Promise<boolean> {
         try {
             ObjectIdValidator.validate(id)
-            return this._pushNotificationRepo.delete(id)
+            return this._pushRepo.delete(id)
         } catch (err) {
             return Promise.reject(err)
         }
     }
 
-    public update(item: PushNotification): Promise<PushNotification> {
+    public update(item: Push): Promise<Push> {
         throw new Error('Not implemented')
     }
 
     public confirmPushRead(id: string): Promise<boolean> {
         try {
             ObjectIdValidator.validate(id)
-            return this._pushNotificationRepo.updateTokenReadStatus(id, ChoiceTypes.YES)
+            return this._pushRepo.updateTokenReadStatus(id, ChoiceTypes.YES)
         } catch (err) {
             return Promise.reject(err)
         }
     }
 
-    private async sendNotification(notification: PushNotification): Promise<void> {
+    private async sendPush(push: Push): Promise<void> {
         try {
-            const payloads: Array<any> = await this.mountPayloads(notification)
-            for await(const payload of payloads) await this._pushClientRepo.send(payload)
+            const payloads: Array<any> = await this.mountPayloads(push)
+            for await(const payload of payloads) await this._pushRepo.send(payload)
             return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)
         }
     }
 
-    private async mountPayloads(item: PushNotification): Promise<Array<any>> {
+    private async mountPayloads(item: Push): Promise<Array<any>> {
         try {
             const result: Array<any> = []
             // Transform the message from object to json
             const message: any = item.message?.toJSON()
-            // IF the type of notification is direct, the 'to' parameter should be an array of ids
-            if (item.type === NotificationTypes.DIRECT) {
+            // If the type of push is direct, the 'to' parameter should be an array of ids
+            if (item.type === PushTypes.DIRECT) {
                 for await(const owner_id of item.to!) {
                     // Get all push tokens from user, for any type of client
                     const push_tokens: Array<PushToken> = await this._pushTokenRepo.getUserTokens(owner_id)
-                    // Create a notification payload for each push token
+                    // Create a push payload for each push token
                     push_tokens.forEach(push_token => {
                         result.push({
                             token: push_token.token,
@@ -129,7 +126,7 @@ export class PushNotificationService implements IPushNotificationService {
                 return Promise.resolve(result)
             }
 
-            // If the type of notification is topic, the 'to' parameters should be an array of topic names
+            // If the type of push is topic, the 'to' parameters should be an array of topic names
             item.to!.forEach(topic => result.push({
                 topic,
                 data: { type: message.type, body: this.serializePayloadBody(message) }

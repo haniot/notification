@@ -4,7 +4,7 @@ import { IJSONDeserializable } from '../utils/json.deserializable.interface'
 import { PushMessage } from './push.message'
 import { JsonUtils } from '../utils/json.utils'
 
-export class PushNotification extends Entity implements IJSONSerializable, IJSONDeserializable<PushNotification> {
+export class Push extends Entity implements IJSONSerializable, IJSONDeserializable<Push> {
     private _type?: string
     private _keep_it?: string
     private _is_read?: string
@@ -55,7 +55,7 @@ export class PushNotification extends Entity implements IJSONSerializable, IJSON
         this._message = value
     }
 
-    public fromJSON(json: any): PushNotification {
+    public fromJSON(json: any): Push {
         if (!json) return this
 
         if (typeof json === 'string' && JsonUtils.isJsonString(json)) {
@@ -84,7 +84,7 @@ export class PushNotification extends Entity implements IJSONSerializable, IJSON
     }
 }
 
-export enum NotificationTypes {
+export enum PushTypes {
     DIRECT = 'direct',
     TOPIC = 'topic'
 }

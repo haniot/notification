@@ -1,6 +1,6 @@
 import { Entity } from './entity'
 
-export class PushNotificationEntity extends Entity {
+export class PushEntity extends Entity {
     public type?: string
     public keep_it?: string
     public is_read?: string

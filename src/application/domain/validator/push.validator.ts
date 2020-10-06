@@ -1,11 +1,11 @@
-import { NotificationTypes, PushNotification } from '../model/push.notification'
+import { PushTypes, Push } from '../model/push'
 import { ValidationException } from '../exception/validation.exception'
 import { ObjectIdValidator } from './object.id.validator'
 import { EnumValuesValidator } from './enum.values.validator'
 import { ChoiceTypes } from '../utils/choice.types'
 
-export class PushNotificationValidator {
-    public static validate(item: PushNotification): void | ValidationException {
+export class PushValidator {
+    public static validate(item: Push): void | ValidationException {
         let fields: Array<string> = []
 
         const getMessageMissedFields = (key: string, obj: any) => {
@@ -16,7 +16,7 @@ export class PushNotificationValidator {
         }
 
         if (!item.type) fields.push('type')
-        else EnumValuesValidator.validate(item.type, 'type', NotificationTypes)
+        else EnumValuesValidator.validate(item.type, 'type', PushTypes)
         if (!item.keep_it) fields.push('keep_it')
         else EnumValuesValidator.validate(item.keep_it, 'keep_it', ChoiceTypes)
         if (!item.to) fields.push('to')
@@ -27,7 +27,7 @@ export class PushNotificationValidator {
                     'Please enter at least one user id for direct notifications or at least one topic name for topic notifications.'
                 )
             }
-            if (item.type === NotificationTypes.DIRECT) item.to.map(user_id => ObjectIdValidator.validate(user_id))
+            if (item.type === PushTypes.DIRECT) item.to.map(user_id => ObjectIdValidator.validate(user_id))
         }
         if (!item.message) fields.push('message')
         else {
@@ -41,7 +41,7 @@ export class PushNotificationValidator {
         if (fields.length > 0) {
             throw new ValidationException(
                 'Required fields were not provided...',
-                `Push Notification validation: ${fields.join(', ')} required.`)
+                `Push validation: ${fields.join(', ')} required.`)
         }
     }
 }

@@ -2,9 +2,9 @@ import { inject } from 'inversify'
 import { Identifier } from '../../../di/identifiers'
 import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
-import { IPushNotificationService } from '../../port/push.notification.service.interface'
+import { IPushService } from '../../port/push.service.interface'
 import { PushSendEvent } from '../event/push.send.event'
-import { PushNotification } from '../../domain/model/push.notification'
+import { Push } from '../../domain/model/push'
 
 export class PushSendEventHandler implements IIntegrationEventHandler<PushSendEvent> {
     /**
@@ -14,16 +14,16 @@ export class PushSendEventHandler implements IIntegrationEventHandler<PushSendEv
      * @param _logger
      */
     constructor(
-        @inject(Identifier.PUSH_NOTIFICATION_SERVICE) public readonly _pushService: IPushNotificationService,
+        @inject(Identifier.PUSH_SERVICE) public readonly _pushService: IPushService,
         @inject(Identifier.LOGGER) private readonly _logger: ILogger
     ) {
     }
 
     public async handle(event: PushSendEvent): Promise<void> {
         try {
-            const push: PushNotification = new PushNotification().fromJSON(event.push)
+            const push: Push = new Push().fromJSON(event.push)
 
-            // 1. Validate and send notification
+            // 1. Validate and send push
             await this._pushService.send(push)
 
             // 3. If got here, it's because the action was successful.

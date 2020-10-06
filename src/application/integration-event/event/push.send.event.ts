@@ -1,12 +1,12 @@
 import { EventType, IntegrationEvent } from './integration.event'
-import { PushNotification } from '../../domain/model/push.notification'
+import { Push } from '../../domain/model/push'
 
-export class PushSendEvent extends IntegrationEvent<PushNotification> {
+export class PushSendEvent extends IntegrationEvent<Push> {
 
     public static readonly ROUTING_KEY: string = 'pushes.send'
     public static readonly NAME: string = 'PushSendEvent'
 
-    constructor(public timestamp?: Date, public push?: PushNotification) {
+    constructor(public timestamp?: Date, public push?: Push) {
         super(PushSendEvent.NAME, EventType.PUSH, timestamp)
     }
 

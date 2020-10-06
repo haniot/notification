@@ -1,54 +1,47 @@
-import HttpStatus from 'http-status-codes'
-import { IPushClientRepository } from '../../application/port/push.client.repository.interface'
-import { injectable } from 'inversify'
-import * as admin from 'firebase-admin'
-import fs from 'fs'
-import { Strings } from '../../utils/strings'
+import { BaseRepository } from './base/base.repository'
+import { Push } from '../../application/domain/model/push'
+import { PushEntity } from '../entity/push.entity'
+import { IPushRepository } from '../../application/port/push.repository.interface'
+import { inject, injectable } from 'inversify'
+import { Identifier } from '../../di/identifiers'
+import { ILogger } from '../../utils/custom.logger'
+import { IConnectionFirebase } from '../port/connection.firebase.interface'
 import { FirebaseClientException } from '../../application/domain/exception/firebase.client.exception'
-
+import HttpStatus from 'http-status-codes'
+import { Strings } from '../../utils/strings'
 
 @injectable()
-export class PushClientRepository implements IPushClientRepository {
-    protected _firebase_admin?: any
+export class PushRepository extends BaseRepository<Push, PushEntity> implements IPushRepository {
+
+    constructor(
+        @inject(Identifier.PUSH_REPO_MODEL) readonly _model: any,
+        @inject(Identifier.PUSH_ENTITY_MAPPER) readonly _mapper: any,
+        @inject(Identifier.LOGGER) readonly _logger: ILogger,
+        @inject(Identifier.FIREBASE_CONNECTION) readonly _firebase: IConnectionFirebase
+    ) {
+        super(_model, _mapper, _logger)
+    }
+
+    public updateTokenReadStatus(id: string, is_read: string): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            this._model.findOneAndUpdate({ _id: id }, { $set: { is_read } })
+                .then(res => resolve(!!res))
+                .catch(err => reject(super.mongoDBErrorListener(err)))
+        })
+    }
 
     public send(payload: any): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            this._firebase_admin.messaging().send(payload)
+            this._firebase.firebase_admin.messaging().send(payload)
                 .then(res => resolve(!!res))
                 .catch(err => reject(this.firebaseAdminErrorListener(err)))
         })
     }
 
-    public async run(): Promise<void> {
-        try {
-            const google_app_credentials_path = process.env.GOOGLE_APPLICATION_CREDENTIALS
-            if (!google_app_credentials_path) {
-                throw new Error('The Google Application Credentials path is required!')
-            }
-            const credentials_file: any = await this.readJSONFile(google_app_credentials_path)
-            this._firebase_admin = await admin.initializeApp({
-                credential: admin.credential.cert(credentials_file)
-            })
-            return Promise.resolve()
-        } catch (err) {
-            return Promise.reject(this.firebaseAdminErrorListener(err))
-        }
-    }
-
-    private async readJSONFile(path: string): Promise<any> {
-        try {
-            const file: any = await fs.readFileSync(path)
-            return Promise.resolve(JSON.parse(file))
-        } catch (err) {
-            return Promise.reject(err)
-        }
-    }
-
     /*
     * Firebase Admin Sdk errors. For more information, consult the reference:
-    * https://firebase.google.com/docs/cloud-messaging/send-message?hl=pt-br
+    * https://firebase.google.com/docs/cloud-messaging/send-message?hl=pt-br#admin
     */
-
     private firebaseAdminErrorListener(err: any, recipient?: string) {
         if (err.errorInfo) {
             const info: any = err.errorInfo

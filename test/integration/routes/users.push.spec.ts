@@ -4,9 +4,9 @@ import { Identifier } from '../../../src/di/identifiers'
 import { App } from '../../../src/app'
 import { Config } from '../../../src/utils/config'
 import { DatabaseUtils } from '../../utils/database.utils'
-import { NotificationTypes, PushNotification } from '../../../src/application/domain/model/push.notification'
-import { PushNotificationMock } from '../../mocks/push.notification.mock'
-import { PushNotificationRepoModel } from '../../../src/infrastructure/database/schema/push.notification.schema'
+import { PushTypes, Push } from '../../../src/application/domain/model/push'
+import { PushMock } from '../../mocks/push.mock'
+import { PushRepoModel } from '../../../src/infrastructure/database/schema/push.schema'
 import { expect } from 'chai'
 import { GeneratorMock } from '../../mocks/generator.mock'
 
@@ -15,15 +15,14 @@ const app: App = DIContainer.get(Identifier.APP)
 const request = require('supertest')(app.getExpress())
 
 describe('Routes: Push', () => {
-    const direct_notification: PushNotification =
-        new PushNotificationMock(NotificationTypes.DIRECT, [GeneratorMock.generateObjectId()])
+    const direct_push: Push = new PushMock(PushTypes.DIRECT, [GeneratorMock.generateObjectId()])
 
     before(async () => {
             try {
                 const mongoConfigs = Config.getMongoConfig()
                 await dbConnection.tryConnect(mongoConfigs.uri, mongoConfigs.options)
-                await DatabaseUtils.deleteMany(PushNotificationRepoModel)
-                await DatabaseUtils.create(PushNotificationRepoModel, direct_notification.toJSON())
+                await DatabaseUtils.deleteMany(PushRepoModel)
+                await DatabaseUtils.create(PushRepoModel, direct_push.toJSON())
             } catch (err) {
                 throw new Error('Failure on UsersPushTokens test: ' + err.message)
             }
@@ -32,7 +31,7 @@ describe('Routes: Push', () => {
 
     after(async () => {
         try {
-            await DatabaseUtils.deleteMany(PushNotificationRepoModel)
+            await DatabaseUtils.deleteMany(PushRepoModel)
             await dbConnection.dispose()
         } catch (err) {
             throw new Error('Failure on UsersPushTokens test: ' + err.message)
@@ -43,7 +42,7 @@ describe('Routes: Push', () => {
         context('when get the saved push notifications from user', () => {
             it('should return status code 200 and a list of push notifications', () => {
                 return request
-                    .get(`/v1/users/${direct_notification.to![0]}/push`)
+                    .get(`/v1/users/${direct_push.to![0]}/push`)
                     .set('Content-Type', 'application/json')
                     .expect(200)
                     .then(res => {

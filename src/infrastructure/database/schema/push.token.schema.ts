@@ -3,7 +3,7 @@ import Mongoose from 'mongoose'
 interface IPushTokenModel extends Mongoose.Document {
 }
 
-const schema: any = {
+const pushTokenSchema: any = {
     user_id: String,
     client_type: String,
     token: String
@@ -21,4 +21,4 @@ const options: any = {
     }
 }
 
-export const PushTokenRepoModel = Mongoose.model<IPushTokenModel>('PushToken', new Mongoose.Schema(schema, options))
+export const PushTokenRepoModel = Mongoose.model<IPushTokenModel>('PushToken', new Mongoose.Schema(pushTokenSchema, options))

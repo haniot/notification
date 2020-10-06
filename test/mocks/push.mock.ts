@@ -1,9 +1,9 @@
-import { NotificationTypes, PushNotification } from '../../src/application/domain/model/push.notification'
+import { PushTypes, Push } from '../../src/application/domain/model/push'
 import { GeneratorMock } from './generator.mock'
 import { ChoiceTypes } from '../../src/application/domain/utils/choice.types'
 import { PushMessage } from '../../src/application/domain/model/push.message'
 
-export class PushNotificationMock extends PushNotification {
+export class PushMock extends Push {
     constructor(type: string, to?: Array<string>) {
         super()
         this.type = type
@@ -13,7 +13,7 @@ export class PushNotificationMock extends PushNotification {
 
     private setDefaultValues() {
         super.id = GeneratorMock.generateObjectId()
-        this.keep_it = this.type === NotificationTypes.DIRECT ? ChoiceTypes.YES : ChoiceTypes.NO
+        this.keep_it = this.type === PushTypes.DIRECT ? ChoiceTypes.YES : ChoiceTypes.NO
         if (this.keep_it === ChoiceTypes.YES) this.is_read = ChoiceTypes.NO
         this.message = new PushMessage().fromJSON({
             type: 'notification-type',

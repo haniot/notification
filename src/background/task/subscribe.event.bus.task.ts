@@ -127,7 +127,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
          */
         this._eventBus
             .subscribe(new PushSendEvent(),
-                new PushSendEventHandler(DIContainer.get(Identifier.PUSH_NOTIFICATION_SERVICE), this._logger),
+                new PushSendEventHandler(DIContainer.get(Identifier.PUSH_SERVICE), this._logger),
                 PushSendEvent.ROUTING_KEY)
             .then((result: boolean) => {
                 if (result) this._logger.info('Subscribe in PushSendEvent successful!')
