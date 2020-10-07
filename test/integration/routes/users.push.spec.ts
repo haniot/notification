@@ -5,7 +5,7 @@ import { App } from '../../../src/app'
 import { Config } from '../../../src/utils/config'
 import { DatabaseUtils } from '../../utils/database.utils'
 import { PushTypes, Push } from '../../../src/application/domain/model/push'
-import { PushMock } from '../../mocks/push.mock'
+import { PushMock } from '../../mocks/models/push.mock'
 import { PushRepoModel } from '../../../src/infrastructure/database/schema/push.schema'
 import { expect } from 'chai'
 import { GeneratorMock } from '../../mocks/generator.mock'
@@ -15,7 +15,7 @@ const app: App = DIContainer.get(Identifier.APP)
 const request = require('supertest')(app.getExpress())
 
 describe('Routes: Push', () => {
-    const direct_push: Push = new PushMock(PushTypes.DIRECT, [GeneratorMock.generateObjectId()])
+    const direct_push: Push = new PushMock().generate(PushTypes.DIRECT, [GeneratorMock.generateObjectId()])
 
     before(async () => {
             try {

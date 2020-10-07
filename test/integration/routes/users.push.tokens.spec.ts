@@ -5,7 +5,7 @@ import { App } from '../../../src/app'
 import { Config } from '../../../src/utils/config'
 import { DatabaseUtils } from '../../utils/database.utils'
 import { PushTokenRepoModel } from '../../../src/infrastructure/database/schema/push.token.schema'
-import { PushTokenMock } from '../../mocks/push.token.mock'
+import { PushTokenMock } from '../../mocks/models/push.token.mock'
 import { PushToken, PushTokenClientTypes } from '../../../src/application/domain/model/push.token'
 import { expect } from 'chai'
 import { Strings } from '../../../src/utils/strings'
@@ -16,8 +16,8 @@ const app: App = DIContainer.get(Identifier.APP)
 const request = require('supertest')(app.getExpress())
 
 describe('Routes: UsersPushTokens', () => {
-    const mobile_push_token: PushToken = new PushTokenMock(PushTokenClientTypes.MOBILE)
-    const web_push_token: PushToken = new PushTokenMock(PushTokenClientTypes.WEB)
+    const mobile_push_token: PushToken = new PushTokenMock().generate(PushTokenClientTypes.MOBILE)
+    const web_push_token: PushToken = new PushTokenMock().generate(PushTokenClientTypes.WEB)
 
     before(async () => {
             try {

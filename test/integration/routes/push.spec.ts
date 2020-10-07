@@ -6,9 +6,9 @@ import { Config } from '../../../src/utils/config'
 import { DatabaseUtils } from '../../utils/database.utils'
 import { PushTokenRepoModel } from '../../../src/infrastructure/database/schema/push.token.schema'
 import { PushTypes, Push } from '../../../src/application/domain/model/push'
-import { PushMock } from '../../mocks/push.mock'
+import { PushMock } from '../../mocks/models/push.mock'
 import { PushToken, PushTokenClientTypes } from '../../../src/application/domain/model/push.token'
-import { PushTokenMock } from '../../mocks/push.token.mock'
+import { PushTokenMock } from '../../mocks/models/push.token.mock'
 import { PushRepoModel } from '../../../src/infrastructure/database/schema/push.schema'
 import { expect } from 'chai'
 import { GeneratorMock } from '../../mocks/generator.mock'
@@ -18,8 +18,8 @@ const app: App = DIContainer.get(Identifier.APP)
 const request = require('supertest')(app.getExpress())
 
 describe('Routes: Push', () => {
-    const direct_push: Push = new PushMock(PushTypes.DIRECT)
-    const push_token: PushToken = new PushTokenMock(PushTokenClientTypes.MOBILE)
+    const direct_push: Push = new PushMock().generate(PushTypes.DIRECT)
+    const push_token: PushToken = new PushTokenMock().generate(PushTokenClientTypes.MOBILE)
 
     before(async () => {
             try {
