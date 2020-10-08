@@ -2,7 +2,7 @@ import { IPushTokenService } from '../port/push.token.service.interface'
 import { inject, injectable } from 'inversify'
 import { Identifier } from '../../di/identifiers'
 import { IPushTokenRepository } from '../port/push.token.repository.interface'
-import { PushToken, PushTokenClientTypes } from '../domain/model/push.token'
+import { PushToken } from '../domain/model/push.token'
 import { PushTokenValidator } from '../domain/validator/push.token.validator'
 import { ObjectIdValidator } from '../domain/validator/object.id.validator'
 import { PushTokenClientTypesValidator } from '../domain/validator/push.token.client.types.validator'
@@ -14,16 +14,12 @@ export class PushTokenService implements IPushTokenService {
     ) {
     }
 
-    public async findFromUser(userId: string): Promise<any> {
+    public async findFromUserAndType(userId: string, clientType: string): Promise<PushToken> {
         try {
             ObjectIdValidator.validate(userId)
-            const web_token: PushToken = await this._pushTokenRepo.findFromUser(userId, PushTokenClientTypes.WEB)
-            const mobile_token: PushToken = await this._pushTokenRepo.findFromUser(userId, PushTokenClientTypes.MOBILE)
-            if ((!web_token || !web_token.token) && (!mobile_token || !mobile_token.token)) return Promise.resolve(undefined)
-            return Promise.resolve({
-                web_token: web_token && web_token.token ? web_token.token : undefined,
-                mobile_token: mobile_token && mobile_token.token ? mobile_token.token : undefined
-            })
+            PushTokenClientTypesValidator.validate(clientType)
+            const result: PushToken = await this._pushTokenRepo.findFromUserAndType(userId, clientType)
+            return Promise.resolve(result)
         } catch (err) {
             return Promise.reject(err)
         }

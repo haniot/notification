@@ -7,7 +7,7 @@ import { ApiExceptionManager } from '../exception/api.exception.manager'
 import { ApiException } from '../exception/api.exception'
 import { Strings } from '../../utils/strings'
 import { IPushTokenService } from '../../application/port/push.token.service.interface'
-import { PushToken } from '../../application/domain/model/push.token'
+import { PushToken, PushTokenClientTypes } from '../../application/domain/model/push.token'
 
 @controller('/v1/users/:user_id/push')
 export class UsersPushTokensController {
@@ -20,8 +20,15 @@ export class UsersPushTokensController {
     @httpGet('/tokens')
     public async getPushTokensFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
-            const result: any = await this._pushTokenService.findFromUser(req.params.user_id)
-            if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
+            const resultWebToken: PushToken =
+                await this._pushTokenService.findFromUserAndType(req.params.user_id, PushTokenClientTypes.WEB)
+            const resultMobileToken: PushToken =
+                await this._pushTokenService.findFromUserAndType(req.params.user_id, PushTokenClientTypes.MOBILE)
+
+            const result = {
+                web_token: resultWebToken && resultWebToken.token ? resultWebToken.token : '',
+                mobile_token: resultMobileToken && resultMobileToken.token ? resultMobileToken.token : ''
+            }
             return res.status(HttpStatus.OK).send(result)
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)

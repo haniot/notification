@@ -1,7 +1,7 @@
 import { PushToken } from '../domain/model/push.token'
 
 export interface IPushTokenService {
-    findFromUser(userId: string): Promise<any>
+    findFromUserAndType(userId: string, clientType: string): Promise<PushToken>
 
     createOrUpdate(item: PushToken): Promise<PushToken>
 

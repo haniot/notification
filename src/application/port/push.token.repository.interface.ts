@@ -4,7 +4,7 @@ import { PushToken } from '../domain/model/push.token'
 export interface IPushTokenRepository extends IRepository<PushToken> {
     getUserTokens(userId: string): Promise<Array<PushToken>>
 
-    findFromUser(userId: string, clientType: string): Promise<PushToken>
+    findFromUserAndType(userId: string, clientType: string): Promise<PushToken>
 
     createOrUpdate(item: PushToken): Promise<PushToken>
 

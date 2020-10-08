@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 import { EventType } from '../../../src/application/integration-event/event/integration.event'
-import { Push } from '../../../src/application/domain/model/push'
+import { Push, PushTypes } from '../../../src/application/domain/model/push'
 import { PushMock } from '../../mocks/models/push.mock'
 import { PushSendEvent } from '../../../src/application/integration-event/event/push.send.event'
 
@@ -8,7 +8,7 @@ describe('EVENTS: PushSendEvent', () => {
     describe('toJSON()', () => {
         context('when toJSON() is executed', () => {
             it('should return a JSON from a complete PushSendEvent', () => {
-                const push: Push = new PushMock().generate()
+                const push: Push = new PushMock().generate(PushTypes.DIRECT)
                 const timestamp: Date = new Date()
                 const pushSendEvent: PushSendEvent = new PushSendEvent(timestamp, push)
                 const result: any = pushSendEvent.toJSON()

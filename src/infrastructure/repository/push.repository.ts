@@ -1,5 +1,5 @@
 import { BaseRepository } from './base/base.repository'
-import { Push } from '../../application/domain/model/push'
+import { Push, PushTypes } from '../../application/domain/model/push'
 import { PushEntity } from '../entity/push.entity'
 import { IPushRepository } from '../../application/port/push.repository.interface'
 import { inject, injectable } from 'inversify'
@@ -9,6 +9,8 @@ import { IConnectionFirebase } from '../port/connection.firebase.interface'
 import { FirebaseClientException } from '../../application/domain/exception/firebase.client.exception'
 import HttpStatus from 'http-status-codes'
 import { Strings } from '../../utils/strings'
+import { PushToken } from '../../application/domain/model/push.token'
+import { IPushTokenRepository } from '../../application/port/push.token.repository.interface'
 
 @injectable()
 export class PushRepository extends BaseRepository<Push, PushEntity> implements IPushRepository {
@@ -17,6 +19,7 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
         @inject(Identifier.PUSH_REPO_MODEL) readonly _model: any,
         @inject(Identifier.PUSH_ENTITY_MAPPER) readonly _mapper: any,
         @inject(Identifier.LOGGER) readonly _logger: ILogger,
+        @inject(Identifier.PUSH_TOKEN_REPOSITORY) readonly _pushTokenRepo: IPushTokenRepository,
         @inject(Identifier.FIREBASE_CONNECTION) readonly _firebase: IConnectionFirebase
     ) {
         super(_model, _mapper, _logger)
@@ -30,11 +33,60 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
         })
     }
 
-    public send(payload: any): Promise<boolean> {
+    public async send(push: Push): Promise<void> {
+        try {
+            const payloads: Array<any> = await this.mountPayloads(push)
+            for await(const payload of payloads) await this.sendPayload(payload)
+            return Promise.resolve()
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
+    private sendPayload(payload: any): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             this._firebase.firebase_admin.messaging().send(payload)
                 .then(res => resolve(!!res))
                 .catch(err => reject(this.firebaseAdminErrorListener(err)))
+        })
+    }
+
+    private async mountPayloads(item: Push): Promise<Array<any>> {
+        try {
+            const result: Array<any> = []
+            // Transform the message from object to json
+            const message: any = item.message?.toJSON()
+            // If the type of push is direct, the 'to' parameter should be an array of ids
+            if (item.type === PushTypes.DIRECT) {
+                for await(const owner_id of item.to!) {
+                    // Get all push tokens from user, for any type of client
+                    const push_tokens: Array<PushToken> = await this._pushTokenRepo.getUserTokens(owner_id)
+                    // Create a push payload for each push token
+                    push_tokens.forEach(push_token => {
+                        result.push({
+                            token: push_token.token,
+                            data: { type: message.type, body: this.serializePayloadBody(message) }
+                        })
+                    })
+                }
+                return Promise.resolve(result)
+            }
+
+            // If the type of push is topic, the 'to' parameters should be an array of topic names
+            item.to!.forEach(topic => result.push({
+                topic,
+                data: { type: message.type, body: this.serializePayloadBody(message) }
+            }))
+            return Promise.resolve(result)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
+    private serializePayloadBody(payload: any): any {
+        return JSON.stringify({
+            pt: payload.pt,
+            eng: payload.eng
         })
     }
 

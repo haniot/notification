@@ -36,7 +36,7 @@ export class PushService implements IPushService {
                 }
             }
             // Await mount the payload and send the push
-            await this.sendPush(item)
+            await this._pushRepo.send(item)
 
             // If the push is of the direct type and is to be maintained, save it in the database
             if (item.type === PushTypes.DIRECT && item.keep_it === ChoiceTypes.YES) {
@@ -94,54 +94,4 @@ export class PushService implements IPushService {
             return Promise.reject(err)
         }
     }
-
-    private async sendPush(push: Push): Promise<void> {
-        try {
-            const payloads: Array<any> = await this.mountPayloads(push)
-            for await(const payload of payloads) await this._pushRepo.send(payload)
-            return Promise.resolve()
-        } catch (err) {
-            return Promise.reject(err)
-        }
-    }
-
-    private async mountPayloads(item: Push): Promise<Array<any>> {
-        try {
-            const result: Array<any> = []
-            // Transform the message from object to json
-            const message: any = item.message?.toJSON()
-            // If the type of push is direct, the 'to' parameter should be an array of ids
-            if (item.type === PushTypes.DIRECT) {
-                for await(const owner_id of item.to!) {
-                    // Get all push tokens from user, for any type of client
-                    const push_tokens: Array<PushToken> = await this._pushTokenRepo.getUserTokens(owner_id)
-                    // Create a push payload for each push token
-                    push_tokens.forEach(push_token => {
-                        result.push({
-                            token: push_token.token,
-                            data: { type: message.type, body: this.serializePayloadBody(message) }
-                        })
-                    })
-                }
-                return Promise.resolve(result)
-            }
-
-            // If the type of push is topic, the 'to' parameters should be an array of topic names
-            item.to!.forEach(topic => result.push({
-                topic,
-                data: { type: message.type, body: this.serializePayloadBody(message) }
-            }))
-            return Promise.resolve(result)
-        } catch (err) {
-            return Promise.reject(err)
-        }
-    }
-
-    private serializePayloadBody(payload: any): any {
-        return JSON.stringify({
-            pt: payload.pt,
-            eng: payload.eng
-        })
-    }
-
 }

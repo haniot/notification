@@ -41,7 +41,7 @@ export class PushTokenRepository extends BaseRepository<PushToken, PushTokenEnti
         })
     }
 
-    public findFromUser(userId: string, clientType: string): Promise<PushToken> {
+    public findFromUserAndType(userId: string, clientType: string): Promise<PushToken> {
         return super.findOne(new Query().fromJSON({ filters: { user_id: userId, client_type: clientType } }))
     }
 

@@ -180,10 +180,10 @@ describe('Routes: UsersPushTokens', () => {
                 return request
                     .get(`/v1/users/${GeneratorMock.generateObjectId()}/push/tokens`)
                     .set('Content-Type', 'application/json')
-                    .expect(404)
+                    .expect(200)
                     .then(res => {
-                        expect(res.body).to.have.property('message', Strings.PUSH_TOKEN.NOT_FOUND)
-                        expect(res.body).to.have.property('description', Strings.PUSH_TOKEN.NOT_FOUND_DESCRIPTION)
+                        expect(res.body).to.have.property('web_token', '')
+                        expect(res.body).to.have.property('mobile_token', '')
                     })
             })
         })
