@@ -12,6 +12,7 @@ import { PushTokenMock } from '../../mocks/models/push.token.mock'
 import { PushRepoModel } from '../../../src/infrastructure/database/schema/push.schema'
 import { expect } from 'chai'
 import { GeneratorMock } from '../../mocks/generator.mock'
+import { Strings } from '../../../src/utils/strings'
 
 const dbConnection: IConnectionDB = DIContainer.get(Identifier.MONGODB_CONNECTION)
 const app: App = DIContainer.get(Identifier.APP)
@@ -54,9 +55,9 @@ describe('Routes: Push', () => {
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .then(res => {
-                        expect(res.body).to.have.property('message', 'Required fields were not provided...')
-                        expect(res.body).to.have.property('description',
-                            'Push validation: type, keep_it, to, message required.')
+                        expect(res.body).to.have.property('message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
+                        expect(res.body).to.have.property('description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
+                            .replace('{0}', 'type, keep_it, to, message'))
                     })
             })
 

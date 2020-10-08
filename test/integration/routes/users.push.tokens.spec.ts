@@ -113,9 +113,9 @@ describe('Routes: UsersPushTokens', () => {
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .then(res => {
-                        expect(res.body).to.have.property('message', 'Some ID provided does not have a valid format!')
+                        expect(res.body).to.have.property('message', Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
                         expect(res.body).to.have.property('description',
-                            'A 24-byte hex ID similar to this: 507f191e810c19729de860ea is expected.')
+                            Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
                     })
             })
 
@@ -128,9 +128,9 @@ describe('Routes: UsersPushTokens', () => {
                     .expect(400)
                     .then(res => {
                         expect(res.body).to.have.property('message',
-                            `${Strings.ERROR_MESSAGE.NOT_MAPPED.replace('{0}', 'client_type')} tablet`)
+                            `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} tablet`)
                         expect(res.body).to.have.property('description',
-                            `${Strings.ERROR_MESSAGE.NOT_MAPPED_DESC} ${values.join(', ')}.`)
+                            `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${values.join(', ')}.`)
                     })
             })
 
@@ -141,9 +141,9 @@ describe('Routes: UsersPushTokens', () => {
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .then(res => {
-                        expect(res.body).to.have.property('message', 'Required fields were not provided...')
-                        expect(res.body).to.have.property('description',
-                            'Push Token Validation: token required!')
+                        expect(res.body).to.have.property('message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
+                        expect(res.body).to.have.property('description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
+                            .replace('{0}', 'token'))
                     })
             })
         })
@@ -195,9 +195,9 @@ describe('Routes: UsersPushTokens', () => {
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .then(res => {
-                        expect(res.body).to.have.property('message', 'Some ID provided does not have a valid format!')
+                        expect(res.body).to.have.property('message', Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
                         expect(res.body).to.have.property('description',
-                            'A 24-byte hex ID similar to this: 507f191e810c19729de860ea is expected.')
+                            Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
                     })
             })
         })
@@ -247,9 +247,9 @@ describe('Routes: UsersPushTokens', () => {
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .then(res => {
-                        expect(res.body).to.have.property('message', 'Some ID provided does not have a valid format!')
+                        expect(res.body).to.have.property('message', Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
                         expect(res.body).to.have.property('description',
-                            'A 24-byte hex ID similar to this: 507f191e810c19729de860ea is expected.')
+                            Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
                     })
             })
 
@@ -261,9 +261,9 @@ describe('Routes: UsersPushTokens', () => {
                     .expect(400)
                     .then(res => {
                         expect(res.body).to.have.property('message',
-                            `${Strings.ERROR_MESSAGE.NOT_MAPPED.replace('{0}', 'client_type')} tablet`)
+                            `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} tablet`)
                         expect(res.body).to.have.property('description',
-                            `${Strings.ERROR_MESSAGE.NOT_MAPPED_DESC} ${values.join(', ')}.`)
+                            `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${values.join(', ')}.`)
                     })
             })
         })

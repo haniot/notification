@@ -12,6 +12,7 @@ export interface IConnectionFirebaseFactory {
 }
 
 export interface IFirebaseOptions {
+    credentialsFilePath: string
 }
 
 export interface IEventBusOptions {

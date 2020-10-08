@@ -12,7 +12,9 @@ export class ConnectionFactoryFirebase implements IConnectionFirebaseFactory {
      */
     public createInstance(options: IFirebaseOptions): Promise<admin.app.App> {
         try {
-            return Promise.resolve(admin.initializeApp(options))
+            return Promise.resolve(admin.initializeApp({
+                credential: admin.credential.cert(options.credentialsFilePath)
+            }))
         } catch (err) {
             return Promise.reject(err)
         }

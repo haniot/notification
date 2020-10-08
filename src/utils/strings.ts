@@ -31,16 +31,21 @@ export abstract class Strings {
         NOT_FOUND_DESCRIPTION: 'Email template not found or already removed. A new operation for the same resource is not required.'
     }
 
-
     public static readonly ERROR_MESSAGE: any = {
-        NOT_MAPPED: 'Value not mapped for {0}:',
-        NOT_MAPPED_DESC: 'The mapped values are:',
         REQUEST_BODY_INVALID: 'Unable to process request body!',
         REQUEST_BODY_INVALID_DESC: 'Please verify that the JSON provided in the request body has a valid format and try again.',
         ENDPOINT_NOT_FOUND: 'Endpoint {0} does not found!',
-        UNEXPECTED: 'An unexpected error has occurred. Please try again later...',
-        UUID_NOT_VALID_FORMAT: 'Some ID provided does not have a valid format!',
-        UUID_NOT_VALID_FORMAT_DESC: 'A 24-byte hex ID similar to this: 507f191e810c19729de860ea is expected.'
+        VALIDATE: {
+            REQUIRED_FIELDS: 'Required fields were not provided...',
+            REQUIRED_FIELDS_DESC: '{0} are required!',
+            UUID_NOT_VALID_FORMAT: 'Some ID provided does not have a valid format!',
+            UUID_NOT_VALID_FORMAT_DESC: 'A 24-byte hex ID similar to this: 507f191e810c19729de860ea is expected.',
+            INVALID_FIELDS: 'One or more request fields are invalid...',
+            INVALID_STRING: '{0} must be a string!',
+            EMPTY_STRING: '{0} must have at least one character!',
+            NOT_MAPPED: 'Value not mapped for {0}:',
+            NOT_MAPPED_DESC: 'The mapped values are:',
+        }
     }
 
     public static readonly FIREBASE_ADMIN_ERROR: any = {

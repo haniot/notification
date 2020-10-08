@@ -6,7 +6,6 @@ import {
     IFirebaseOptions,
     ISSL
 } from '../infrastructure/port/connection.factory.interface'
-import * as admin from 'firebase-admin'
 
 export abstract class Config {
 
@@ -43,18 +42,17 @@ export abstract class Config {
      *     }
      * }
      */
-    public static async getFirebaseConfig(): Promise<IFirebaseConfig> {
+    public static getFirebaseConfig(): IFirebaseConfig {
         const google_app_credentials_path = process.env.GOOGLE_APPLICATION_CREDENTIALS
         if (!google_app_credentials_path) {
             throw new Error('The Google Application Credentials path is required!')
         }
-        const credentials_file: any = await this.readJSONFile(google_app_credentials_path)
-
-        return Promise.resolve({
+        const credentials_file: any = this.readJSONFile(google_app_credentials_path)
+        return {
             options: {
-                credential: admin.credential.cert(credentials_file)
+                credentialsFilePath: credentials_file
             } as IFirebaseOptions
-        } as IFirebaseConfig)
+        } as IFirebaseConfig
     }
 
     /**
@@ -63,12 +61,12 @@ export abstract class Config {
      * @param path Content path to convert to JSON.
      * @return {Promise<any>}
      */
-    private static async readJSONFile(path: string): Promise<any> {
+    private static readJSONFile(path: string): any {
         try {
-            const file: any = await fs.readFileSync(path)
-            return Promise.resolve(JSON.parse(file))
+            const file: any = fs.readFileSync(path)
+            return JSON.parse(file)
         } catch (err) {
-            return Promise.reject(err)
+            throw err
         }
     }
 

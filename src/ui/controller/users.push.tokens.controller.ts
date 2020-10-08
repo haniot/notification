@@ -26,8 +26,8 @@ export class UsersPushTokensController {
                 await this._pushTokenService.findFromUserAndType(req.params.user_id, PushTokenClientTypes.MOBILE)
 
             const result = {
-                web_token: resultWebToken && resultWebToken.token ? resultWebToken.token : '',
-                mobile_token: resultMobileToken && resultMobileToken.token ? resultMobileToken.token : ''
+                web_token: resultWebToken?.token ? resultWebToken.token : '',
+                mobile_token: resultMobileToken?.token ? resultMobileToken.token : ''
             }
             return res.status(HttpStatus.OK).send(result)
         } catch (err) {

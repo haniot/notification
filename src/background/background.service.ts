@@ -28,8 +28,8 @@ export class BackgroundService {
             await this._mongodb.tryConnect(dbConfigs.uri, dbConfigs.options)
 
             // Initializes the Firebase SDK.
-            const firebaseConfigs = await Config.getFirebaseConfig()
-            await this._firebase.open(firebaseConfigs)
+            const firebaseConfigs = Config.getFirebaseConfig()
+            await this._firebase.open(firebaseConfigs.options)
 
             // Opens RabbitMQ connection to perform tasks
             this._startTasks()

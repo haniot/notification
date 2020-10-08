@@ -8,8 +8,8 @@ export class EmailTemplateTypesValidator {
 
         if (!(types.includes(type))) {
             throw new ValidationException(
-                `${Strings.ERROR_MESSAGE.NOT_MAPPED.replace('{0}', 'type')} ${type}`,
-                `${Strings.ERROR_MESSAGE.NOT_MAPPED_DESC} ${types.join(', ')}.`
+                `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} ${type}`,
+                `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${types.join(', ')}.`
                 )
         }
     }

@@ -6,8 +6,8 @@ export class EnumValuesValidator {
         const values: Array<string> = Object.values(enumerate)
         if (!(values.includes(item))) {
             throw new ValidationException(
-                `${Strings.ERROR_MESSAGE.NOT_MAPPED.replace('{0}', key)} ${item}`,
-                `${Strings.ERROR_MESSAGE.NOT_MAPPED_DESC} ${values.join(', ')}.`
+                `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', key)} ${item}`,
+                `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${values.join(', ')}.`
             )
         }
     }

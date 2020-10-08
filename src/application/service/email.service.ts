@@ -42,7 +42,7 @@ export class EmailService implements IEmailService {
 
     public async getByIdAndFromUser(emailId: string, userId: string, query: IQuery): Promise<Email> {
         try {
-            ObjectIdValidator.validate(emailId, Strings.ERROR_MESSAGE.UUID_NOT_VALID_FORMAT)
+            ObjectIdValidator.validate(emailId, Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT)
             ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
 
             query.addFilter({ _id: emailId, user_id: userId })
