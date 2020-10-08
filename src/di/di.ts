@@ -5,7 +5,7 @@ import { Identifier } from './identifiers'
 import { EmailEntity } from '../infrastructure/entity/email.entity'
 import { IEntityMapper } from '../infrastructure/port/entity.mapper.interface'
 import { IConnectionDB } from '../infrastructure/port/connection.db.interface'
-import { IConnectionFactory } from '../infrastructure/port/connection.factory.interface'
+import { IConnectionFactory, IConnectionFirebaseFactory } from '../infrastructure/port/connection.factory.interface'
 import { BackgroundService } from '../background/background.service'
 import { App } from '../app'
 import { CustomLogger, ILogger } from '../utils/custom.logger'
@@ -52,6 +52,7 @@ import { PushEntity } from '../infrastructure/entity/push.entity'
 import { PushEntityMapper } from '../infrastructure/entity/mapper/push.entity.mapper'
 import { IConnectionFirebase } from '../infrastructure/port/connection.firebase.interface'
 import { ConnectionFirebase } from '../infrastructure/firebase/connection.firebase'
+import { ConnectionFactoryFirebase } from '../infrastructure/firebase/connection.factory.firebase'
 
 class IoC {
     private readonly _container: Container
@@ -136,6 +137,9 @@ class IoC {
         this._container
             .bind<IConnectionDB>(Identifier.MONGODB_CONNECTION)
             .to(ConnectionMongodb).inSingletonScope()
+        this._container
+            .bind<IConnectionFirebaseFactory>(Identifier.FIREBASE_CONNECTION_FACTORY)
+            .to(ConnectionFactoryFirebase).inSingletonScope()
         this._container
             .bind<IConnectionFirebase>(Identifier.FIREBASE_CONNECTION)
             .to(ConnectionFirebase).inSingletonScope()

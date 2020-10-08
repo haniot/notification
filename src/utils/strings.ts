@@ -62,6 +62,8 @@ export abstract class Strings {
         AUTHENTICATION_ERROR_DESC: 'Please verify your SDK credentials and try again.',
         SERVER_UNAVAILABLE: 'The FCM Server is unavailable now. PLease try again later.',
         INTERNAL_ERROR: 'The FCM server encountered an error while trying to process the request. Please try again later.',
+        INVALID_CREDENTIALS: 'Failed to determine the project ID. ' +
+            'Please verify that Google Application Credentials has been configured correctly.',
         UNKNOWN_ERROR: 'An unknown error has occurred. Please try again later.'
     }
 }

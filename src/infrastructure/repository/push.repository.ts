@@ -45,7 +45,7 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
 
     private sendPayload(payload: any): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            this._firebase.firebase_admin.messaging().send(payload)
+            this._firebase.connection.messaging().send(payload)
                 .then(res => resolve(!!res))
                 .catch(err => reject(this.firebaseAdminErrorListener(err)))
         })
@@ -97,7 +97,7 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
     private firebaseAdminErrorListener(err: any, recipient?: string) {
         if (err.errorInfo) {
             const info: any = err.errorInfo
-            return {
+            const errorLiterals = {
                 'messaging/invalid-payload': () => {
                     return new FirebaseClientException(
                         HttpStatus.BAD_REQUEST,
@@ -165,7 +165,9 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
                         HttpStatus.INTERNAL_SERVER_ERROR,
                         Strings.FIREBASE_ADMIN_ERROR.UNKNOWN_ERROR)
                 }
-            }[info.code || 'messaging/unknown-error']()
+            }
+
+            return (errorLiterals[info.code] || errorLiterals['messaging/unknown-error'])()
         }
         return new FirebaseClientException(HttpStatus.INTERNAL_SERVER_ERROR, Strings.FIREBASE_ADMIN_ERROR.UNKNOWN_ERROR)
     }

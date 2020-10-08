@@ -1,6 +1,12 @@
 import fs from 'fs'
 import { Default } from './default'
-import { IDBOptions, IEventBusOptions, ISSL } from '../infrastructure/port/connection.factory.interface'
+import {
+    IDBOptions,
+    IEventBusOptions,
+    IFirebaseOptions,
+    ISSL
+} from '../infrastructure/port/connection.factory.interface'
+import * as admin from 'firebase-admin'
 
 export abstract class Config {
 
@@ -26,6 +32,44 @@ export abstract class Config {
                 tlsCertificateKeyFile: fs.readFileSync(process.env.MONGODB_KEY_PATH!)
             } as IDBOptions
         } as IMongoConfig
+    }
+
+    /**
+     * Retrieve the options for connection to Firebase.
+     *
+     * @return {
+     *     options: {
+     *         credential: admin.credential.Credential
+     *     }
+     * }
+     */
+    public static async getFirebaseConfig(): Promise<IFirebaseConfig> {
+        const google_app_credentials_path = process.env.GOOGLE_APPLICATION_CREDENTIALS
+        if (!google_app_credentials_path) {
+            throw new Error('The Google Application Credentials path is required!')
+        }
+        const credentials_file: any = await this.readJSONFile(google_app_credentials_path)
+
+        return Promise.resolve({
+            options: {
+                credential: admin.credential.cert(credentials_file)
+            } as IFirebaseOptions
+        } as IFirebaseConfig)
+    }
+
+    /**
+     * Reads the content of a path and converts its to JSON.
+     *
+     * @param path Content path to convert to JSON.
+     * @return {Promise<any>}
+     */
+    private static async readJSONFile(path: string): Promise<any> {
+        try {
+            const file: any = await fs.readFileSync(path)
+            return Promise.resolve(JSON.parse(file))
+        } catch (err) {
+            return Promise.reject(err)
+        }
     }
 
     /**
@@ -64,6 +108,10 @@ export abstract class Config {
 interface IMongoConfig {
     uri: string
     options: IDBOptions
+}
+
+interface IFirebaseConfig {
+    options: IFirebaseOptions
 }
 
 interface IRabbitConfig {

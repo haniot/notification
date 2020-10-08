@@ -1,5 +1,8 @@
-export interface IConnectionFirebase {
-    firebase_admin: any
+import { IFirebaseOptions } from './connection.factory.interface'
+import * as admin from 'firebase-admin'
 
-    init(): Promise<void>
+export interface IConnectionFirebase {
+    connection: admin.app.App
+
+    open(options: IFirebaseOptions): Promise<void>
 }

@@ -2,10 +2,10 @@ import { IPushTokenService } from '../port/push.token.service.interface'
 import { inject, injectable } from 'inversify'
 import { Identifier } from '../../di/identifiers'
 import { IPushTokenRepository } from '../port/push.token.repository.interface'
-import { PushToken } from '../domain/model/push.token'
+import { PushToken, PushTokenClientTypes } from '../domain/model/push.token'
 import { PushTokenValidator } from '../domain/validator/push.token.validator'
 import { ObjectIdValidator } from '../domain/validator/object.id.validator'
-import { PushTokenClientTypesValidator } from '../domain/validator/push.token.client.types.validator'
+import { EnumValuesValidator } from '../domain/validator/enum.values.validator'
 
 @injectable()
 export class PushTokenService implements IPushTokenService {
@@ -17,7 +17,7 @@ export class PushTokenService implements IPushTokenService {
     public async findFromUserAndType(userId: string, clientType: string): Promise<PushToken> {
         try {
             ObjectIdValidator.validate(userId)
-            PushTokenClientTypesValidator.validate(clientType)
+            EnumValuesValidator.validate(clientType, 'client_type', PushTokenClientTypes)
             const result: PushToken = await this._pushTokenRepo.findFromUserAndType(userId, clientType)
             return Promise.resolve(result)
         } catch (err) {
@@ -38,7 +38,7 @@ export class PushTokenService implements IPushTokenService {
     public async deleteFromUser(userId: string, clientType: string): Promise<boolean> {
         try {
             ObjectIdValidator.validate(userId)
-            PushTokenClientTypesValidator.validate(clientType)
+            EnumValuesValidator.validate(clientType, 'client_type', PushTokenClientTypes)
             const result: boolean = await this._pushTokenRepo.deleteFromUser(userId, clientType)
             return Promise.resolve(result)
         } catch (err) {

@@ -39,6 +39,7 @@ export abstract class Identifier {
     // Background Services
     public static readonly MONGODB_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryMongodb')
     public static readonly MONGODB_CONNECTION: any = Symbol.for('ConnectionMongodb')
+    public static readonly FIREBASE_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryFirebase')
     public static readonly FIREBASE_CONNECTION: any = Symbol.for('ConnectionFirebase')
     public static readonly RABBITMQ_CONNECTION_FACTORY: any = Symbol.for('ConnectionFactoryRabbitMQ')
     public static readonly RABBITMQ_CONNECTION: any = Symbol.for('ConnectionRabbitMQ')

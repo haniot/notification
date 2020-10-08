@@ -1,7 +1,9 @@
-import { injectable } from 'inversify'
+import { inject, injectable } from 'inversify'
 import * as admin from 'firebase-admin'
-import fs from 'fs'
 import { IConnectionFirebase } from '../port/connection.firebase.interface'
+import { Identifier } from '../../di/identifiers'
+import { IConnectionFirebaseFactory, IFirebaseOptions } from '../port/connection.factory.interface'
+import { ILogger } from '../../utils/custom.logger'
 
 /**
  * Implementation of the interface that provides connection with Firebase.
@@ -12,50 +14,35 @@ import { IConnectionFirebase } from '../port/connection.firebase.interface'
  */
 @injectable()
 export class ConnectionFirebase implements IConnectionFirebase {
-    private _firebase_admin: any
+    private _connection!: admin.app.App
 
-    get firebase_admin(): any {
-        return this._firebase_admin
+    constructor(
+        @inject(Identifier.FIREBASE_CONNECTION_FACTORY) private readonly _connectionFactory: IConnectionFirebaseFactory,
+        @inject(Identifier.LOGGER) private readonly _logger: ILogger
+    ) {
     }
 
-    set firebase_admin(value: any) {
-        this._firebase_admin = value
+    get connection(): admin.app.App {
+        return this._connection
+    }
+
+    set connection(value: admin.app.App ) {
+        this._connection = value
     }
 
     /**
      * Reads the Google application credentials and use them to launch the Firebase Admin SDK.
      *
+     * @param options {IFirebaseOptions} Firebase connection setup options.
      * @return {Promise<void>}
      */
-    public async init(): Promise<void> {
+    public async open(options: IFirebaseOptions): Promise<void> {
         try {
-            const google_app_credentials_path = process.env.GOOGLE_APPLICATION_CREDENTIALS
-            if (!google_app_credentials_path) {
-                throw new Error('The Google Application Credentials path is required!')
-            }
-
-            const credentials_file: any = await this.readJSONFile(google_app_credentials_path)
-            this.firebase_admin = await admin.initializeApp({
-                credential: admin.credential.cert(credentials_file)
-            })
-
+            this.connection = await this._connectionFactory.createInstance(options)
+            this._logger.info('Connection to Google Firebase successful!')
             return Promise.resolve()
         } catch (err) {
-            return Promise.reject(err)
-        }
-    }
-
-    /**
-     * Reads the content of a path and converts its to JSON.
-     *
-     * @param path Content path to convert to JSON.
-     * @return {Promise<any>}
-     */
-    private async readJSONFile(path: string): Promise<any> {
-        try {
-            const file: any = await fs.readFileSync(path)
-            return Promise.resolve(JSON.parse(file))
-        } catch (err) {
+            this._logger.error(`Could not initialize the Firebase SDK: ${err.message}`)
             return Promise.reject(err)
         }
     }

@@ -1,6 +1,6 @@
 import { BaseRepository } from './base/base.repository'
 import { PushTokenEntity } from '../entity/push.token.entity'
-import { PushToken, PushTokenClientTypes } from '../../application/domain/model/push.token'
+import { PushToken } from '../../application/domain/model/push.token'
 import { IPushTokenRepository } from '../../application/port/push.token.repository.interface'
 import { inject, injectable } from 'inversify'
 import { Identifier } from '../../di/identifiers'
@@ -46,14 +46,7 @@ export class PushTokenRepository extends BaseRepository<PushToken, PushTokenEnti
     }
 
     public getUserTokens(userId: string): Promise<Array<PushToken>> {
-        const query: IQuery = new Query().fromJSON({
-            filters: {
-                $or: [
-                    { user_id: userId, client_type: PushTokenClientTypes.MOBILE },
-                    { user_id: userId, client_type: PushTokenClientTypes.WEB }
-                ]
-            }
-        })
+        const query: IQuery = new Query().fromJSON({ filters: { user_id: userId } })
         return new Promise<Array<PushToken>>((resolve, reject) => {
             this.find(query)
                 .then(res => resolve(res.map(item => this._mapper.transform(item))))
