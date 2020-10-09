@@ -21,7 +21,7 @@ export class UsersPushController {
         try {
             const query: IQuery = new Query().fromJSON(req.query)
             query.addFilter({ to: req.params.user_id })
-            const result: Array<Push> = await this._pushService.getAll(query)
+            const result: Array<Push> = await this._pushService.getAllByUser(req.params.user_id, query)
             const count: number = await this._pushService.count(query)
             res.setHeader('X-Total-Count', count)
             return res.status(HttpStatus.OK).send(this.toJSONView(result))

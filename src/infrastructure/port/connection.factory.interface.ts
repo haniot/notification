@@ -12,6 +12,7 @@ export interface IConnectionFirebaseFactory {
 }
 
 export interface IFirebaseOptions {
+    is_enable: boolean
     credentialsFilePath: string
 }
 

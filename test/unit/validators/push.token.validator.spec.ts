@@ -79,58 +79,5 @@ describe('VALIDATORS: PushTokenValidator', () => {
                 assert.propertyVal(err, 'description', `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${pushTokenClientTypes.join(', ')}.`)
             }
         })
-
-        it('should throw a ValidationException for a null type', () => {
-            try {
-                pushToken.client_type = null!
-                PushTokenValidator.validate(pushToken)
-                assert.fail()
-            } catch (err) {
-                assert.instanceOf(err, ValidationException)
-                assert.propertyVal(err, 'message',
-                    `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} null`)
-                assert.propertyVal(err, 'description', `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${pushTokenClientTypes.join(', ')}.`)
-            }
-        })
-
-        it('should throw a ValidationException for an empty type', () => {
-            try {
-                pushToken.client_type = ''
-                PushTokenValidator.validate(pushToken)
-                assert.fail()
-            } catch (err) {
-                assert.instanceOf(err, ValidationException)
-                assert.propertyVal(err, 'message',
-                    `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} `)
-                assert.propertyVal(err, 'description', `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${pushTokenClientTypes.join(', ')}.`)
-            }
-        })
-    })
-
-    context('when the PushToken token is invalid', () => {
-        it('should throw ValidationException for invalid token: null', () => {
-            try {
-                pushToken.token = null!
-                PushTokenValidator.validate(pushToken)
-                assert.fail()
-            } catch (err) {
-                assert.instanceOf(err, ValidationException)
-                assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_FIELDS)
-                assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.INVALID_STRING
-                    .replace('{0}', 'token'))
-            }
-        })
-
-        it('should throw ValidationException for empty token', () => {
-            try {
-                pushToken.token = ''
-                PushTokenValidator.validate(pushToken)
-                assert.fail()
-            } catch (err) {
-                assert.instanceOf(err, ValidationException)
-                assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_FIELDS)
-                assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.EMPTY_STRING.replace('{0}', 'token'))
-            }
-        })
     })
 })

@@ -3,7 +3,6 @@ import * as admin from 'firebase-admin'
 import { IConnectionFirebase } from '../port/connection.firebase.interface'
 import { Identifier } from '../../di/identifiers'
 import { IConnectionFirebaseFactory, IFirebaseOptions } from '../port/connection.factory.interface'
-import { ILogger } from '../../utils/custom.logger'
 
 /**
  * Implementation of the interface that provides connection with Firebase.
@@ -17,8 +16,7 @@ export class ConnectionFirebase implements IConnectionFirebase {
     private _connection!: admin.app.App
 
     constructor(
-        @inject(Identifier.FIREBASE_CONNECTION_FACTORY) private readonly _connectionFactory: IConnectionFirebaseFactory,
-        @inject(Identifier.LOGGER) private readonly _logger: ILogger
+        @inject(Identifier.FIREBASE_CONNECTION_FACTORY) private readonly _connectionFactory: IConnectionFirebaseFactory
     ) {
     }
 
@@ -39,10 +37,8 @@ export class ConnectionFirebase implements IConnectionFirebase {
     public async open(options: IFirebaseOptions): Promise<void> {
         try {
             this.connection = await this._connectionFactory.createInstance(options)
-            this._logger.info('Connection to Google Firebase successful!')
             return Promise.resolve()
         } catch (err) {
-            this._logger.error(`Could not initialize the Firebase SDK: ${err.message}`)
             return Promise.reject(err)
         }
     }

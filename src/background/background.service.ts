@@ -28,8 +28,7 @@ export class BackgroundService {
             await this._mongodb.tryConnect(dbConfigs.uri, dbConfigs.options)
 
             // Initializes the Firebase SDK.
-            const firebaseConfigs = Config.getFirebaseConfig()
-            await this._firebase.open(firebaseConfigs.options)
+            this._initFirebase()
 
             // Opens RabbitMQ connection to perform tasks
             this._startTasks()
@@ -45,6 +44,24 @@ export class BackgroundService {
             await this._subscribeTask.stop()
         } catch (err) {
             return Promise.reject(new Error(`Error stopping background services! ${err.message}`))
+        }
+    }
+
+    /**
+     * Initializes Firebase connection
+     */
+    private _initFirebase(): void {
+        const firebaseConfigs = Config.getFirebaseConfig()
+
+        if (firebaseConfigs.options.is_enable) {
+            this._firebase
+                .open(firebaseConfigs.options)
+                .then(() => {
+                    this._logger.info('Connection to Google Firebase successful!')
+                })
+                .catch(err => {
+                    this._logger.error(`Could not initialize the Firebase SDK: ${err.message}`)
+                })
         }
     }
 

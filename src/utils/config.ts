@@ -43,31 +43,12 @@ export abstract class Config {
      * }
      */
     public static getFirebaseConfig(): IFirebaseConfig {
-        const google_app_credentials_path = process.env.GOOGLE_APPLICATION_CREDENTIALS
-        if (!google_app_credentials_path) {
-            throw new Error('The Google Application Credentials path is required!')
-        }
-        const credentials_file: any = this.readJSONFile(google_app_credentials_path)
         return {
             options: {
-                credentialsFilePath: credentials_file
+                is_enable: process.env.FIREBASE_ENABLE === 'true',
+                credentialsFilePath: process.env.FIREBASE_CREDENTIALS_PATH || Default.FIREBASE_CREDENTIALS_PATH
             } as IFirebaseOptions
         } as IFirebaseConfig
-    }
-
-    /**
-     * Reads the content of a path and converts its to JSON.
-     *
-     * @param path Content path to convert to JSON.
-     * @return {Promise<any>}
-     */
-    private static readJSONFile(path: string): any {
-        try {
-            const file: any = fs.readFileSync(path)
-            return JSON.parse(file)
-        } catch (err) {
-            throw err
-        }
     }
 
     /**

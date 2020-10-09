@@ -16,21 +16,21 @@ export class PushValidator {
             return missed_fields
         }
 
-        if (item.type === undefined) fields.push('type')
+        if (!item.type) fields.push('type')
         else EnumValuesValidator.validate(item.type, 'type', PushTypes)
-        if (item.keep_it === undefined) fields.push('keep_it')
+        if (!item.keep_it) fields.push('keep_it')
         else EnumValuesValidator.validate(item.keep_it, 'keep_it', ChoiceTypes)
-        if (item.to === undefined) fields.push('to')
+        if (!item.to) fields.push('to')
         else {
             if (!item.to.length) {
                 throw new ValidationException(
-                    'At least one recipient is required.',
-                    'Please enter at least one user id for direct notifications or at least one topic name for topic notifications.'
+                    Strings.ERROR_MESSAGE.VALIDATE.AT_LEAST_ONE_RECIPIENT,
+                    Strings.ERROR_MESSAGE.VALIDATE.AT_LEAST_ONE_RECIPIENT_DESC
                 )
             }
             if (item.type === PushTypes.DIRECT) item.to.map(user_id => ObjectIdValidator.validate(user_id))
         }
-        if (item.message === undefined) fields.push('message')
+        if (!item.message) fields.push('message')
         else {
             if (!item.message.type) fields.push('message.type')
             if (!item.message.pt) fields.push('message.pt')
@@ -40,8 +40,10 @@ export class PushValidator {
         }
 
         if (fields.length > 0) {
-            throw new ValidationException(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS,
-                Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC.replace('{0}', fields.join(', ')))
+            throw new ValidationException(
+                Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS,
+                Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC.replace('{0}', fields.join(', '))
+            )
         }
     }
 }

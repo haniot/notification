@@ -4,8 +4,6 @@ import { controller, httpDelete, httpGet, httpPut, request, response } from 'inv
 import { Request, Response } from 'express'
 import { Identifier } from '../../di/identifiers'
 import { ApiExceptionManager } from '../exception/api.exception.manager'
-import { ApiException } from '../exception/api.exception'
-import { Strings } from '../../utils/strings'
 import { IPushTokenService } from '../../application/port/push.token.service.interface'
 import { PushToken, PushTokenClientTypes } from '../../application/domain/model/push.token'
 
@@ -37,13 +35,12 @@ export class UsersPushTokensController {
     }
 
     @httpPut('/:client_type/tokens')
-    public async sendEmail(@request() req: Request, @response() res: Response): Promise<Response> {
+    public async createOrUpdatePushTokenForUser(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
             const push_token: PushToken = new PushToken().fromJSON(req.body)
             push_token.user_id = req.params.user_id
             push_token.client_type = req.params.client_type
-            const result: PushToken = await this._pushTokenService.createOrUpdate(push_token)
-            if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
+            await this._pushTokenService.createOrUpdate(push_token)
             return res.status(HttpStatus.NO_CONTENT).send()
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
@@ -60,14 +57,5 @@ export class UsersPushTokensController {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }
-    }
-
-
-    private getMessageNotFound(): object {
-        return new ApiException(
-            HttpStatus.NOT_FOUND,
-            Strings.PUSH_TOKEN.NOT_FOUND,
-            Strings.PUSH_TOKEN.NOT_FOUND_DESCRIPTION
-        ).toJSON()
     }
 }

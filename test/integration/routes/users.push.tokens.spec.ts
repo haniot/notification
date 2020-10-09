@@ -9,15 +9,18 @@ import { PushTokenMock } from '../../mocks/models/push.token.mock'
 import { PushToken, PushTokenClientTypes } from '../../../src/application/domain/model/push.token'
 import { expect } from 'chai'
 import { Strings } from '../../../src/utils/strings'
-import { GeneratorMock } from '../../mocks/generator.mock'
+import { IPushTokenRepository } from '../../../src/application/port/push.token.repository.interface'
+import { Query } from '../../../src/infrastructure/repository/query/query'
 
 const dbConnection: IConnectionDB = DIContainer.get(Identifier.MONGODB_CONNECTION)
 const app: App = DIContainer.get(Identifier.APP)
 const request = require('supertest')(app.getExpress())
+const pushTokenRepository: IPushTokenRepository = DIContainer.get(Identifier.PUSH_TOKEN_REPOSITORY)
 
-describe('Routes: UsersPushTokens', () => {
-    const mobile_push_token: PushToken = new PushTokenMock().generate(PushTokenClientTypes.MOBILE)
+describe('Routes: users.push.tokens', () => {
     const web_push_token: PushToken = new PushTokenMock().generate(PushTokenClientTypes.WEB)
+    const mobile_push_token: PushToken = new PushTokenMock().generate(PushTokenClientTypes.MOBILE)
+    mobile_push_token.user_id = web_push_token.user_id
 
     before(async () => {
             try {
@@ -25,7 +28,7 @@ describe('Routes: UsersPushTokens', () => {
                 await dbConnection.tryConnect(mongoConfigs.uri, mongoConfigs.options)
                 await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
             } catch (err) {
-                throw new Error('Failure on UsersPushTokens test: ' + err.message)
+                throw new Error('Failure on users.push.tokens test: ' + err.message)
             }
         }
     )
@@ -35,16 +38,34 @@ describe('Routes: UsersPushTokens', () => {
             await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
             await dbConnection.dispose()
         } catch (err) {
-            throw new Error('Failure on UsersPushTokens test: ' + err.message)
+            throw new Error('Failure on users.push.tokens test: ' + err.message)
         }
     })
 
     describe('PUT /v1/users/:user_id/push/:client_type/tokens', () => {
-        context('when save a mobile client token', () => {
-            it('should return status code 204 and no content', () => {
+        context('when save a client token successfully', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
+            })
+            it('should return status code 204 and no content for web client token', () => {
+                return request
+                    .put(`/v1/users/${web_push_token.user_id}/push/${PushTokenClientTypes.WEB}/tokens`)
+                    .send({ token: web_push_token.token })
+                    .set('Content-Type', 'application/json')
+                    .expect(204)
+                    .then(res => {
+                        expect(res.body).to.be.empty
+                    })
+            })
+
+            it('should return status code 204 and no content for mobile client token', () => {
                 return request
                     .put(`/v1/users/${mobile_push_token.user_id}/push/${PushTokenClientTypes.MOBILE}/tokens`)
-                    .send(mobile_push_token.toJSON())
+                    .send({ token: mobile_push_token.token })
                     .set('Content-Type', 'application/json')
                     .expect(204)
                     .then(res => {
@@ -53,11 +74,40 @@ describe('Routes: UsersPushTokens', () => {
             })
         })
 
-        context('when save a web client token from same user', () => {
+        context('when save a mobile client token for an user who already has a web client token.', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                    await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
+            })
+            it('should return status code 204 and no content', () => {
+                return request
+                    .put(`/v1/users/${web_push_token.user_id}/push/${PushTokenClientTypes.MOBILE}/tokens`)
+                    .send({ token: mobile_push_token.token })
+                    .set('Content-Type', 'application/json')
+                    .expect(204)
+                    .then(res => {
+                        expect(res.body).to.be.empty
+                    })
+            })
+        })
+
+        context('when save a web client token for an user who already has a mobile client token.', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                    await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
+            })
             it('should return status code 204 and no content', () => {
                 return request
                     .put(`/v1/users/${mobile_push_token.user_id}/push/${PushTokenClientTypes.WEB}/tokens`)
-                    .send(web_push_token.toJSON())
+                    .send({ token: web_push_token.token })
                     .set('Content-Type', 'application/json')
                     .expect(204)
                     .then(res => {
@@ -66,7 +116,15 @@ describe('Routes: UsersPushTokens', () => {
             })
         })
 
-        context('when save a web client token from another user', () => {
+        context('when save a web client token for an user that already have a web client token', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                    await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
+            })
             it('should return status code 204 and no content', () => {
                 return request
                     .put(`/v1/users/${web_push_token.user_id}/push/${PushTokenClientTypes.WEB}/tokens`)
@@ -79,7 +137,15 @@ describe('Routes: UsersPushTokens', () => {
             })
         })
 
-        context('when save a mobile client token from user that already have a mobile client token', () => {
+        context('when save a mobile client token for an user that already have a mobile client token', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                    await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
+            })
             it('should return status code 204 and no content', () => {
                 return request
                     .put(`/v1/users/${mobile_push_token.user_id}/push/${PushTokenClientTypes.MOBILE}/tokens`)
@@ -92,20 +158,20 @@ describe('Routes: UsersPushTokens', () => {
             })
         })
 
-        context('when save a web client token from user that already have a web client token', () => {
-            it('should return status code 204 and no content', () => {
+        context('when there are validation errors', () => {
+            it('should return status code 400 and message from missing parameters', () => {
                 return request
-                    .put(`/v1/users/${mobile_push_token.user_id}/push/${PushTokenClientTypes.WEB}/tokens`)
-                    .send(web_push_token.toJSON())
+                    .put(`/v1/users/${web_push_token.user_id}/push/${web_push_token.client_type}/tokens`)
+                    .send({})
                     .set('Content-Type', 'application/json')
-                    .expect(204)
+                    .expect(400)
                     .then(res => {
-                        expect(res.body).to.be.empty
+                        expect(res.body).to.have.property('message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
+                        expect(res.body).to.have.property('description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
+                            .replace('{0}', 'token'))
                     })
             })
-        })
 
-        context('when there are validation errors', () => {
             it('should return status code 400 and message from invalid user id', () => {
                 return request
                     .put(`/v1/users/123/push/${PushTokenClientTypes.MOBILE}/tokens`)
@@ -120,7 +186,7 @@ describe('Routes: UsersPushTokens', () => {
             })
 
             it('should return status code 400 and message from invalid client type', () => {
-                const values: Array<string> = Object.values(PushTokenClientTypes)
+                const pushTokenClientTypes: Array<string> = Object.values(PushTokenClientTypes)
                 return request
                     .put(`/v1/users/${web_push_token.user_id}/push/tablet/tokens`)
                     .send(web_push_token.toJSON())
@@ -130,30 +196,26 @@ describe('Routes: UsersPushTokens', () => {
                         expect(res.body).to.have.property('message',
                             `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} tablet`)
                         expect(res.body).to.have.property('description',
-                            `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${values.join(', ')}.`)
-                    })
-            })
-
-            it('should return status code 400 and message from missing parameters', () => {
-                return request
-                    .put(`/v1/users/${web_push_token.user_id}/push/${web_push_token.client_type}/tokens`)
-                    .send({})
-                    .set('Content-Type', 'application/json')
-                    .expect(400)
-                    .then(res => {
-                        expect(res.body).to.have.property('message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
-                        expect(res.body).to.have.property('description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
-                            .replace('{0}', 'token'))
+                            `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${pushTokenClientTypes.join(', ')}.`)
                     })
             })
         })
     })
 
     describe('GET /v1/users/:user_id/push/tokens', () => {
-        context('when get the web token and mobile token from user', () => {
-            it('should return status code 200 and both mobile and web token', () => {
+        context('when get the web and mobile tokens from user', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                    await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
+                    await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
+            })
+            it('should return status code 200 and both web and mobile token', () => {
                 return request
-                    .get(`/v1/users/${mobile_push_token.user_id}/push/tokens`)
+                    .get(`/v1/users/${web_push_token.user_id}/push/tokens`)
                     .set('Content-Type', 'application/json')
                     .expect(200)
                     .then(res => {
@@ -163,22 +225,59 @@ describe('Routes: UsersPushTokens', () => {
             })
         })
 
-        context('when the user already have a type of token', () => {
-            it('should return status code 200 and the token that user contains', () => {
+        context('when the user has only a web client token', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                    await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
+            })
+            it('should return status code 200 and the web client token', () => {
                 return request
                     .get(`/v1/users/${web_push_token.user_id}/push/tokens`)
                     .set('Content-Type', 'application/json')
                     .expect(200)
                     .then(res => {
                         expect(res.body).to.have.property('web_token', web_push_token.token)
+                        expect(res.body).to.have.property('mobile_token', '')
+                    })
+            })
+        })
+
+        context('when the user has only a mobile client token', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                    await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
+            })
+            it('should return status code 200 and the mobile client token', () => {
+                return request
+                    .get(`/v1/users/${mobile_push_token.user_id}/push/tokens`)
+                    .set('Content-Type', 'application/json')
+                    .expect(200)
+                    .then(res => {
+                        expect(res.body).to.have.property('web_token', '')
+                        expect(res.body).to.have.property('mobile_token', mobile_push_token.token)
                     })
             })
         })
 
         context('when the user does not have any type of token', () => {
-            it('should return status code 404 and message from resource not found', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
+            })
+            it('should return status code 200 and an object with empty web_token and mobile_token.', () => {
                 return request
-                    .get(`/v1/users/${GeneratorMock.generateObjectId()}/push/tokens`)
+                    .get(`/v1/users/${web_push_token.user_id}/push/tokens`)
                     .set('Content-Type', 'application/json')
                     .expect(200)
                     .then(res => {
@@ -204,34 +303,56 @@ describe('Routes: UsersPushTokens', () => {
     })
 
     describe('DELETE /v1/users/:user_id/push/:client_type/tokens', () => {
-        context('when remove a user mobile push token', () => {
-            it('should return status code 204 and no content', () => {
+        context('when remove a user push token successfully', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                    await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
+                    await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
+            })
+            it('should return status code 204 and no content for web client token', () => {
+                return request
+                    .delete(`/v1/users/${web_push_token.user_id}/push/${PushTokenClientTypes.WEB}/tokens`)
+                    .set('Content-Type', 'application/json')
+                    .expect(204)
+                    .then(async res => {
+                        expect(res.body).to.be.empty
+                        const countWebPushToken = await pushTokenRepository.count(new Query().fromJSON(
+                            { filters: { user_id: web_push_token.user_id, client_type: web_push_token.client_type } }
+                            ))
+                        expect(countWebPushToken).to.eql(0)
+                    })
+            })
+
+            it('should return status code 204 and no content for mobile client token', () => {
                 return request
                     .delete(`/v1/users/${mobile_push_token.user_id}/push/${PushTokenClientTypes.MOBILE}/tokens`)
                     .set('Content-Type', 'application/json')
                     .expect(204)
-                    .then(res => {
+                    .then(async res => {
                         expect(res.body).to.be.empty
+                        const countMobilePushToken = await pushTokenRepository.count(new Query().fromJSON(
+                            { filters: { user_id: mobile_push_token.user_id, client_type: mobile_push_token.client_type } }
+                        ))
+                        expect(countMobilePushToken).to.eql(0)
                     })
             })
         })
 
-        context('when remove a user web push token', () => {
-            it('should return status code 204 and no content', () => {
-                return request
-                    .delete(`/v1/users/${mobile_push_token.user_id}/push/${PushTokenClientTypes.WEB}/tokens`)
-                    .set('Content-Type', 'application/json')
-                    .expect(204)
-                    .then(res => {
-                        expect(res.body).to.be.empty
-                    })
+        context('when remove a push token from non-existent user', () => {
+            before(async () => {
+                try {
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel, {})
+                } catch (err) {
+                    throw new Error('Failure on users.push.tokens test: ' + err.message)
+                }
             })
-        })
-
-        context('when remove the web push token from nonexistent user', () => {
             it('should return status code 204 and no content', () => {
                 return request
-                    .delete(`/v1/users/${GeneratorMock.generateObjectId()}/push/${PushTokenClientTypes.WEB}/tokens`)
+                    .delete(`/v1/users/${web_push_token.user_id}/push/${PushTokenClientTypes.WEB}/tokens`)
                     .set('Content-Type', 'application/json')
                     .expect(204)
                     .then(res => {
@@ -254,7 +375,7 @@ describe('Routes: UsersPushTokens', () => {
             })
 
             it('should return status code 400 and message from invalid client type', () => {
-                const values: Array<string> = Object.values(PushTokenClientTypes)
+                const pushTokenClientTypes: Array<string> = Object.values(PushTokenClientTypes)
                 return request
                     .delete(`/v1/users/${web_push_token.user_id}/push/tablet/tokens`)
                     .set('Content-Type', 'application/json')
@@ -263,7 +384,7 @@ describe('Routes: UsersPushTokens', () => {
                         expect(res.body).to.have.property('message',
                             `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} tablet`)
                         expect(res.body).to.have.property('description',
-                            `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${values.join(', ')}.`)
+                            `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${pushTokenClientTypes.join(', ')}.`)
                     })
             })
         })

@@ -21,14 +21,14 @@ export abstract class Strings {
         NOT_FOUND: 'Email not found!',
         NOT_FOUND_DESCRIPTION: 'Email not found or already removed. A new operation for the same resource is not required.'
     }
-    public static readonly PUSH_TOKEN: any = {
-        NOT_FOUND: 'Push token not found!',
-        NOT_FOUND_DESCRIPTION: 'Push token not found or already removed. A new operation for the same resource is not required.'
-    }
 
     public static readonly EMAIL_TEMPLATE: any = {
         NOT_FOUND: 'Email template not found!',
         NOT_FOUND_DESCRIPTION: 'Email template not found or already removed. A new operation for the same resource is not required.'
+    }
+
+    public static readonly PUSH: any = {
+        PARAM_ID_NOT_VALID_FORMAT: 'Parameter {push_id} is not in valid format!'
     }
 
     public static readonly ERROR_MESSAGE: any = {
@@ -45,6 +45,10 @@ export abstract class Strings {
             EMPTY_STRING: '{0} must have at least one character!',
             NOT_MAPPED: 'Value not mapped for {0}:',
             NOT_MAPPED_DESC: 'The mapped values are:',
+            AT_LEAST_ONE_RECIPIENT: 'At least one recipient is required.',
+            AT_LEAST_ONE_RECIPIENT_DESC: 'Please enter at least one user id for direct notifications or at least one topic name for topic notifications.',
+            USER_HAS_NO_PUSH_TOKEN: 'Some user ids do not have saved push tokens for any type of client: {0}.',
+            USER_HAS_NO_PUSH_TOKEN_DESC: 'Please submit a valid user id and try again.'
         }
     }
 

@@ -10,6 +10,7 @@ import { ObjectIdValidator } from '../domain/validator/object.id.validator'
 import { IPushTokenRepository } from '../port/push.token.repository.interface'
 import { ValidationException } from '../domain/exception/validation.exception'
 import { PushToken } from '../domain/model/push.token'
+import { Strings } from '../../utils/strings'
 
 @injectable()
 export class PushService implements IPushService {
@@ -31,8 +32,8 @@ export class PushService implements IPushService {
                 }
                 if (users_not_exists.length > 0) {
                     throw new ValidationException(
-                        `Some user ids do not have saved push tokens for any type of client: ${users_not_exists.join(', ')}.`,
-                        'Please submit a valid user id and try again.')
+                        Strings.ERROR_MESSAGE.VALIDATE.USER_HAS_NO_PUSH_TOKEN.replace('{0}', users_not_exists.join(', ')),
+                        Strings.ERROR_MESSAGE.VALIDATE.USER_HAS_NO_PUSH_TOKEN_DESC)
                 }
             }
             // Await mount the payload and send the push
@@ -53,29 +54,29 @@ export class PushService implements IPushService {
         throw new Error('Not implemented')
     }
 
-    public count(query: IQuery): Promise<number> {
-        query.addFilter({ keep_it: ChoiceTypes.YES })
-        return this._pushRepo.count(query)
-    }
-
     public getAll(query: IQuery): Promise<Array<Push>> {
-        query.addFilter({ keep_it: ChoiceTypes.YES })
-        return this._pushRepo.find(query)
+        throw new Error('Not implemented')
     }
 
-    public getById(id: string, query: IQuery): Promise<Push> {
+    public getAllByUser(userId: string, query: IQuery): Promise<Array<Push>> {
         try {
-            ObjectIdValidator.validate(id)
-            query.addFilter({ _id: id, keep_it: ChoiceTypes.YES })
-            return this._pushRepo.findOne(query)
+            ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
+
+            query.addFilter({ keep_it: ChoiceTypes.YES })
+
+            return this._pushRepo.find(query)
         } catch (err) {
             return Promise.reject(err)
         }
     }
 
+    public getById(id: string, query: IQuery): Promise<Push> {
+        throw new Error('Not implemented')
+    }
+
     public remove(id: string): Promise<boolean> {
         try {
-            ObjectIdValidator.validate(id)
+            ObjectIdValidator.validate(id, Strings.PUSH.PARAM_ID_NOT_VALID_FORMAT)
             return this._pushRepo.delete(id)
         } catch (err) {
             return Promise.reject(err)
@@ -86,9 +87,14 @@ export class PushService implements IPushService {
         throw new Error('Not implemented')
     }
 
+    public count(query: IQuery): Promise<number> {
+        query.addFilter({ keep_it: ChoiceTypes.YES })
+        return this._pushRepo.count(query)
+    }
+
     public confirmPushRead(id: string): Promise<boolean> {
         try {
-            ObjectIdValidator.validate(id)
+            ObjectIdValidator.validate(id, Strings.PUSH.PARAM_ID_NOT_VALID_FORMAT)
             return this._pushRepo.updateTokenReadStatus(id, ChoiceTypes.YES)
         } catch (err) {
             return Promise.reject(err)
