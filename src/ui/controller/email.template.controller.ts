@@ -6,16 +6,16 @@ import { Identifier } from '../../di/identifiers'
 import { ApiExceptionManager } from '../exception/api.exception.manager'
 import { ApiException } from '../exception/api.exception'
 import { Strings } from '../../utils/strings'
-import { IEmailTemplateService } from '../../application/port/email.template.service.interface'
 import { EmailTemplate } from '../../application/domain/model/email.template'
 import multer from 'multer'
 import { FileFormatType } from '../../application/domain/model/file'
+import { IEmailService } from '../../application/port/email.service.interface'
 
 @controller('/v1/emails/templates')
 export class EmailTemplateController {
 
     constructor(
-        @inject(Identifier.EMAIL_TEMPLATE_SERVICE) private readonly _emailTemplateService: IEmailTemplateService
+        @inject(Identifier.EMAIL_SERVICE) private readonly _emailService: IEmailService
     ) {
     }
 
@@ -47,7 +47,7 @@ export class EmailTemplateController {
                     mimetype: text[0].mimetype
                 } : undefined
             })
-            const result: EmailTemplate = await this._emailTemplateService.update(template)
+            const result: EmailTemplate = await this._emailService.updateTemplate(template)
             if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
             return res.status(HttpStatus.NO_CONTENT).send()
         } catch (err) {
@@ -61,7 +61,7 @@ export class EmailTemplateController {
         try {
             const type: string = req.params.type
             const resource: string = req.params.resource
-            const result: Buffer = await this._emailTemplateService.findByTypeAndResource(type, resource)
+            const result: Buffer = await this._emailService.findTemplateByTypeAndResource(type, resource)
             if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
             res.set('Content-Type', FileFormatType.OCTET_STREAM)
             res.set('Content-Disposition', `filename=${resource}.pug`)

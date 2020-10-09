@@ -9,8 +9,10 @@ import { ILogger } from '../../utils/custom.logger'
 import { IEntityMapper } from '../port/entity.mapper.interface'
 import { Address } from '../../application/domain/model/address'
 import { ValidationException } from '../../application/domain/exception/validation.exception'
-import EmailTemplate from 'email-templates'
+import Template from 'email-templates'
 import path from 'path'
+import fs from 'fs'
+import { EmailTemplate } from '../../application/domain/model/email.template'
 
 /**
  * Implementation of the email repository.
@@ -20,6 +22,7 @@ import path from 'path'
 @injectable()
 export class EmailRepository extends BaseRepository<Email, EmailEntity> implements IEmailRepository {
     private readonly smtpTransport: any
+    private readonly _path: string
 
     constructor(
         @inject(Identifier.EMAIL_REPO_MODEL) readonly emailModel: any,
@@ -35,6 +38,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
             }
             this.logger.info('SMTP credentials successfully verified!')
         })
+        this._path = this.getEmailTemplateInstance().config.views.root
     }
 
     /**
@@ -189,7 +193,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
     }
 
     private getEmailTemplateInstance(): any {
-        return new EmailTemplate({
+        return new Template({
             transport: this.smtpTransport,
             send: true,
             preview: false,
@@ -205,4 +209,23 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
         })
     }
 
+    public async findTemplateByTypeAndResource(type: string, resource: string): Promise<Buffer> {
+        try {
+            const result: Buffer = await fs.readFileSync(`${this._path}/${type}/${resource}.pug`)
+            return Promise.resolve(Buffer.from(result))
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
+    public async updateTemplate(item: EmailTemplate): Promise<EmailTemplate> {
+        try {
+            await fs.writeFileSync(`${this._path}/${item.type}/html.pug`, Buffer.from(item.html?.buffer!))
+            await fs.writeFileSync(`${this._path}/${item.type}/subject.pug`, Buffer.from(item.subject?.buffer!))
+            await fs.writeFileSync(`${this._path}/${item.type}/text.pug`, Buffer.from(item.text?.buffer!))
+            return Promise.resolve(item)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
 }

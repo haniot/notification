@@ -26,10 +26,6 @@ import { IBackgroundTask } from '../application/port/background.task.interface'
 import { SubscribeEventBusTask } from '../background/task/subscribe.event.bus.task'
 import { ConnectionFactoryMongodb } from '../infrastructure/database/connection.factory.mongodb'
 import { ConnectionMongodb } from '../infrastructure/database/connection.mongodb'
-import { EmailTemplateRepository } from '../infrastructure/repository/email.template.repository'
-import { IEmailTemplateRepository } from '../application/port/email.template.repository.interface'
-import { IEmailTemplateService } from '../application/port/email.template.service.interface'
-import { EmailTemplateService } from '../application/service/email.template.service'
 import { EmailTemplateController } from '../ui/controller/email.template.controller'
 import { PushToken } from '../application/domain/model/push.token'
 import { PushTokenEntity } from '../infrastructure/entity/push.token.entity'
@@ -95,8 +91,6 @@ class IoC {
             .to(UsersPushController).inSingletonScope()
 
         // Services
-        this._container.bind<IEmailTemplateService>(Identifier.EMAIL_TEMPLATE_SERVICE)
-            .to(EmailTemplateService).inSingletonScope()
         this._container.bind<IEmailService>(Identifier.EMAIL_SERVICE)
             .to(EmailService).inSingletonScope()
         this._container.bind<IPushTokenService>(Identifier.PUSH_TOKEN_SERVICE)
@@ -107,8 +101,6 @@ class IoC {
         // Repositories
         this._container.bind<IEmailRepository>(Identifier.EMAIL_REPOSITORY)
             .to(EmailRepository).inSingletonScope()
-        this._container.bind<IEmailTemplateRepository>(Identifier.EMAIL_TEMPLATE_REPOSITORY)
-            .to(EmailTemplateRepository).inSingletonScope()
         this._container.bind<IPushTokenRepository>(Identifier.PUSH_TOKEN_REPOSITORY)
             .to(PushTokenRepository).inSingletonScope()
         this._container.bind<IPushRepository>(Identifier.PUSH_REPOSITORY)

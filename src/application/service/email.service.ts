@@ -7,6 +7,10 @@ import { IQuery } from '../port/query.interface'
 import { EmailSendValidator } from '../domain/validator/email.send.validator'
 import { ObjectIdValidator } from '../domain/validator/object.id.validator'
 import { Strings } from '../../utils/strings'
+import { EmailTemplateTypesValidator } from '../domain/validator/email.template.types.validator'
+import { EmailTemplateResourcesValidator } from '../domain/validator/email.template.resources.validator'
+import { EmailTemplate } from '../domain/model/email.template'
+import { EmailTemplateValidator } from '../domain/validator/email.template.validator'
 
 /**
  * Implementing email Service.
@@ -74,5 +78,26 @@ export class EmailService implements IEmailService {
 
     public count(query: IQuery): Promise<number> {
         return this._emailRepository.count(query)
+    }
+
+    public async findTemplateByTypeAndResource(type: string, resource: string): Promise<Buffer> {
+        try {
+            EmailTemplateTypesValidator.validate(type)
+            EmailTemplateResourcesValidator.validate(resource)
+            const result: Buffer = await this._emailRepository.findTemplateByTypeAndResource(type, resource)
+            return Promise.resolve(result)
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+
+    public async updateTemplate(item: EmailTemplate): Promise<EmailTemplate> {
+        try {
+            EmailTemplateValidator.validate(item)
+            const result: EmailTemplate = await this._emailRepository.updateTemplate(item)
+            return Promise.resolve(result)
+        } catch (err) {
+            return Promise.reject(err)
+        }
     }
 }

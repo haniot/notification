@@ -16,13 +16,11 @@ export abstract class Identifier {
 
     // Services
     public static readonly EMAIL_SERVICE: any = Symbol.for('EmailService')
-    public static readonly EMAIL_TEMPLATE_SERVICE: any = Symbol.for('EmailTemplateService')
     public static readonly PUSH_TOKEN_SERVICE: any = Symbol.for('PushTokenService')
     public static readonly PUSH_SERVICE: any = Symbol.for('PushService')
 
     // Repositories
     public static readonly EMAIL_REPOSITORY: any = Symbol.for('EmailRepository')
-    public static readonly EMAIL_TEMPLATE_REPOSITORY: any = Symbol.for('EmailTemplateRepository')
     public static readonly PUSH_TOKEN_REPOSITORY: any = Symbol.for('PushTokenRepository')
     public static readonly PUSH_REPOSITORY: any = Symbol.for('PushRepository')
 
