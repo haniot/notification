@@ -8,8 +8,8 @@ export class EmailTemplateResourcesValidator {
 
         if (!(resources.includes(resource))) {
             throw new ValidationException(
-                `${Strings.ERROR_MESSAGE.NOT_MAPPED.replace('{0}', 'resource')} ${resource}`,
-                `${Strings.ERROR_MESSAGE.NOT_MAPPED_DESC} ${resources.join(', ')}.`
+                `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'resource')} ${resource}`,
+                `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${resources.join(', ')}.`
                 )
         }
     }

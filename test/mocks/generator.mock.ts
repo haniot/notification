@@ -11,6 +11,15 @@ export class GeneratorMock {
         return randS
     }
 
+    public static generateRandomString(max_length: number): string {
+        const chars: string = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        let randS = ''
+        for (let i = 0; i < max_length; i++) {
+            randS += chars.charAt(Math.floor(Math.random() * chars.length))
+        }
+        return randS
+    }
+
     public static async generateEmailTemp(email): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             const options = {

@@ -12,6 +12,8 @@ import { EmailUpdatePasswordEventHandler } from '../../application/integration-e
 import { EmailPilotStudyDataEventHandler } from '../../application/integration-event/handler/email.pilot.study.data.event.handler'
 import { UserDeleteEvent } from '../../application/integration-event/event/user.delete.event'
 import { UserDeleteEventHandler } from '../../application/integration-event/handler/user.delete.event.handler'
+import { PushSendEvent } from '../../application/integration-event/event/push.send.event'
+import { PushSendEventHandler } from '../../application/integration-event/handler/push.send.event.handler'
 
 @injectable()
 export class SubscribeEventBusTask implements IBackgroundTask {
@@ -38,7 +40,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
      */
     private initializeSubscribe(): void {
         /**
-         * Subscribe in EmailEvent
+         * Subscribe in EmailSendEvent
          */
         this._eventBus
             .subscribe(new EmailEvent('EmailSendEvent'),
@@ -52,7 +54,7 @@ export class SubscribeEventBusTask implements IBackgroundTask {
             })
 
         /**
-         * Subscribe in EmailEvent
+         * Subscribe in EmailWelcomeEvent
          */
         this._eventBus
             .subscribe(new EmailEvent('EmailWelcomeEvent'),
@@ -119,6 +121,19 @@ export class SubscribeEventBusTask implements IBackgroundTask {
             })
             .catch(err => {
                 this._logger.error(`Error in Subscribe UserDeleteEvent! ${err.message}`)
+            })
+        /**
+         * Subscribe in UserDeleteEvent
+         */
+        this._eventBus
+            .subscribe(new PushSendEvent(),
+                new PushSendEventHandler(DIContainer.get(Identifier.PUSH_SERVICE), this._logger),
+                PushSendEvent.ROUTING_KEY)
+            .then((result: boolean) => {
+                if (result) this._logger.info('Subscribe in PushSendEvent successful!')
+            })
+            .catch(err => {
+                this._logger.error(`Error in Subscribe PushSendEvent! ${err.message}`)
             })
     }
 }

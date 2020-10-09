@@ -1,5 +1,6 @@
-export class EmailEntity {
-    public id?: string
+import { Entity } from './entity'
+
+export class EmailEntity extends Entity {
     public from!: any
     public reply?: any
     public to!: Array<any>
@@ -9,6 +10,5 @@ export class EmailEntity {
     public text?: string
     public html?: string
     public attachments?: Array<any>
-    public created_at?: string
     public user_id?: string
 }

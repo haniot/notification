@@ -1,6 +1,6 @@
-import { User } from '../../domain/model/user'
-import { ValidationException } from '../../domain/exception/validation.exception'
-import { ObjectIdValidator } from '../../domain/validator/object.id.validator'
+import { User } from '../model/user'
+import { ValidationException } from '../exception/validation.exception'
+import { ObjectIdValidator } from './object.id.validator'
 
 export class UserValidator {
     public static validate(item: User): void | ValidationException {

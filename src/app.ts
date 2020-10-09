@@ -100,10 +100,6 @@ export class App {
                     stream: { write: (str: string) => this._logger.info(str) }
                 }
             ))
-
-            // app.use((err, req, res, next) => {
-            //     next(err)
-            // })
         })
         this.express.use(inversifyExpress.build())
     }
