@@ -17,6 +17,7 @@ before_script:
   - sudo rabbitmqctl set_permissions -p haniot guest ".*" ".*" ".*"
   - npm install && npm install coveralls mocha-lcov-reporter --save-dev
 script:
+  - npm run build
   - npm test
 after_success:
   - nyc report --reporter=text-lcov | coveralls

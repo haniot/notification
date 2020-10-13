@@ -211,7 +211,10 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
 
     public async findTemplateByTypeAndResource(type: string, resource: string): Promise<Buffer> {
         try {
-            const result: Buffer = await fs.readFileSync(`${this._path}/${type}/${resource}.pug`)
+            let filePath: string = `${this._path}/${type}/${resource}.pug`
+            // Transforms the path to the Windows use case.
+            if (process.platform === 'win32') filePath = this.replaceForwardSlashes(filePath)
+            const result: Buffer = await fs.readFileSync(filePath)
             return Promise.resolve(Buffer.from(result))
         } catch (err) {
             return Promise.reject(err)
@@ -220,12 +223,24 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
 
     public async updateTemplate(item: EmailTemplate): Promise<EmailTemplate> {
         try {
-            await fs.writeFileSync(`${this._path}/${item.type}/html.pug`, Buffer.from(item.html?.buffer!))
-            await fs.writeFileSync(`${this._path}/${item.type}/subject.pug`, Buffer.from(item.subject?.buffer!))
-            await fs.writeFileSync(`${this._path}/${item.type}/text.pug`, Buffer.from(item.text?.buffer!))
+            let htmlFilePath: string = `${this._path}/${item.type}/html.pug`
+            let subjectFilePath: string = `${this._path}/${item.type}/subject.pug`
+            let textFilePath: string = `${this._path}/${item.type}/text.pug`
+            if (process.platform === 'win32') {
+                htmlFilePath = this.replaceForwardSlashes(htmlFilePath)
+                subjectFilePath = this.replaceForwardSlashes(subjectFilePath)
+                textFilePath = this.replaceForwardSlashes(textFilePath)
+            }
+            await fs.writeFileSync(htmlFilePath, Buffer.from(item.html?.buffer!))
+            await fs.writeFileSync(subjectFilePath, Buffer.from(item.subject?.buffer!))
+            await fs.writeFileSync(textFilePath, Buffer.from(item.text?.buffer!))
             return Promise.resolve(item)
         } catch (err) {
             return Promise.reject(err)
         }
+    }
+
+    private replaceForwardSlashes(input: string): string {
+        return input.replace(/\//g, '\\')
     }
 }
