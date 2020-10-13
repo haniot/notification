@@ -72,10 +72,6 @@ export class EmailTemplateController {
         }
     }
 
-    public toJSONView(tempalte: EmailTemplate): object {
-        return tempalte.toJSON()
-    }
-
     private getMessageNotFound(): object {
         return new ApiException(
             HttpStatus.NOT_FOUND,

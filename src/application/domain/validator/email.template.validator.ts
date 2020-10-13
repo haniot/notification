@@ -1,6 +1,6 @@
 import { ValidationException } from '../exception/validation.exception'
-import { EmailTemplate } from '../model/email.template'
-import { EmailTemplateTypesValidator } from './email.template.types.validator'
+import { EmailTemplate, EmailTemplateTypes } from '../model/email.template'
+import { EnumValuesValidator } from './enum.values.validator'
 
 export class EmailTemplateValidator {
     public static validate(item: EmailTemplate): void | ValidationException {
@@ -15,7 +15,7 @@ export class EmailTemplateValidator {
         }
 
         if (!item.type) fields.push('type')
-        else EmailTemplateTypesValidator.validate(item.type)
+        else EnumValuesValidator.validate(item.type, 'type', EmailTemplateTypes)
         if (!item.html || !item.html.filename || !item.html.buffer || !item.html.mimetype) fields.push('html')
         else validate_item(item.html)
         if (!item.subject || !item.subject.filename || !item.subject.buffer || !item.subject.mimetype) fields.push('subject')

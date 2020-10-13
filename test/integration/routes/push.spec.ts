@@ -52,7 +52,8 @@ describe('Routes: push', () => {
         context('when there are validation errors', () => {
             before(async () => {
                 try {
-                    await DatabaseUtils.deleteMany(PushRepoModel, {})
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel)
+                    await DatabaseUtils.deleteMany(PushRepoModel)
                     const token: any = await DatabaseUtils.create(PushTokenRepoModel, push_token.toJSON())
                     direct_push.to = [token.user_id]
                 } catch (err) {
@@ -75,11 +76,10 @@ describe('Routes: push', () => {
                             .send(body)
                             .set('Content-Type', 'application/json')
                             .expect(400)
-                            .then(res => {
-                                expect(res.body).to.have.property('message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
-                                expect(res.body).to.have.property('description',
-                                    Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
-                                        .replace('{0}', 'message.type, message.pt, message.eng'))
+                            .then(err => {
+                                expect(err.body.message).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
+                                expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
+                                    .replace('{0}', 'message.type, message.pt, message.eng'))
                             })
                     })
 
@@ -102,9 +102,9 @@ describe('Routes: push', () => {
                         .send(body)
                         .set('Content-Type', 'application/json')
                         .expect(400)
-                        .then(res => {
-                            expect(res.body).to.have.property('message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
-                            expect(res.body).to.have.property('description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
+                        .then(err => {
+                            expect(err.body.message).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
+                            expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
                                 .replace('{0}', 'message.pt.title'))
                         })
                 })
@@ -128,9 +128,9 @@ describe('Routes: push', () => {
                         .send(body)
                         .set('Content-Type', 'application/json')
                         .expect(400)
-                        .then(res => {
-                            expect(res.body).to.have.property('message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
-                            expect(res.body).to.have.property('description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
+                        .then(err => {
+                            expect(err.body.message).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
+                            expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
                                 .replace('{0}', 'message.pt.text'))
                         })
                 })
@@ -141,9 +141,9 @@ describe('Routes: push', () => {
                         .send({})
                         .set('Content-Type', 'application/json')
                         .expect(400)
-                        .then(res => {
-                            expect(res.body).to.have.property('message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
-                            expect(res.body).to.have.property('description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
+                        .then(err => {
+                            expect(err.body.message).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
+                            expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
                                 .replace('{0}', 'type, keep_it, to, message'))
                         })
                 })
@@ -165,11 +165,11 @@ describe('Routes: push', () => {
                         .send(body)
                         .set('Content-Type', 'application/json')
                         .expect(400)
-                        .then(res => {
-                            expect(res.body).to.have.property('message',
-                                `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} invalidPushType`)
-                            expect(res.body).to.have.property('description',
-                                `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${pushTypes.join(', ')}.`)
+                        .then(err => {
+                            expect(err.body.message).to.eql(`${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED
+                                .replace('{0}', 'type')} invalidPushType`)
+                            expect(err.body.description)
+                                .to.eql(`${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${pushTypes.join(', ')}.`)
                         })
                 })
             })
@@ -190,11 +190,11 @@ describe('Routes: push', () => {
                         .send(body)
                         .set('Content-Type', 'application/json')
                         .expect(400)
-                        .then(res => {
-                            expect(res.body).to.have.property('message',
-                                `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'keep_it')} invalidChoiceType`)
-                            expect(res.body).to.have.property('description',
-                                `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${choiceTypes.join(', ')}.`)
+                        .then(err => {
+                            expect(err.body.message).to.eql(`${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED
+                                .replace('{0}', 'keep_it')} invalidChoiceType`)
+                            expect(err.body.description)
+                                .to.eql(`${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED_DESC} ${choiceTypes.join(', ')}.`)
                         })
                 })
             })
@@ -213,10 +213,9 @@ describe('Routes: push', () => {
                         .send(body)
                         .set('Content-Type', 'application/json')
                         .expect(400)
-                        .then(res => {
-                            expect(res.body).to.have.property('message', Strings.ERROR_MESSAGE.VALIDATE.AT_LEAST_ONE_RECIPIENT)
-                            expect(res.body).to.have.property('description',
-                                Strings.ERROR_MESSAGE.VALIDATE.AT_LEAST_ONE_RECIPIENT_DESC)
+                        .then(err => {
+                            expect(err.body.message).to.eql(Strings.ERROR_MESSAGE.VALIDATE.AT_LEAST_ONE_RECIPIENT)
+                            expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.AT_LEAST_ONE_RECIPIENT_DESC)
                         })
                 })
 
@@ -233,10 +232,9 @@ describe('Routes: push', () => {
                         .send(body)
                         .set('Content-Type', 'application/json')
                         .expect(400)
-                        .then(res => {
-                            expect(res.body).to.have.property('message', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT)
-                            expect(res.body).to.have.property('description',
-                                Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
+                        .then(err => {
+                            expect(err.body.message).to.eql(Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT)
+                            expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
                         })
                 })
             })
@@ -249,11 +247,10 @@ describe('Routes: push', () => {
                         .send({ ...direct_push.toJSON(), to: [random_id] })
                         .set('Content-Type', 'application/json')
                         .expect(400)
-                        .then(res => {
-                            expect(res.body).to.have.property('message',
-                                Strings.ERROR_MESSAGE.VALIDATE.USER_HAS_NO_PUSH_TOKEN.replace('{0}', random_id)),
-                                expect(res.body).to.have.property('description',
-                                    Strings.ERROR_MESSAGE.VALIDATE.USER_HAS_NO_PUSH_TOKEN_DESC)
+                        .then(err => {
+                            expect(err.body.message).to.eql(Strings.ERROR_MESSAGE.VALIDATE.USER_HAS_NO_PUSH_TOKEN
+                                .replace('{0}', random_id))
+                            expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.USER_HAS_NO_PUSH_TOKEN_DESC)
                         })
                 })
             })
@@ -261,12 +258,13 @@ describe('Routes: push', () => {
     })
 
     describe('POST /v1/push/:push_id/read', () => {
-        context('when want signalize that the push are read', () => {
+        context('when want signalize that the push has been read', () => {
             let result
 
             before(async () => {
                 try {
-                    await DatabaseUtils.deleteMany(PushRepoModel, {})
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel)
+                    await DatabaseUtils.deleteMany(PushRepoModel)
                     const token: any = await DatabaseUtils.create(PushTokenRepoModel, push_token.toJSON())
                     direct_push.to = [token.user_id]
                     result = await DatabaseUtils.create(PushRepoModel, direct_push.toJSON())
@@ -289,7 +287,8 @@ describe('Routes: push', () => {
         context('when the push does not exists', () => {
             before(async () => {
                 try {
-                    await DatabaseUtils.deleteMany(PushRepoModel, {})
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel)
+                    await DatabaseUtils.deleteMany(PushRepoModel)
                 } catch (err) {
                     throw new Error('Failure on push test: ' + err.message)
                 }
@@ -311,10 +310,9 @@ describe('Routes: push', () => {
                     .post('/v1/push/123/read')
                     .set('Content-Type', 'application/json')
                     .expect(400)
-                    .then(res => {
-                        expect(res.body).to.have.property('message', Strings.PUSH.PARAM_ID_NOT_VALID_FORMAT)
-                        expect(res.body).to.have.property('description',
-                            Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
+                    .then(err => {
+                        expect(err.body.message).to.eql(Strings.PUSH.PARAM_ID_NOT_VALID_FORMAT)
+                        expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
                     })
             })
         })
@@ -326,7 +324,8 @@ describe('Routes: push', () => {
 
             before(async () => {
                 try {
-                    await DatabaseUtils.deleteMany(PushRepoModel, {})
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel)
+                    await DatabaseUtils.deleteMany(PushRepoModel)
                     const token: any = await DatabaseUtils.create(PushTokenRepoModel, push_token.toJSON())
                     direct_push.to = [token.user_id]
                     result = await DatabaseUtils.create(PushRepoModel, direct_push.toJSON())
@@ -351,7 +350,8 @@ describe('Routes: push', () => {
         context('when the push is already removed', () => {
             before(async () => {
                 try {
-                    await DatabaseUtils.deleteMany(PushRepoModel, {})
+                    await DatabaseUtils.deleteMany(PushTokenRepoModel)
+                    await DatabaseUtils.deleteMany(PushRepoModel)
                 } catch (err) {
                     throw new Error('Failure on push test: ' + err.message)
                 }
@@ -374,10 +374,9 @@ describe('Routes: push', () => {
                     .delete('/v1/push/123')
                     .set('Content-Type', 'application/json')
                     .expect(400)
-                    .then(res => {
-                        expect(res.body).to.have.property('message', Strings.PUSH.PARAM_ID_NOT_VALID_FORMAT)
-                        expect(res.body).to.have.property('description',
-                            Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
+                    .then(err => {
+                        expect(err.body.message).to.eql(Strings.PUSH.PARAM_ID_NOT_VALID_FORMAT)
+                        expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
                     })
             })
         })

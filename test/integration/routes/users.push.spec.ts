@@ -86,15 +86,14 @@ describe('Routes: users.push', () => {
         })
 
         context('when there are validation errors', () => {
-            it('should return status code 400 and message from invalid user id', () => {
+            it('should return status code 400 and info message about invalid user id', () => {
                 return request
                     .get(`/v1/users/123/push`)
                     .set('Content-Type', 'application/json')
                     .expect(400)
-                    .then(res => {
-                        expect(res.body).to.have.property('message', Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
-                        expect(res.body).to.have.property('description',
-                            Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
+                    .then(err => {
+                        expect(err.body.message).to.eql(Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
+                        expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
                     })
             })
         })
