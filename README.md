@@ -11,9 +11,9 @@ Service for sending messages: **email**, **sms** or **push**. In this version on
  See the [documentation](https://github.com/haniot/notification/wiki) for more information.
 
 ## Prerequisites
-- [Node 12.0.0+](https://nodejs.org/en/download/)
+- [Node 13.0.0+](https://nodejs.org/en/download/)
 - [MongoDB Server 4.0.0+](https://www.mongodb.com/download-center/community)
-- [RabbitMQ 3.7.0+](https://www.rabbitmq.com/download.html)
+- [RabbitMQ 3.8.0+](https://www.rabbitmq.com/download.html)
 
 ---
 
@@ -40,6 +40,8 @@ Application settings are defined by environment variables. To define the setting
 | `RABBITMQ_CERT_PATH` | RabbitMQ Certificate | `.certs/rabbitmq/cert.pem` |
 | `RABBITMQ_KEY_PATH` | RabbitMQ Key | `.certs/rabbitmq/key.pem` |
 | `RABBITMQ_CA_PATH` | RabbitMQ Certificate of the Authentication entity (CA). | `.certs/rabbitmq/ca.pem` |
+| `FIREBASE_ENABLE` |  Enables/Disables connection to Firebase admin when Firebase is used for notifications. | `true` |
+| `FIREBASE_CREDENTIALS_PATH` | The Google Firebase Config JSON file path for use firebase admin features. | `/path/to/firebase_credentials_file.json` |
 
 ## Generate Certificates
 For development and testing environments the easiest and fastest way is to generate your own self-signed certificates. These certificates can be used to encrypt data as well as certificates signed by a CA, but users will receive a warning that the certificate is not trusted for their computer or browser. Therefore, self-signed certificates should only be used in non-production environments, that is, development and testing environments. To do this, run the `create-self-signed-certs.sh` script in the root of the repository.

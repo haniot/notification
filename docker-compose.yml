@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo
+    container_name: haniot-mongo
+    ports:
+      - 27017:27017
+    restart: always
+    volumes:
+      - haniot-mongo-data:/data/db
+    networks:
+      - haniot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: haniot-rabbitmq
+    restart: always
+    ports:
+      - 15672:15672 # Management UI
+      - 5672:5672 # AMQP Protocol
+    networks:
+      - haniot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
+volumes:
+  haniot-mongo-data:
+    name: haniot-mongo
+
+networks:
+  haniot-network:
+    name: haniot-network
+    driver: bridge
