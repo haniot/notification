@@ -1,7 +1,7 @@
 import { JsonUtils } from '../../../src/application/domain/utils/json.utils'
 import { assert } from 'chai'
 
-describe('Utils: JsonUtils', () => {
+describe('UTILS: JsonUtils', () => {
     describe('isJsonString()', () => {
         context('when validate if a string is a json', () => {
             it('should return true', () => {

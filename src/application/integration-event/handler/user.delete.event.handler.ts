@@ -4,8 +4,8 @@ import { IIntegrationEventHandler } from './integration.event.handler.interface'
 import { ILogger } from '../../../utils/custom.logger'
 import { EmailEvent } from '../event/email.event'
 import { IEmailRepository } from '../../port/email.repository.interface'
-import { User } from '../../domain/model/User'
-import { UserValidator } from '../event/user.validator'
+import { User } from '../../domain/model/user'
+import { UserValidator } from '../../domain/validator/user.validator'
 import { UserDeleteEvent } from '../event/user.delete.event'
 
 export class UserDeleteEventHandler implements IIntegrationEventHandler<EmailEvent> {

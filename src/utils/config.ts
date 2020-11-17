@@ -1,6 +1,11 @@
 import fs from 'fs'
 import { Default } from './default'
-import { IDBOptions, IEventBusOptions, ISSL } from '../infrastructure/port/connection.factory.interface'
+import {
+    IDBOptions,
+    IEventBusOptions,
+    IFirebaseOptions,
+    ISSL
+} from '../infrastructure/port/connection.factory.interface'
 
 export abstract class Config {
 
@@ -26,6 +31,24 @@ export abstract class Config {
                 tlsCertificateKeyFile: fs.readFileSync(process.env.MONGODB_KEY_PATH!)
             } as IDBOptions
         } as IMongoConfig
+    }
+
+    /**
+     * Retrieve the options for connection to Firebase.
+     *
+     * @return {
+     *     options: {
+     *         credential: admin.credential.Credential
+     *     }
+     * }
+     */
+    public static getFirebaseConfig(): IFirebaseConfig {
+        return {
+            options: {
+                is_enable: process.env.FIREBASE_ENABLE === 'true',
+                credentialsFilePath: process.env.FIREBASE_CREDENTIALS_PATH || Default.FIREBASE_CREDENTIALS_PATH
+            } as IFirebaseOptions
+        } as IFirebaseConfig
     }
 
     /**
@@ -64,6 +87,10 @@ export abstract class Config {
 interface IMongoConfig {
     uri: string
     options: IDBOptions
+}
+
+interface IFirebaseConfig {
+    options: IFirebaseOptions
 }
 
 interface IRabbitConfig {
