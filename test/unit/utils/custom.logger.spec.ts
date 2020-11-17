@@ -22,12 +22,12 @@ describe('UTILS: CustomLogger', () => {
         it('should be possible to change the module name.', () => {
             const logger = new CustomLogger()
 
-            assert.equal(logger.moduleName, Default.APP_ID)
+            assert.propertyVal(logger, 'moduleName', Default.APP_ID)
 
             // change module name
             logger.moduleName = 'test.app'
 
-            assert.equal(logger.moduleName, 'test.app')
+            assert.propertyVal(logger, 'moduleName', 'test.app')
         })
     })
 
@@ -40,8 +40,8 @@ describe('UTILS: CustomLogger', () => {
                 const expectedMessage = 'testing logger.error("str")'
                 const transport = new transports.Console({
                     log: (info) => {
-                        assert.equal(info.level, 'error')
-                        assert.equal(info.message, expectedMessage)
+                        assert.propertyVal(info, 'level', 'error')
+                        assert.propertyVal(info, 'message', expectedMessage)
                         done()
                     }
                 })
@@ -53,8 +53,8 @@ describe('UTILS: CustomLogger', () => {
                 const expectedMessage = 'testing logger.warn("str")'
                 const transport = new transports.Console({
                     log: (info) => {
-                        assert.equal(info.level, 'warn')
-                        assert.equal(info.message, expectedMessage)
+                        assert.propertyVal(info, 'level', 'warn')
+                        assert.propertyVal(info, 'message', expectedMessage)
                         done()
                     }
                 })
@@ -66,8 +66,8 @@ describe('UTILS: CustomLogger', () => {
                 const expectedMessage = 'testing logger.info("str")'
                 const transport = new transports.Console({
                     log: (info) => {
-                        assert.equal(info.level, 'info')
-                        assert.equal(info.message, expectedMessage)
+                        assert.propertyVal(info, 'level', 'info')
+                        assert.propertyVal(info, 'message', expectedMessage)
                         done()
                     }
                 })
@@ -79,8 +79,8 @@ describe('UTILS: CustomLogger', () => {
                 const expectedMessage = 'testing logger.debug("str")'
                 const transport = new transports.Console({
                     log: (info) => {
-                        assert.equal(info.level, 'debug')
-                        assert.equal(info.message, expectedMessage)
+                        assert.propertyVal(info, 'level', 'debug')
+                        assert.propertyVal(info, 'message', expectedMessage)
                         done()
                     }
                 })
@@ -96,12 +96,12 @@ describe('UTILS: CustomLogger', () => {
                 const expectedMessage = new CustomException('testing logger.error(Error)', 'description...')
                 const transport = new transports.Console({
                     log: (info) => {
-                        assert.equal(info.level, 'error')
-                        assert.equal(
-                            info.message, expectedMessage.message
+                        assert.propertyVal(info, 'level', 'error')
+                        assert.propertyVal(
+                            info, 'message', expectedMessage.message
                                 .concat(expectedMessage.description ? ` | ${expectedMessage.description}` : '')
                         )
-                        assert.deepEqual(info.stack, expectedMessage.stack)
+                        assert.propertyVal(info, 'stack', expectedMessage.stack)
                         done()
                     }
                 })
@@ -113,12 +113,12 @@ describe('UTILS: CustomLogger', () => {
                 const expectedMessage = new CustomException('testing logger.warn(Error)', 'description...')
                 const transport = new transports.Console({
                     log: (info) => {
-                        assert.equal(info.level, 'warn')
-                        assert.equal(
-                            info.message, expectedMessage.message
+                        assert.propertyVal(info, 'level', 'warn')
+                        assert.propertyVal(
+                            info, 'message', expectedMessage.message
                                 .concat(expectedMessage.description ? ` | ${expectedMessage.description}` : '')
                         )
-                        assert.deepEqual(info.stack, expectedMessage.stack)
+                        assert.propertyVal(info, 'stack', expectedMessage.stack)
                         done()
                     }
                 })
@@ -130,9 +130,9 @@ describe('UTILS: CustomLogger', () => {
                 const expectedMessage = new Error('testing logger.info(Error)')
                 const transport = new transports.Console({
                     log: (info) => {
-                        assert.equal(info.level, 'info')
-                        assert.equal(info.message, expectedMessage.message)
-                        assert.deepEqual(info.stack, expectedMessage.stack)
+                        assert.propertyVal(info, 'level', 'info')
+                        assert.propertyVal(info, 'message', expectedMessage.message)
+                        assert.propertyVal(info, 'stack', expectedMessage.stack)
                         done()
                     }
                 })
@@ -144,12 +144,12 @@ describe('UTILS: CustomLogger', () => {
                 const expectedMessage = new CustomException('testing logger.debug(Error)', 'description...')
                 const transport = new transports.Console({
                     log: (info) => {
-                        assert.equal(info.level, 'debug')
-                        assert.equal(
-                            info.message, expectedMessage.message
+                        assert.propertyVal(info, 'level', 'debug')
+                        assert.propertyVal(
+                            info, 'message', expectedMessage.message
                                 .concat(expectedMessage.description ? ` | ${expectedMessage.description}` : '')
                         )
-                        assert.deepEqual(info.stack, expectedMessage.stack)
+                        assert.propertyVal(info, 'stack', expectedMessage.stack)
                         done()
                     }
                 })

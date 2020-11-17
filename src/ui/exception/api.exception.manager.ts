@@ -4,6 +4,7 @@ import { ValidationException } from '../../application/domain/exception/validati
 import { ApiException } from './api.exception'
 import { ConflictException } from '../../application/domain/exception/conflict.exception'
 import { RepositoryException } from '../../application/domain/exception/repository.exception'
+import { FirebaseClientException } from '../../application/domain/exception/firebase.client.exception'
 
 /**
  * Treats the exception types of the application and converts
@@ -25,6 +26,8 @@ export abstract class ApiExceptionManager {
             return new ApiException(HttpStatus.CONFLICT, err.message, err.description)
         } else if (err instanceof RepositoryException) {
             return new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, err.message, err.description)
+        } else if (err instanceof FirebaseClientException) {
+            return new ApiException(err.code || HttpStatus.INTERNAL_SERVER_ERROR, err.message, err.description)
         }
 
         return new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, err.message, err.description)

@@ -1,5 +1,6 @@
 import { Email } from '../domain/model/email'
 import { IRepository } from './repository.interface'
+import { EmailTemplate } from '../domain/model/email.template'
 
 /**
  * Interface of the email repository.
@@ -50,4 +51,23 @@ export interface IEmailRepository extends IRepository<Email> {
      * @throws {ValidationException | RepositoryException}
      */
     removeAllFromUser(userId: string): Promise<boolean>
+
+    /**
+     * Find email template by type and resource.
+     *
+     * @param type Email template type.
+     * @param resource Email template resource.
+     * @return {Promise<Buffer>}
+     * @throws {Exception}
+     */
+    findTemplateByTypeAndResource(type: string, resource: string): Promise<Buffer>
+
+    /**
+     * Updates email template.
+     *
+     * @param emailTemplate Containing the data to be updated.
+     * @return {Promise<EmailTemplate>}
+     * @throws {Exception}
+     */
+    updateTemplate(emailTemplate: EmailTemplate): Promise<EmailTemplate>
 }

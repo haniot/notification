@@ -30,4 +30,7 @@ export abstract class Default {
     // To generate self-signed certificates, see: https://devcenter.heroku.com/articles/ssl-certificate-self
     public static readonly SSL_KEY_PATH: string = '.certs/server.key'
     public static readonly SSL_CERT_PATH: string = '.certs/server.crt'
+
+    // The Google Firebase Config JSON file path for use firebase admin features.
+    public static readonly FIREBASE_CREDENTIALS_PATH: string = '/path/to/firebase_credentials_file.json'
 }

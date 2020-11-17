@@ -5,43 +5,64 @@ import { EventBusRabbitMQ } from '../../../src/infrastructure/eventbus/rabbitmq/
 import { IntegrationEvent } from '../../../src/application/integration-event/event/integration.event'
 import { IIntegrationEventHandler } from '../../../src/application/integration-event/handler/integration.event.handler.interface'
 import { Default } from '../../../src/utils/default'
+import { GenericPushSendEventMock } from '../../mocks/integration-event/generic.push.send.event.mock'
+import { Push } from '../../../src/application/domain/model/push'
+import { GenericPushSendEventHandlerMock } from '../../mocks/integration-event/generic.push.send.event.handler.mock'
 
 const eventBus: EventBusRabbitMQ = DIContainer.get(Identifier.RABBITMQ_EVENT_BUS)
 
-describe('EVENT BUS', () => {
+describe('EVENTBUS: EventBusRabbitMQ', () => {
     before(() => {
         eventBus.receiveFromYourself = true
+        eventBus.enableLogger('info')
     })
 
+    // Stops RabbitMQ connections.
     after(async () => {
         try {
-            await eventBus.connectionPub.dispose()
-            await eventBus.connectionSub.dispose()
-            await eventBus.connectionRpcServer.dispose()
-            await eventBus.connectionRpcClient.dispose()
+            await eventBus.dispose()
         } catch (err) {
-            throw new Error('Failure on EventBus test: ' + err.message)
+            throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
         }
     })
 
     describe('CONNECTION', () => {
-        it('should return false when trying to publish up without connection.', () => {
+        it('should throw an error when trying to publish without connection.', async () => {
             return eventBus
-                .publish({} as IntegrationEvent<any>, '')
-                .then((result: boolean) => {
-                    expect(result).to.eql(false)
+                .publish(new GenericPushSendEventMock(new Date(), new Push()), GenericPushSendEventMock.ROUTING_KEY)
+                .catch(err => {
+                    expect(err).to.have.property('message', 'No connection open!')
                 })
         })
 
-        it('should return false when trying to subscribe up without connection.', () => {
+        it('should throw an error when trying to subscribe up without connection.', () => {
             return eventBus
                 .subscribe(
-                    {} as IntegrationEvent<any>,
-                    {} as IIntegrationEventHandler<any>,
-                    ''
+                    new GenericPushSendEventMock(),
+                    new GenericPushSendEventHandlerMock(),
+                    GenericPushSendEventMock.ROUTING_KEY
                 )
-                .then((result: boolean) => {
-                    expect(result).to.eql(false)
+                .catch(err => {
+                    expect(err).to.have.property('message', 'No connection open!')
+                })
+        })
+
+        it('should throw an error when trying to provide resource without connection.', async () => {
+            return eventBus
+                .provideResource('resource.test.get', (query: string) => {
+                    return { content: '123', original_query: query }
+                })
+                .catch(err => {
+                    expect(err).to.have.property('message', 'No connection open!')
+                })
+        })
+
+        it('should throw an error when trying to request resource without connection.', async () => {
+            return eventBus.executeResource('notification.rpc',
+                'resource.test.get',
+                '?test=321')
+                .catch(err => {
+                    expect(err).to.have.property('message', 'No connection open!')
                 })
         })
 
@@ -51,9 +72,8 @@ describe('EVENT BUS', () => {
                     { interval: 100, sslOptions: { ca: [] } })
                 expect(eventBus.connectionPub.isOpen).to.eql(true)
             } catch (err) {
-                throw new Error('Failure on EventBus test: ' + err.message)
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
-
         })
 
         it('should connect successfully to subscribe.', async () => {
@@ -62,7 +82,27 @@ describe('EVENT BUS', () => {
                     { interval: 100, sslOptions: { ca: [] } })
                 expect(eventBus.connectionSub.isOpen).to.eql(true)
             } catch (err) {
-                throw new Error('Failure on EventBus test: ' + err.message)
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
+            }
+        })
+
+        it('should connect successfully to provider.', async () => {
+            try {
+                await eventBus.connectionRpcServer.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
+                expect(eventBus.connectionRpcServer.isOpen).to.eql(true)
+            } catch (err) {
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
+            }
+        })
+
+        it('should connect successfully to client.', async () => {
+            try {
+                await eventBus.connectionRpcClient.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
+                expect(eventBus.connectionRpcClient.isOpen).to.eql(true)
+            } catch (err) {
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
     })
@@ -80,7 +120,7 @@ describe('EVENT BUS', () => {
                         expect(result).to.equal(true)
                     })
             } catch (err) {
-                throw new Error('Failure on EventBus test: ' + err.message)
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
 
@@ -96,7 +136,7 @@ describe('EVENT BUS', () => {
                         expect(result).to.equal(true)
                     })
             } catch (err) {
-                throw new Error('Failure on EventBus test: ' + err.message)
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
     })
@@ -109,28 +149,30 @@ describe('EVENT BUS', () => {
 
                 return eventBus.publish(
                     createEventFake('TestOneEvent'),
-                    'test.save')
+                    'testone.save')
                     .then((result: boolean) => {
                         expect(result).to.equal(true)
                     })
             } catch (err) {
-                throw new Error('Failure on EventBus test: ' + err.message)
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
 
         it('should return true for published TestTwoEvent.', async () => {
             try {
+                eventBus.enableLogger()
+
                 await eventBus.connectionPub.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
                     { interval: 100, sslOptions: { ca: [] } })
 
                 return eventBus.publish(
                     createEventFake('TestTwoEvent'),
-                    'test.two')
+                    'testtwo.save')
                     .then((result: boolean) => {
                         expect(result).to.equal(true)
                     })
             } catch (err) {
-                throw new Error('Failure on EventBus test: ' + err.message)
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
     })
@@ -142,24 +184,28 @@ describe('EVENT BUS', () => {
                     { interval: 100, sslOptions: { ca: [] } })
 
                 return eventBus
-                    .provideResource('resource.get', (query: string) => {
+                    .provideResource('resource.test.get', (query: string) => {
                         return { content: '123', original_query: query }
                     })
                     .then((result: boolean) => {
                         expect(result).to.equal(true)
                     })
             } catch (err) {
-                throw new Error('Failure on EventBus test: ' + err.message)
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
 
         it('should return a requested resource.', async () => {
             try {
-                await eventBus.connectionRpcClient.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                await eventBus.connectionRpcServer.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
                     { interval: 100, sslOptions: { ca: [] } })
+
                 await eventBus.provideResource('resource.test.get', (query: string) => {
                     return { content: '123', original_query: query }
                 })
+
+                await eventBus.connectionRpcClient.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
+                    { interval: 100, sslOptions: { ca: [] } })
 
                 return eventBus.executeResource('notification.rpc',
                     'resource.test.get',
@@ -169,7 +215,7 @@ describe('EVENT BUS', () => {
                         expect(res).to.have.property('original_query', '?test=321')
                     })
             } catch (err) {
-                throw new Error('Failure on EventBus test: ' + err.message)
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
 
@@ -178,13 +224,13 @@ describe('EVENT BUS', () => {
                 await eventBus.connectionRpcClient.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
                     { interval: 100, sslOptions: { ca: [] } })
 
-                return eventBus.executeResource('notification.service',
+                return eventBus.executeResource('notification.rpc',
                     'resource.find', '')
                     .catch(err => {
                         expect(err).to.be.an('error')
                     })
             } catch (err) {
-                throw new Error('Failure on EventBus test: ' + err.message)
+                throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
     })
