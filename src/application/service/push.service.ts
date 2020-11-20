@@ -41,8 +41,8 @@ export class PushService implements IPushService {
 
             // If the push is of the direct type and is to be maintained, save it in the database
             if (item.type === PushTypes.DIRECT && item.keep_it === ChoiceTypes.YES) {
-                const result: Push = await this._pushRepo.create(item)
-                item.id = result.id
+                const result: Push | undefined = await this._pushRepo.create(item)
+                item.id = result?.id
             }
             return Promise.resolve(item)
         } catch (err) {

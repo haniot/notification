@@ -14,10 +14,10 @@ export interface IEmailRepository extends IRepository<Email> {
      * Send mail and save to local database.
      *
      * @param email
-     * @return {Promise<Email>}
+     * @return {Promise<Email | undefined>}
      * @throws {ValidationException | RepositoryException}
      */
-    send(email: Email): Promise<Email>
+    send(email: Email): Promise<Email | undefined>
 
     /**
      * Send email using a predefined template.

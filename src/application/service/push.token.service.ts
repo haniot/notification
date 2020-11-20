@@ -15,21 +15,21 @@ export class PushTokenService implements IPushTokenService {
     ) {
     }
 
-    public async findFromUserAndType(userId: string, clientType: string): Promise<PushToken> {
+    public async findFromUserAndType(userId: string, clientType: string): Promise<PushToken | undefined> {
         try {
             ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
             EnumValuesValidator.validate(clientType, 'client_type', PushTokenClientTypes)
-            const result: PushToken = await this._pushTokenRepo.findFromUserAndType(userId, clientType)
+            const result: PushToken | undefined = await this._pushTokenRepo.findFromUserAndType(userId, clientType)
             return Promise.resolve(result)
         } catch (err) {
             return Promise.reject(err)
         }
     }
 
-    public async createOrUpdate(item: PushToken): Promise<PushToken> {
+    public async createOrUpdate(item: PushToken): Promise<PushToken | undefined> {
         try {
             PushTokenValidator.validate(item)
-            const result: PushToken = await this._pushTokenRepo.createOrUpdate(item)
+            const result: PushToken | undefined = await this._pushTokenRepo.createOrUpdate(item)
             return Promise.resolve(result)
         } catch (err) {
             return Promise.reject(err)

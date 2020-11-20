@@ -279,8 +279,9 @@ describe('Routes: push', () => {
                     .expect(204)
                     .then(async res => {
                         expect(res.body).to.be.empty
-                        const pushRepo: Push = await pushRepository.findOne(new Query().fromJSON({ filters: { _id: result.id } }))
-                        expect(pushRepo.is_read).to.eql(ChoiceTypes.YES)
+                        const pushRepo: Push | undefined =
+                            await pushRepository.findOne(new Query().fromJSON({ filters: { _id: result.id } }))
+                        expect(pushRepo?.is_read).to.eql(ChoiceTypes.YES)
                     })
             })
         })
