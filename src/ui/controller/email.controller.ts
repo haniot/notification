@@ -40,7 +40,7 @@ export class EmailController {
         try {
             const email: Email = new Email().fromJSON(req.body)
             email.userId = req.params.user_id
-            const result: Email = await this._emailService.send(email)
+            const result: Email | undefined = await this._emailService.send(email)
             return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
         } catch (err) {
             const handlerError = ApiExceptionManager.build(err)
@@ -83,7 +83,7 @@ export class EmailController {
     @httpGet('/:email_id')
     public async getEmailByIdAndFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
-            const result: Email = await this._emailService
+            const result: Email | undefined = await this._emailService
                 .getByIdAndFromUser(req.params.email_id, req.params.user_id, new Query().fromJSON(req.query))
             if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
@@ -115,7 +115,7 @@ export class EmailController {
      *
      * @param email
      */
-    private toJSONView(email: Email | Array<Email>): object {
+    private toJSONView(email: Email | Array<Email> | undefined): object {
         if (email instanceof Array) return email.map((item: Email) => {
             return {
                 id: item.id,
@@ -125,7 +125,7 @@ export class EmailController {
                 created_at: item.createdAt
             }
         })
-        return email.toJSON()
+        return email?.toJSON()
     }
 
     /**

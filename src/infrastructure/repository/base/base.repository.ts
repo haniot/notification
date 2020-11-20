@@ -25,9 +25,9 @@ export abstract class BaseRepository<T extends Entity, TModel> implements IRepos
     ) {
     }
 
-    public create(item: T): Promise<T> {
+    public create(item: T): Promise<T | undefined> {
         const itemNew: TModel = this.mapper.transform(item)
-        return new Promise<T>((resolve, reject) => {
+        return new Promise<T | undefined>((resolve, reject) => {
             this.Model.create(itemNew)
                 .then((result) => {
                     // Required due to 'populate ()' routine.
@@ -53,9 +53,9 @@ export abstract class BaseRepository<T extends Entity, TModel> implements IRepos
         })
     }
 
-    public findOne(query: IQuery): Promise<T> {
+    public findOne(query: IQuery): Promise<T | undefined> {
         const q: any = query.toJSON()
-        return new Promise<T>((resolve, reject) => {
+        return new Promise<T | undefined>((resolve, reject) => {
             this.Model.findOne(q.filters)
                 .exec()
                 .then((result: TModel) => {
@@ -66,9 +66,9 @@ export abstract class BaseRepository<T extends Entity, TModel> implements IRepos
         })
     }
 
-    public update(item: T): Promise<T> {
+    public update(item: T): Promise<T | undefined> {
         const itemUp: any = this.mapper.transform(item)
-        return new Promise<T>((resolve, reject) => {
+        return new Promise<T | undefined>((resolve, reject) => {
             this.Model.findOneAndUpdate({ _id: itemUp.id }, itemUp, { new: true })
                 .exec()
                 .then((result: TModel) => {

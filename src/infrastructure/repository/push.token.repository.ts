@@ -19,9 +19,9 @@ export class PushTokenRepository extends BaseRepository<PushToken, PushTokenEnti
         super(_model, _mapper, _logger)
     }
 
-    public createOrUpdate(item: PushToken): Promise<PushToken> {
+    public createOrUpdate(item: PushToken): Promise<PushToken | undefined> {
         const itemNew: any = this.mapper.transform(item)
-        return new Promise<PushToken>((resolve, reject) => {
+        return new Promise<PushToken | undefined>((resolve, reject) => {
             this.Model.findOneAndUpdate(
                 { user_id: item.user_id, client_type: item.client_type },
                 itemNew,
@@ -41,7 +41,7 @@ export class PushTokenRepository extends BaseRepository<PushToken, PushTokenEnti
         })
     }
 
-    public findFromUserAndType(userId: string, clientType: string): Promise<PushToken> {
+    public findFromUserAndType(userId: string, clientType: string): Promise<PushToken | undefined> {
         return super.findOne(new Query().fromJSON({ filters: { user_id: userId, client_type: clientType } }))
     }
 

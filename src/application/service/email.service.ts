@@ -22,7 +22,7 @@ export class EmailService implements IEmailService {
     constructor(@inject(Identifier.EMAIL_REPOSITORY) private readonly _emailRepository: IEmailRepository) {
     }
 
-    public async send(email: Email): Promise<Email> {
+    public async send(email: Email): Promise<Email | undefined> {
         try {
             EmailSendValidator.validate(email)
 
@@ -43,7 +43,7 @@ export class EmailService implements IEmailService {
         }
     }
 
-    public async getByIdAndFromUser(emailId: string, userId: string, query: IQuery): Promise<Email> {
+    public async getByIdAndFromUser(emailId: string, userId: string, query: IQuery): Promise<Email | undefined> {
         try {
             ObjectIdValidator.validate(emailId, Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT)
             ObjectIdValidator.validate(userId, Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
@@ -71,7 +71,7 @@ export class EmailService implements IEmailService {
         return this._emailRepository.delete(id)
     }
 
-    public async update(item: Email): Promise<Email> {
+    public async update(item: Email): Promise<Email | undefined> {
         return this._emailRepository.update(item)
     }
 

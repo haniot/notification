@@ -9,7 +9,7 @@
  */
 export abstract class Strings {
     public static readonly APP: any = {
-        TITLE: 'HANIoT Notification Service',
+        TITLE: 'Notification Service',
         APP_DESCRIPTION: 'Micro-service for sending notification of type email, sms and push.'
     }
 

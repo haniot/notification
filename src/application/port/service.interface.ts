@@ -39,10 +39,10 @@ export interface IService<T> {
      * Updates item data.
      *
      * @param item Containing the data to be updated
-     * @return {Promise<T>}
+     * @return {Promise<T | undefined>}
      * @throws {ValidationException | ConflictException | RepositoryException}
      */
-    update(item: T): Promise<T>
+    update(item: T): Promise<T | undefined>
 
     /**
      * Removes the item according to their unique identifier.
