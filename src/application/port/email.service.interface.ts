@@ -15,10 +15,10 @@ export interface IEmailService extends IService<Email> {
      * Send email.
      *
      * @param email
-     * @return {Promise<Email>}
+     * @return {Promise<Email | undefined>}
      * @throws {ValidationException | RepositoryException}
      */
-    send(email: Email): Promise<Email>
+    send(email: Email): Promise<Email | undefined>
 
     /**
      * List the emails of a user.
@@ -36,10 +36,10 @@ export interface IEmailService extends IService<Email> {
      * @param emailId Email ID.
      * @param userId User ID.
      * @param query Defines object to be used for queries.
-     * @return {Promise<Email>}
+     * @return {Promise<Email | undefined>}
      * @throws {RepositoryException}
      */
-    getByIdAndFromUser(emailId: string, userId: string, query: IQuery): Promise<Email>
+    getByIdAndFromUser(emailId: string, userId: string, query: IQuery): Promise<Email | undefined>
 
     /**
      * Find email template by type and resource.

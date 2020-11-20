@@ -12,10 +12,10 @@ export interface IRepository<T> {
      * Add a new item.
      *
      * @param item Item to insert.
-     * @return {Promise<T>}
+     * @return {Promise<T | undefined>}
      * @throws {ValidationException | ConflictException | RepositoryException}
      */
-    create(item: T): Promise<T>
+    create(item: T): Promise<T | undefined>
 
     /**
      * List items according to parameter values.
@@ -30,19 +30,19 @@ export interface IRepository<T> {
      * Retrieves an item according to the parameter.
      *
      * @param query Defines object to be used for queries.
-     * @return {Promise<T>}
+     * @return {Promise<T | undefined>}
      * @throws {ValidationException | RepositoryException}
      */
-    findOne(query: IQuery): Promise<T>
+    findOne(query: IQuery): Promise<T | undefined>
 
     /**
      * Updates item data.
      *
      * @param item - Item containing the data to be updated
-     * @return {Promise<T>}
+     * @return {Promise<T | undefined>}
      * @throws {ValidationException | ConflictException | RepositoryException}
      */
-    update(item: T): Promise<T>
+    update(item: T): Promise<T | undefined>
 
     /**
      * Removes the item according to their unique identifier.

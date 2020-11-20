@@ -18,9 +18,9 @@ export class UsersPushTokensController {
     @httpGet('/tokens')
     public async getPushTokensFromUser(@request() req: Request, @response() res: Response): Promise<Response> {
         try {
-            const resultWebToken: PushToken =
+            const resultWebToken: PushToken | undefined =
                 await this._pushTokenService.findFromUserAndType(req.params.user_id, PushTokenClientTypes.WEB)
-            const resultMobileToken: PushToken =
+            const resultMobileToken: PushToken | undefined =
                 await this._pushTokenService.findFromUserAndType(req.params.user_id, PushTokenClientTypes.MOBILE)
 
             const result = {
