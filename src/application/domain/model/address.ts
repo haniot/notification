@@ -34,6 +34,7 @@ export class Address implements IJSONSerializable, IJSONDeserializable<Address> 
     }
 
     public fromJSON(json: any): Address {
+        if (!json) return this
         if (JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)
         }

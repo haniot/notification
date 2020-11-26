@@ -151,6 +151,7 @@ export class Email extends Entity implements IJSONSerializable, IJSONDeserializa
     }
 
     public fromJSON(json: any): Email {
+        if (!json) return this
         if (JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)
         }
