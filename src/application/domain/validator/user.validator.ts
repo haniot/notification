@@ -1,6 +1,7 @@
 import { User } from '../model/user'
 import { ValidationException } from '../exception/validation.exception'
 import { ObjectIdValidator } from './object.id.validator'
+import { Strings } from '../../../utils/strings'
 
 export class UserValidator {
     public static validate(item: User): void | ValidationException {
@@ -10,9 +11,11 @@ export class UserValidator {
         else ObjectIdValidator.validate(item.id)
         if (!item.type) fields.push('type')
 
-        if (fields.length) {
-            throw new ValidationException('Required fields were not provided...',
-                'User validation: '.concat(fields.join(', ')).concat(' required!'))
+        if (fields.length > 0) {
+            throw new ValidationException(
+                Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS,
+                Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC.replace('{0}', fields.join(', '))
+            )
         }
     }
 }

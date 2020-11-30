@@ -114,6 +114,12 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
                         Strings.FIREBASE_ADMIN_ERROR.INVALID_TOKEN.replace(': {0}', recipient ? `: ${recipient}` : '.'),
                         Strings.FIREBASE_ADMIN_ERROR.INVALID_TOKEN_DESC)
                 },
+                'messaging/invalid-argument': () => {
+                    return new FirebaseClientException(
+                        HttpStatus.UNAUTHORIZED,
+                        Strings.FIREBASE_ADMIN_ERROR.INVALID_TOKEN.replace(': {0}', recipient ? `: ${recipient}` : '.'),
+                        Strings.FIREBASE_ADMIN_ERROR.INVALID_TOKEN_DESC)
+                },
                 'messaging/registration-token-not-registered': () => {
                     return new FirebaseClientException(
                         HttpStatus.UNAUTHORIZED,

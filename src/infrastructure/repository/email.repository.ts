@@ -193,6 +193,24 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
     }
 
     private getEmailTemplateInstance(): any {
+        const emailTemplatesPath = process.env.EMAIL_TEMPLATES_PATH
+        if (emailTemplatesPath) {
+            try {
+                const data: any = fs.readdirSync(emailTemplatesPath)
+                if (data && data.find(item => item === 'reset-password') && data.find(item => item === 'updated-password')
+                    && data.find(item => item === 'welcome')) {
+                    return new Template({
+                        transport: this.smtpTransport,
+                        send: true,
+                        preview: false,
+                        views: { root: path.resolve(emailTemplatesPath) }
+                    })
+                }
+            } catch (err) {
+                this.logger.error(`The custom templates could not be accessed successfully, so the default will be used. `
+                    .concat(err.message))
+            }
+        }
         return new Template({
             transport: this.smtpTransport,
             send: true,
