@@ -48,7 +48,17 @@ export abstract class Strings {
             AT_LEAST_ONE_RECIPIENT: 'At least one recipient is required.',
             AT_LEAST_ONE_RECIPIENT_DESC: 'Please enter at least one user id for direct notifications or at least one topic name for topic notifications.',
             USER_HAS_NO_PUSH_TOKEN: 'Some user ids do not have saved push tokens for any type of client: {0}.',
-            USER_HAS_NO_PUSH_TOKEN_DESC: 'Please submit a valid user id and try again.'
+            USER_HAS_NO_PUSH_TOKEN_DESC: 'Please submit a valid user id and try again.',
+            INVALID_EMAIL: 'Email "{0}" does not have a valid format!',
+            INVALID_TO: 'The "to" field is not in valid format!',
+            INVALID_TO_DESC: 'The {0} attribute is required.',
+            EMPTY_ATTACHMENTS: 'At least one file is required in attachments',
+            EMPTY_TO: 'The to field requires at least one recipient with an email address!',
+            REQUIRED_REPLY_EMAIL: 'The reply field requires that the object have email!',
+            REQUIRED_TO_EMAIL: 'The to field requires an array of recipients with a email address!',
+            REQUIRED_CC_EMAIL: 'The cc field requires an array of recipients with a email address!',
+            REQUIRED_BCC_EMAIL: 'The bcc field requires an array of recipients with a email address!',
+            REQUIRED_ATTACHMENTS_PATH: 'The attachment field requires a variety of attachments with at least the file path or URL.'
         }
     }
 

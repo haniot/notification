@@ -42,6 +42,7 @@ export class Attachment implements IJSONSerializable, IJSONDeserializable<Attach
     }
 
     public fromJSON(json: any): Attachment {
+        if (!json) return this
         if (JsonUtils.isJsonString(json)) {
             json = JSON.parse(json)
         }

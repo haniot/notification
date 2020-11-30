@@ -20,6 +20,16 @@ export class GeneratorMock {
         return randS
     }
 
+    public static generateUserType(): string {
+        const userTypes = {
+            0: 'admin',
+            1: 'health_professional',
+            2: 'patient'
+        }
+
+        return userTypes[Math.floor((Math.random() * 3))] // 0-2
+    }
+
     public static async generateEmailTemp(email): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             const options = {

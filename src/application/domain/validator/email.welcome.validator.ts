@@ -1,5 +1,6 @@
 import { ValidationException } from '../exception/validation.exception'
 import { EmailToValidator } from './email.to.validator'
+import { Strings } from '../../../utils/strings'
 
 export class EmailWelcomeValidator {
     public static validate(email: any): void | ValidationException {
@@ -12,8 +13,10 @@ export class EmailWelcomeValidator {
         if (!email.action_url) fields.push('action_url')
 
         if (fields.length > 0) {
-            throw new ValidationException('Required fields were not provided...',
-                'Email validation: '.concat(fields.join(', ')).concat(' is required!'))
+            throw new ValidationException(
+                Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS,
+                Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC.replace('{0}', fields.join(', '))
+            )
         }
     }
 }
