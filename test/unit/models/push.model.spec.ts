@@ -18,6 +18,7 @@ describe('MODELS: Push', () => {
                 assert.propertyVal(result.message, 'type', pushJSON.message.type)
                 assert.propertyVal(result.message, 'pt', pushJSON.message.pt)
                 assert.propertyVal(result.message, 'eng', pushJSON.message.eng)
+                assert.propertyVal(result, 'user_id', pushJSON.user_id)
             })
 
             it('should return a Push with some attributes equal to undefined from an empty json', () => {
@@ -47,6 +48,7 @@ describe('MODELS: Push', () => {
                 assert.propertyVal(result.message, 'type', pushJSON.message.type)
                 assert.deepPropertyVal(result.message, 'pt', pushJSON.message.pt)
                 assert.deepPropertyVal(result.message, 'eng', pushJSON.message.eng)
+                assert.propertyVal(result, 'user_id', pushJSON.user_id)
             })
 
             it('should return a Push with some attributes equal to undefined from an empty string', () => {
@@ -67,6 +69,7 @@ describe('MODELS: Push', () => {
         context('when toJSON() is executed', () => {
             it('should return a JSON from a complete Push', () => {
                 const push: Push = new Push().fromJSON(pushJSON)
+                push.createdAt = pushJSON.created_at
                 const result: any = push.toJSON()
 
                 assert.propertyVal(result, 'id', pushJSON.id)
@@ -75,6 +78,8 @@ describe('MODELS: Push', () => {
                 assert.propertyVal(result, 'is_read', pushJSON.is_read)
                 assert.propertyVal(result, 'to', pushJSON.to)
                 assert.deepPropertyVal(result, 'message', pushJSON.message)
+                assert.propertyVal(result, 'created_at', pushJSON.created_at)
+                assert.propertyVal(result, 'user_id', pushJSON.user_id)
             })
 
             it('should return a JSON with all attributes equal to undefined from an incomplete Push', () => {
@@ -86,7 +91,8 @@ describe('MODELS: Push', () => {
                 assert.isUndefined(result.is_read)
                 assert.isUndefined(result.to)
                 assert.isUndefined(result.message)
-                assert.isUndefined(result.createdAt)
+                assert.isUndefined(result.created_at)
+                assert.isUndefined(result.user_id)
             })
         })
     })

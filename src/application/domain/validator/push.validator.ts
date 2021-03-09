@@ -38,6 +38,8 @@ export class PushValidator {
             if (!item.message.eng) fields.push('message.eng')
             else fields = fields.concat(getMessageMissedFields('message.eng', item.message.eng))
         }
+        if (!item.user_id) fields.push('user_id')
+        else ObjectIdValidator.validate(item.user_id, Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
 
         if (fields.length > 0) {
             throw new ValidationException(

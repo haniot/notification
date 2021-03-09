@@ -11,6 +11,7 @@ export class Push extends Entity implements IJSONSerializable, IJSONDeserializab
     private _to?: Array<string>
     private _message?: PushMessage
     private _createdAt?: string
+    private _user_id?: string
 
     constructor() {
         super()
@@ -64,6 +65,14 @@ export class Push extends Entity implements IJSONSerializable, IJSONDeserializab
         this._createdAt = value
     }
 
+    get user_id(): string | undefined {
+        return this._user_id
+    }
+
+    set user_id(value: string | undefined) {
+        this._user_id = value
+    }
+
     public fromJSON(json: any): Push {
         if (!json) return this
 
@@ -77,6 +86,7 @@ export class Push extends Entity implements IJSONSerializable, IJSONDeserializab
         if (json.is_read !== undefined) this.is_read = json.is_read
         if (json.to !== undefined && json.to instanceof Array) this.to = json.to
         if (json.message !== undefined) this.message = new PushMessage().fromJSON(json.message)
+        if (json.user_id !== undefined) this.user_id = json.user_id
 
         return this
     }
@@ -89,7 +99,8 @@ export class Push extends Entity implements IJSONSerializable, IJSONDeserializab
             is_read: this.is_read,
             to: this.to?.length ? this.to : undefined,
             message: this.message?.toJSON(),
-            created_at: this.createdAt
+            created_at: this.createdAt,
+            user_id: this.user_id
         }
     }
 }

@@ -68,7 +68,8 @@ describe('Routes: push', () => {
                             type: direct_push.type,
                             keep_it: direct_push.keep_it,
                             to: direct_push.to,
-                            message: {}
+                            message: {},
+                            user_id: direct_push.user_id
                         }
 
                         return request
@@ -94,7 +95,8 @@ describe('Routes: push', () => {
                                 text: direct_push.message?.pt.text
                             },
                             eng: direct_push.message?.eng
-                        }
+                        },
+                        user_id: direct_push.user_id
                     }
 
                     return request
@@ -120,7 +122,8 @@ describe('Routes: push', () => {
                                 title: direct_push.message?.pt.title
                             },
                             eng: direct_push.message?.eng
-                        }
+                        },
+                        user_id: direct_push.user_id
                     }
 
                     return request
@@ -144,7 +147,7 @@ describe('Routes: push', () => {
                         .then(err => {
                             expect(err.body.message).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                             expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
-                                .replace('{0}', 'type, keep_it, to, message'))
+                                .replace('{0}', 'type, keep_it, to, message, user_id'))
                         })
                 })
             })
@@ -157,7 +160,8 @@ describe('Routes: push', () => {
                         type: 'invalidPushType',
                         keep_it: direct_push.keep_it,
                         to: direct_push.to,
-                        message: direct_push.message
+                        message: direct_push.message,
+                        user_id: direct_push.user_id
                     }
 
                     return request
@@ -182,7 +186,8 @@ describe('Routes: push', () => {
                         type: direct_push.type,
                         keep_it: 'invalidChoiceType',
                         to: direct_push.to,
-                        message: direct_push.message
+                        message: direct_push.message,
+                        user_id: direct_push.user_id
                     }
 
                     return request
@@ -205,7 +210,8 @@ describe('Routes: push', () => {
                         type: direct_push.type,
                         keep_it: direct_push.keep_it,
                         to: [],
-                        message: direct_push.message
+                        message: direct_push.message,
+                        user_id: direct_push.user_id
                     }
 
                     return request
@@ -224,7 +230,8 @@ describe('Routes: push', () => {
                         type: direct_push.type,
                         keep_it: direct_push.keep_it,
                         to: ['5f5a3c5accefbde6e36d1b31', '123', '4e3b3c5accefbde6e45d2c23'],
-                        message: direct_push.message
+                        message: direct_push.message,
+                        user_id: direct_push.user_id
                     }
 
                     return request
@@ -234,6 +241,28 @@ describe('Routes: push', () => {
                         .expect(400)
                         .then(err => {
                             expect(err.body.message).to.eql(Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT)
+                            expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
+                        })
+                })
+            })
+
+            context('when the Push user_id is invalid', () => {
+                it('should return status code 400 and info message about invalid user_id', () => {
+                    const body = {
+                        type: direct_push.type,
+                        keep_it: direct_push.keep_it,
+                        to: direct_push.to,
+                        message: direct_push.message,
+                        user_id: '123'
+                    }
+
+                    return request
+                        .post('/v1/push')
+                        .send(body)
+                        .set('Content-Type', 'application/json')
+                        .expect(400)
+                        .then(err => {
+                            expect(err.body.message).to.eql(Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
                             expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
                         })
                 })

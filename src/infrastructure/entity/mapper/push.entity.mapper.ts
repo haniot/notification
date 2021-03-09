@@ -20,6 +20,7 @@ export class PushEntityMapper implements IEntityMapper<Push, PushEntity> {
         if (item.is_read) result.is_read = item.is_read
         if (item.to) result.to = item.to
         if (item.message) result.message = item.message.toJSON()
+        if (item.user_id) result.user_id = item.user_id
 
         return result
     }
@@ -35,6 +36,7 @@ export class PushEntityMapper implements IEntityMapper<Push, PushEntity> {
         if (json.to) result.to = json.to
         if (json.message) result.message = new PushMessage().fromJSON(json.message)
         if (json.created_at) result.createdAt = json.created_at
+        if (json.user_id) result.user_id = json.user_id
 
         return result
     }

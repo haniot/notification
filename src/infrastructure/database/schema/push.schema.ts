@@ -16,7 +16,8 @@ const pushSchema: any = {
     is_read: {
         type: String,
         default: ChoiceTypes.NO
-    }
+    },
+    user_id: String,
 }
 
 const options: any = {

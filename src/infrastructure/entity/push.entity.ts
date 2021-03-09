@@ -6,4 +6,5 @@ export class PushEntity extends Entity {
     public is_read?: string
     public to?: Array<string>
     public message?: any
+    public user_id?: string
 }

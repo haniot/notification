@@ -124,7 +124,7 @@ describe('VALIDATORS: PushValidator', () => {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
-                    .replace('{0}', 'type, keep_it, to, message'))
+                    .replace('{0}', 'type, keep_it, to, message, user_id'))
             }
         })
     })
@@ -188,6 +188,20 @@ describe('VALIDATORS: PushValidator', () => {
             } catch (err) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT)
+                assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
+            }
+        })
+    })
+
+    context('when the Push user_id is invalid', () => {
+        it('should throw ValidationException for invalid ObjectId: 123', () => {
+            try {
+                push.user_id = '123'
+                PushValidator.validate(push)
+                assert.fail()
+            } catch (err) {
+                assert.instanceOf(err, ValidationException)
+                assert.propertyVal(err, 'message', Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
             }
         })
