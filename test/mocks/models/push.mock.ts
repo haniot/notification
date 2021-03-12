@@ -14,6 +14,7 @@ export class PushMock {
         push.to = to ? to : [GeneratorMock.generateObjectId()]
         push.message = new PushMessageMock().generate()
         push.createdAt = '2020-11-18T02:40:10.752Z'
+        push.user_id = GeneratorMock.generateObjectId()
 
         return push
     }

@@ -97,7 +97,8 @@ export abstract class DefaultEntityMock {
         is_read: ChoiceTypes.NO,
         to: [GeneratorMock.generateObjectId()],
         message: DefaultEntityMock.PUSH_MESSAGE,
-        created_at: '2020-11-18T02:40:10.752Z'
+        created_at: '2020-11-18T02:40:10.752Z',
+        user_id: GeneratorMock.generateObjectId()
     }
 
     public static readonly USER: any = {

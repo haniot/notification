@@ -27,6 +27,7 @@ describe('MAPPERS: PushEntityMapper', () => {
                 assert.propertyVal(result.message, 'type', push.message?.type)
                 assert.propertyVal(result.message, 'pt', push.message?.pt)
                 assert.propertyVal(result.message, 'eng', push.message?.eng)
+                assert.propertyVal(result, 'user_id', push.user_id)
             })
 
             it('should return an empty PushEntity from empty Push', () => {
@@ -45,10 +46,11 @@ describe('MAPPERS: PushEntityMapper', () => {
                 assert.propertyVal(result, 'keep_it', pushJSON.keep_it)
                 assert.propertyVal(result, 'is_read', pushJSON.is_read)
                 assert.propertyVal(result, 'to', pushJSON.to)
-                assert.propertyVal(result, 'createdAt', push.createdAt)
                 assert.propertyVal(result.message, 'type', pushJSON.message.type)
                 assert.propertyVal(result.message, 'pt', pushJSON.message.pt)
                 assert.propertyVal(result.message, 'eng', pushJSON.message.eng)
+                assert.propertyVal(result, 'createdAt', pushJSON.created_at)
+                assert.propertyVal(result, 'user_id', pushJSON.user_id)
             })
 
             it('should return a Push with some attributes equal to undefined from an empty JSON', () => {
