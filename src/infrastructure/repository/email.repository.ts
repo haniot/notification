@@ -22,7 +22,6 @@ import { EmailTemplate } from '../../application/domain/model/email.template'
 @injectable()
 export class EmailRepository extends BaseRepository<Email, EmailEntity> implements IEmailRepository {
     private readonly smtpTransport: any
-    private readonly _path: string
 
     constructor(
         @inject(Identifier.EMAIL_REPO_MODEL) readonly emailModel: any,
@@ -38,7 +37,6 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
             }
             this.logger.info('SMTP credentials successfully verified!')
         })
-        this._path = this.getEmailTemplateInstance().config.views.root
     }
 
     /**
@@ -48,7 +46,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
      * @return Promise<Email>
      */
     public async send(email: Email): Promise<Email | undefined> {
-        email.from = new Address(process.env.SENDER_NAME, process.env.SMTP_USER)
+        email.from = new Address(process.env.SENDER_NAME, process.env.ORIGIN_EMAIL)
         const emailSendNodeMailer: any = this.convertEmailToNodeMailer(email)
         try {
             await this.smtpTransport.sendMail(emailSendNodeMailer)
@@ -68,14 +66,14 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
 
     public sendTemplate(name: string, to: any, data: any, lang?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.getEmailTemplateInstance()
+            this.getEmailTemplateInstance(name)
                 .send({
                     template: name,
                     message: {
                         to: [{ name: to.email, address: to.email }],
                         from: {
                             name: process.env.SENDER_NAME,
-                            address: process.env.SMTP_USER
+                            address: process.env.ORIGIN_EMAIL
                         }
                     },
                     locals: data
@@ -87,14 +85,14 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
 
     public sendTemplateAndAttachment(name: string, to: any, attachments: Array<any>, data: any, lang?: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            this.getEmailTemplateInstance()
+            this.getEmailTemplateInstance(name)
                 .send({
                     template: name,
                     message: {
                         to: [{ name: to.email, address: to.email }],
                         from: {
                             name: process.env.SENDER_NAME,
-                            address: process.env.SMTP_USER
+                            address: process.env.ORIGIN_EMAIL
                         },
                         attachments
                     },
@@ -192,13 +190,12 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
         return result
     }
 
-    private getEmailTemplateInstance(): any {
+    private getEmailTemplateInstance(typeTemplate: string): any {
         const emailTemplatesPath = process.env.EMAIL_TEMPLATES_PATH
         if (emailTemplatesPath) {
             try {
                 const data: any = fs.readdirSync(emailTemplatesPath)
-                if (data && data.find(item => item === 'reset-password') && data.find(item => item === 'updated-password')
-                    && data.find(item => item === 'welcome')) {
+                if (data && data.find(item => item === typeTemplate)) {
                     return new Template({
                         transport: this.smtpTransport,
                         send: true,
@@ -229,7 +226,8 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
 
     public async findTemplateByTypeAndResource(type: string, resource: string): Promise<Buffer> {
         try {
-            let filePath: string = `${this._path}/${type}/${resource}.pug`
+            const templatePath: string = this.getEmailTemplateInstance(type!)
+            let filePath: string = `${templatePath}/${type}/${resource}.pug`
             // Transforms the path to the Windows use case.
             if (process.platform === 'win32') filePath = this.replaceForwardSlashes(filePath)
             const result: Buffer = await fs.readFileSync(filePath)
@@ -241,9 +239,10 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
 
     public async updateTemplate(item: EmailTemplate): Promise<EmailTemplate> {
         try {
-            let htmlFilePath: string = `${this._path}/${item.type}/html.pug`
-            let subjectFilePath: string = `${this._path}/${item.type}/subject.pug`
-            let textFilePath: string = `${this._path}/${item.type}/text.pug`
+            const templatePath: string = this.getEmailTemplateInstance(item.type!)
+            let htmlFilePath: string = `${templatePath}/${item.type}/html.pug`
+            let subjectFilePath: string = `${templatePath}/${item.type}/subject.pug`
+            let textFilePath: string = `${templatePath}/${item.type}/text.pug`
             if (process.platform === 'win32') {
                 htmlFilePath = this.replaceForwardSlashes(htmlFilePath)
                 subjectFilePath = this.replaceForwardSlashes(subjectFilePath)
