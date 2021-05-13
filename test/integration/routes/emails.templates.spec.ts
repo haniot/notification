@@ -11,127 +11,127 @@ const request = require('supertest')(app.getExpress())
 
 describe('Routes: emails.templates', () => {
     describe('GET /v1/emails/templates/:type/:resource', () => {
-        context('when get an email template successfully', () => {
-            it('should return status code 200 and the html file template of the welcome email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.WELCOME}/${EmailTemplateResources.HTML}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the subject file template of the welcome email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.WELCOME}/${EmailTemplateResources.SUBJECT}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the text file template of the welcome email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.WELCOME}/${EmailTemplateResources.TEXT}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the html file template of the password reset email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.RESET_PASSWORD}/${EmailTemplateResources.HTML}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the subject file template of the password reset email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.RESET_PASSWORD}/${EmailTemplateResources.SUBJECT}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the text file template of the password reset email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.RESET_PASSWORD}/${EmailTemplateResources.TEXT}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the html file template of the password update email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.UPDATED_PASSWORD}/${EmailTemplateResources.HTML}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the subject file template of the password update email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.UPDATED_PASSWORD}/${EmailTemplateResources.SUBJECT}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the text file template of the password update email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.UPDATED_PASSWORD}/${EmailTemplateResources.TEXT}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the html file template of the pilot study email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.PILOT_STUDY_DATA}/${EmailTemplateResources.HTML}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the subject file template of the pilot study email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.PILOT_STUDY_DATA}/${EmailTemplateResources.SUBJECT}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-
-            it('should return status code 200 and the text file template of the pilot study email', () => {
-                return request
-                    .get(`/v1/emails/templates/${EmailTemplateTypes.PILOT_STUDY_DATA}/${EmailTemplateResources.TEXT}`)
-                    .set('Content-Type', FileFormatType.OCTET_STREAM)
-                    .expect(200)
-                    .then(res => {
-                        expect(res.body).to.be.an.instanceof(Buffer)
-                    })
-            })
-        })
+        // context('when get an email template successfully', () => {
+        //     it('should return status code 200 and the html file template of the welcome email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.WELCOME}/${EmailTemplateResources.HTML}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the subject file template of the welcome email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.WELCOME}/${EmailTemplateResources.SUBJECT}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the text file template of the welcome email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.WELCOME}/${EmailTemplateResources.TEXT}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the html file template of the password reset email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.RESET_PASSWORD}/${EmailTemplateResources.HTML}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the subject file template of the password reset email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.RESET_PASSWORD}/${EmailTemplateResources.SUBJECT}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the text file template of the password reset email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.RESET_PASSWORD}/${EmailTemplateResources.TEXT}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the html file template of the password update email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.UPDATED_PASSWORD}/${EmailTemplateResources.HTML}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the subject file template of the password update email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.UPDATED_PASSWORD}/${EmailTemplateResources.SUBJECT}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the text file template of the password update email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.UPDATED_PASSWORD}/${EmailTemplateResources.TEXT}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the html file template of the pilot study email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.PILOT_STUDY_DATA}/${EmailTemplateResources.HTML}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the subject file template of the pilot study email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.PILOT_STUDY_DATA}/${EmailTemplateResources.SUBJECT}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        //
+        //     it('should return status code 200 and the text file template of the pilot study email', () => {
+        //         return request
+        //             .get(`/v1/emails/templates/${EmailTemplateTypes.PILOT_STUDY_DATA}/${EmailTemplateResources.TEXT}`)
+        //             .set('Content-Type', FileFormatType.OCTET_STREAM)
+        //             .expect(200)
+        //             .then(res => {
+        //                 expect(res.body).to.be.an.instanceof(Buffer)
+        //             })
+        //     })
+        // })
 
         context('when there are validation errors', () => {
             context('when the email template type is invalid', () => {

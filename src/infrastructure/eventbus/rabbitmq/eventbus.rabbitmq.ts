@@ -6,6 +6,7 @@ import { IntegrationEvent } from '../../../application/integration-event/event/i
 import { IIntegrationEventHandler } from '../../../application/integration-event/handler/integration.event.handler.interface'
 import { Identifier } from '../../../di/identifiers'
 import { EventBusException } from '../../../application/domain/exception/eventbus.exception'
+import { Default } from '../../../utils/default'
 
 @injectable()
 export class EventBusRabbitMQ implements IEventBus {
@@ -135,7 +136,7 @@ export class EventBusRabbitMQ implements IEventBus {
                         type: 'direct',
                         durable: true
                     },
-                    rcpTimeout: 5000
+                    rpcTimeout: Number(process.env.RABBITMQ_RPC_TIMEOUT) || Default.RABBITMQ_RPC_TIMEOUT
                 })
     }
 
@@ -152,7 +153,7 @@ export class EventBusRabbitMQ implements IEventBus {
                             type: 'direct',
                             durable: true
                         }, queue: {
-                            durable: true
+                            expires: 5000
                         }
                     })
         }

@@ -1,6 +1,4 @@
 import { expect } from 'chai'
-import { DIContainer } from '../../../src/di/di'
-import { Identifier } from '../../../src/di/identifiers'
 import { EventBusRabbitMQ } from '../../../src/infrastructure/eventbus/rabbitmq/eventbus.rabbitmq'
 import { IntegrationEvent } from '../../../src/application/integration-event/event/integration.event'
 import { IIntegrationEventHandler } from '../../../src/application/integration-event/handler/integration.event.handler.interface'
@@ -8,8 +6,15 @@ import { Default } from '../../../src/utils/default'
 import { GenericPushSendEventMock } from '../../mocks/integration-event/generic.push.send.event.mock'
 import { Push } from '../../../src/application/domain/model/push'
 import { GenericPushSendEventHandlerMock } from '../../mocks/integration-event/generic.push.send.event.handler.mock'
+import { ConnectionRabbitMQ } from '../../../src/infrastructure/eventbus/rabbitmq/connection.rabbitmq'
+import { ConnectionFactoryRabbitMQ } from '../../../src/infrastructure/eventbus/rabbitmq/connection.factory.rabbitmq'
 
-const eventBus: EventBusRabbitMQ = DIContainer.get(Identifier.RABBITMQ_EVENT_BUS)
+const eventBus: EventBusRabbitMQ = new EventBusRabbitMQ(
+    new ConnectionRabbitMQ(new ConnectionFactoryRabbitMQ()),
+    new ConnectionRabbitMQ(new ConnectionFactoryRabbitMQ()),
+    new ConnectionRabbitMQ(new ConnectionFactoryRabbitMQ()),
+    new ConnectionRabbitMQ(new ConnectionFactoryRabbitMQ())
+)
 
 describe('EVENTBUS: EventBusRabbitMQ', () => {
     before(() => {

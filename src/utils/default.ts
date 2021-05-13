@@ -22,6 +22,7 @@ export abstract class Default {
 
     // RabbitMQ
     public static readonly RABBITMQ_URI: string = 'amqp://guest:guest@localhost:5672'
+    public static readonly RABBITMQ_RPC_TIMEOUT: number = 5000
 
     // Log
     public static readonly LOG_DIR: string = 'logs'

@@ -74,8 +74,12 @@ export class BackgroundService {
         this._eventBus
             .connectionSub
             .open(rabbitConfigs.uri, rabbitConfigs.options)
-            .then(() => {
-                this._logger.info('Connection with subscribe event opened successful!')
+            .then((conn) => {
+                this._logger.info('Subscribe connection established!')
+
+                conn.on('disconnected', () => this._logger.warn('Subscribe connection has been lost...'))
+                conn.on('reestablished', () => this._logger.info('Subscribe connection re-established!'))
+
                 this._subscribeTask.run()
             })
             .catch(err => {
