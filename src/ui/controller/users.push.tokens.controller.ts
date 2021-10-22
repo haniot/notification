@@ -28,7 +28,7 @@ export class UsersPushTokensController {
                 mobile_token: resultMobileToken?.token ? resultMobileToken.token : ''
             }
             return res.status(HttpStatus.OK).send(result)
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }
@@ -42,7 +42,7 @@ export class UsersPushTokensController {
             push_token.client_type = req.params.client_type
             await this._pushTokenService.createOrUpdate(push_token)
             return res.status(HttpStatus.NO_CONTENT).send()
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }
@@ -53,7 +53,7 @@ export class UsersPushTokensController {
         try {
             await this._pushTokenService.deleteFromUser(req.params.user_id, req.params.client_type)
             return res.status(HttpStatus.NO_CONTENT).send()
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }

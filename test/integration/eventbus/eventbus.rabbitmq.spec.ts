@@ -26,7 +26,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
     after(async () => {
         try {
             await eventBus.dispose()
-        } catch (err) {
+        } catch (err: any) {
             throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
         }
     })
@@ -76,7 +76,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                 await eventBus.connectionPub.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
                     { interval: 100, sslOptions: { ca: [] } })
                 expect(eventBus.connectionPub.isOpen).to.eql(true)
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
@@ -86,7 +86,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                 await eventBus.connectionSub.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
                     { interval: 100, sslOptions: { ca: [] } })
                 expect(eventBus.connectionSub.isOpen).to.eql(true)
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
@@ -96,7 +96,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                 await eventBus.connectionRpcServer.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
                     { interval: 100, sslOptions: { ca: [] } })
                 expect(eventBus.connectionRpcServer.isOpen).to.eql(true)
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
@@ -106,7 +106,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                 await eventBus.connectionRpcClient.open(process.env.RABBITMQ_URI || Default.RABBITMQ_URI,
                     { interval: 100, sslOptions: { ca: [] } })
                 expect(eventBus.connectionRpcClient.isOpen).to.eql(true)
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
@@ -124,7 +124,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                     .then(result => {
                         expect(result).to.equal(true)
                     })
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
@@ -140,7 +140,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                     .then(result => {
                         expect(result).to.equal(true)
                     })
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
@@ -158,7 +158,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                     .then((result: boolean) => {
                         expect(result).to.equal(true)
                     })
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
@@ -176,7 +176,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                     .then((result: boolean) => {
                         expect(result).to.equal(true)
                     })
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
@@ -195,7 +195,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                     .then((result: boolean) => {
                         expect(result).to.equal(true)
                     })
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
@@ -219,7 +219,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                         expect(res).to.have.property('content', '123')
                         expect(res).to.have.property('original_query', '?test=321')
                     })
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })
@@ -234,7 +234,7 @@ describe('EVENTBUS: EventBusRabbitMQ', () => {
                     .catch(err => {
                         expect(err).to.be.an('error')
                     })
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on EventBusRabbitMQ test: ' + err.message)
             }
         })

@@ -10,7 +10,7 @@ describe('VALIDATORS: ObjectIdValidator', () => {
             try {
                 const result = ObjectIdValidator.validate(`${new ObjectID()}`)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -21,7 +21,7 @@ describe('VALIDATORS: ObjectIdValidator', () => {
             try {
                 ObjectIdValidator.validate('123')
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
@@ -32,7 +32,7 @@ describe('VALIDATORS: ObjectIdValidator', () => {
             try {
                 ObjectIdValidator.validate('123', 'any message')
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', 'any message')
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)

@@ -17,7 +17,7 @@ describe('VALIDATORS: UserValidator', () => {
             try {
                 const result = UserValidator.validate(user)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -29,7 +29,7 @@ describe('VALIDATORS: UserValidator', () => {
                 user.id = undefined
                 UserValidator.validate(user)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -42,7 +42,7 @@ describe('VALIDATORS: UserValidator', () => {
             try {
                 UserValidator.validate(new User())
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -57,7 +57,7 @@ describe('VALIDATORS: UserValidator', () => {
                 user.id = '123'
                 UserValidator.validate(user)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)

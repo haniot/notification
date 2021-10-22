@@ -21,7 +21,7 @@ export class PushController {
             const push: Push = new Push().fromJSON(req.body)
             const result: Push = await this._pushService.send(push)
             return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }
@@ -32,7 +32,7 @@ export class PushController {
         try {
             await this._pushService.remove(req.params.push_id)
             return res.status(HttpStatus.NO_CONTENT).send()
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }
@@ -43,7 +43,7 @@ export class PushController {
         try {
             await this._pushService.confirmPushRead(req.params.push_id)
             return res.status(HttpStatus.NO_CONTENT).send()
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }

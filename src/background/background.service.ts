@@ -32,7 +32,7 @@ export class BackgroundService {
 
             // Opens RabbitMQ connection to perform tasks
             this._startTasks()
-        } catch (err) {
+        } catch (err: any) {
             return Promise.reject(new Error(`Error initializing services in background! ${err.message}`))
         }
     }
@@ -42,7 +42,7 @@ export class BackgroundService {
             await this._mongodb.dispose()
 
             await this._subscribeTask.stop()
-        } catch (err) {
+        } catch (err: any) {
             return Promise.reject(new Error(`Error stopping background services! ${err.message}`))
         }
     }

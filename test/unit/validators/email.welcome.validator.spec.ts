@@ -16,7 +16,7 @@ describe('VALIDATORS: EmailWelcomeValidator', () => {
             try {
                 const result = EmailWelcomeValidator.validate(welcomeEmail)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -28,7 +28,7 @@ describe('VALIDATORS: EmailWelcomeValidator', () => {
                 welcomeEmail.to = undefined
                 EmailWelcomeValidator.validate(welcomeEmail)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -40,7 +40,7 @@ describe('VALIDATORS: EmailWelcomeValidator', () => {
             try {
                 EmailWelcomeValidator.validate({})
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -55,7 +55,7 @@ describe('VALIDATORS: EmailWelcomeValidator', () => {
                 welcomeEmail.to.email = 'invalid_email@mailcom'
                 EmailWelcomeValidator.validate(welcomeEmail)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL
                     .replace('{0}', 'invalid_email@mailcom'))
