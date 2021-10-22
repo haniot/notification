@@ -16,7 +16,7 @@ describe('VALIDATORS: EmailPilotStudyDataValidator', () => {
             try {
                 const result = EmailPilotStudyDataValidator.validate(pilotStudyDataEmail)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -28,7 +28,7 @@ describe('VALIDATORS: EmailPilotStudyDataValidator', () => {
                 pilotStudyDataEmail.attachments = [{}]
                 EmailPilotStudyDataValidator.validate(pilotStudyDataEmail)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -40,7 +40,7 @@ describe('VALIDATORS: EmailPilotStudyDataValidator', () => {
             try {
                 EmailPilotStudyDataValidator.validate({})
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -55,7 +55,7 @@ describe('VALIDATORS: EmailPilotStudyDataValidator', () => {
                 pilotStudyDataEmail.attachments = []
                 EmailPilotStudyDataValidator.validate(pilotStudyDataEmail)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.EMPTY_ATTACHMENTS)
             }
@@ -68,7 +68,7 @@ describe('VALIDATORS: EmailPilotStudyDataValidator', () => {
                 pilotStudyDataEmail.to.email = 'invalid_email@mailcom'
                 EmailPilotStudyDataValidator.validate(pilotStudyDataEmail)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL
                     .replace('{0}', 'invalid_email@mailcom'))

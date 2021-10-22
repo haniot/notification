@@ -23,7 +23,7 @@ describe('Routes: users.push', () => {
                 const mongoConfigs = Config.getMongoConfig()
                 await dbConnection.tryConnect(mongoConfigs.uri, mongoConfigs.options)
                 await DatabaseUtils.deleteMany(PushRepoModel)
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on users.push test: ' + err.message)
             }
         }
@@ -33,7 +33,7 @@ describe('Routes: users.push', () => {
         try {
             await DatabaseUtils.deleteMany(PushRepoModel)
             await dbConnection.dispose()
-        } catch (err) {
+        } catch (err: any) {
             throw new Error('Failure on users.push test: ' + err.message)
         }
     })
@@ -44,7 +44,7 @@ describe('Routes: users.push', () => {
                 try {
                     await DatabaseUtils.deleteMany(PushRepoModel, {})
                     await DatabaseUtils.create(PushRepoModel, direct_push.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push test: ' + err.message)
                 }
             })
@@ -70,7 +70,7 @@ describe('Routes: users.push', () => {
             before(async () => {
                 try {
                     await DatabaseUtils.deleteMany(PushRepoModel, {})
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push test: ' + err.message)
                 }
             })

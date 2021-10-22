@@ -27,7 +27,7 @@ describe('Routes: users.push.tokens', () => {
                 const mongoConfigs = Config.getMongoConfig()
                 await dbConnection.tryConnect(mongoConfigs.uri, mongoConfigs.options)
                 await DatabaseUtils.deleteMany(PushTokenRepoModel)
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on users.push.tokens test: ' + err.message)
             }
         }
@@ -37,7 +37,7 @@ describe('Routes: users.push.tokens', () => {
         try {
             await DatabaseUtils.deleteMany(PushTokenRepoModel)
             await dbConnection.dispose()
-        } catch (err) {
+        } catch (err: any) {
             throw new Error('Failure on users.push.tokens test: ' + err.message)
         }
     })
@@ -47,7 +47,7 @@ describe('Routes: users.push.tokens', () => {
             before(async () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -75,7 +75,7 @@ describe('Routes: users.push.tokens', () => {
             before(async () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -104,7 +104,7 @@ describe('Routes: users.push.tokens', () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -137,7 +137,7 @@ describe('Routes: users.push.tokens', () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -170,7 +170,7 @@ describe('Routes: users.push.tokens', () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -199,7 +199,7 @@ describe('Routes: users.push.tokens', () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -273,7 +273,7 @@ describe('Routes: users.push.tokens', () => {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
                     await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -294,7 +294,7 @@ describe('Routes: users.push.tokens', () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -315,7 +315,7 @@ describe('Routes: users.push.tokens', () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -335,7 +335,7 @@ describe('Routes: users.push.tokens', () => {
             before(async () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -372,7 +372,7 @@ describe('Routes: users.push.tokens', () => {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
                     await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -401,7 +401,7 @@ describe('Routes: users.push.tokens', () => {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.create(PushTokenRepoModel, web_push_token.toJSON())
                     await DatabaseUtils.create(PushTokenRepoModel, mobile_push_token.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })
@@ -428,7 +428,7 @@ describe('Routes: users.push.tokens', () => {
             before(async () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on users.push.tokens test: ' + err.message)
                 }
             })

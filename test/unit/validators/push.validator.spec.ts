@@ -18,7 +18,7 @@ describe('VALIDATORS: PushValidator', () => {
             try {
                 const result = PushValidator.validate(push)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -30,7 +30,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.message!.type = undefined
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -43,7 +43,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.message!.pt = undefined
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -56,7 +56,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.message!.pt.title = undefined
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -69,7 +69,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.message!.pt.text = undefined
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -82,7 +82,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.message!.eng = undefined
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -95,7 +95,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.message!.eng.title = undefined
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -108,7 +108,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.message!.eng.text = undefined
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -120,7 +120,7 @@ describe('VALIDATORS: PushValidator', () => {
             try {
                 PushValidator.validate(new Push())
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -137,7 +137,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.type = 'invalidPushType'
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} invalidPushType`)
@@ -154,7 +154,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.keep_it = 'invalidChoiceType'
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'keep_it')} invalidChoiceType`)
@@ -173,7 +173,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.to = []
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.AT_LEAST_ONE_RECIPIENT)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.AT_LEAST_ONE_RECIPIENT_DESC)
@@ -185,7 +185,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.to = ['5f5a3c5accefbde6e36d1b31', '123', '4e3b3c5accefbde6e45d2c23']
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
@@ -199,7 +199,7 @@ describe('VALIDATORS: PushValidator', () => {
                 push.user_id = '123'
                 PushValidator.validate(push)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)

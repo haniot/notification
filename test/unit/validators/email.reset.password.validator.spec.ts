@@ -16,7 +16,7 @@ describe('VALIDATORS: EmailResetPasswordValidator', () => {
             try {
                 const result = EmailResetPasswordValidator.validate(resetPasswordEmail)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -28,7 +28,7 @@ describe('VALIDATORS: EmailResetPasswordValidator', () => {
                 resetPasswordEmail.to = undefined
                 EmailResetPasswordValidator.validate(resetPasswordEmail)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -40,7 +40,7 @@ describe('VALIDATORS: EmailResetPasswordValidator', () => {
             try {
                 EmailResetPasswordValidator.validate({})
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -55,7 +55,7 @@ describe('VALIDATORS: EmailResetPasswordValidator', () => {
                 resetPasswordEmail.to.email = 'invalid_email@mailcom'
                 EmailResetPasswordValidator.validate(resetPasswordEmail)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL
                     .replace('{0}', 'invalid_email@mailcom'))

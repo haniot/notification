@@ -18,7 +18,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
             try {
                 const result = EmailSendValidator.validate(email)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -30,7 +30,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.subject = undefined!
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -43,7 +43,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.reply!.email = undefined!
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_REPLY_EMAIL)
             }
@@ -54,7 +54,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.to[0].email = undefined!
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_TO_EMAIL)
             }
@@ -65,7 +65,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.cc![0].email = undefined!
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_CC_EMAIL)
             }
@@ -76,7 +76,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.bcc![0].email = undefined!
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_BCC_EMAIL)
             }
@@ -87,7 +87,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.attachments![0] = new Attachment()
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_ATTACHMENTS_PATH)
             }
@@ -97,7 +97,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
             try {
                 EmailSendValidator.validate(new Email())
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -112,7 +112,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.to = []
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.EMPTY_TO)
             }
@@ -125,7 +125,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.reply!.email = 'invalid_email@mailcom'
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL
                     .replace('{0}', 'invalid_email@mailcom'))
@@ -137,7 +137,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.to[0].email = 'invalid_email@mailcom'
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL
                     .replace('{0}', 'invalid_email@mailcom'))
@@ -149,7 +149,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.cc![0].email = 'invalid_email@mailcom'
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL
                     .replace('{0}', 'invalid_email@mailcom'))
@@ -161,7 +161,7 @@ describe('VALIDATORS: EmailSendValidator', () => {
                 email.bcc![0].email = 'invalid_email@mailcom'
                 EmailSendValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL
                     .replace('{0}', 'invalid_email@mailcom'))

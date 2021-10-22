@@ -16,7 +16,7 @@ describe('VALIDATORS: EmailUpdatePasswordValidator', () => {
             try {
                 const result = EmailUpdatePasswordValidator.validate(updatePasswordEmail)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -28,7 +28,7 @@ describe('VALIDATORS: EmailUpdatePasswordValidator', () => {
                 updatePasswordEmail.to = undefined
                 EmailUpdatePasswordValidator.validate(updatePasswordEmail)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -43,7 +43,7 @@ describe('VALIDATORS: EmailUpdatePasswordValidator', () => {
                 updatePasswordEmail.to.email = 'invalid_email@mailcom'
                 EmailUpdatePasswordValidator.validate(updatePasswordEmail)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL
                     .replace('{0}', 'invalid_email@mailcom'))

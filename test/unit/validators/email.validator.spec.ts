@@ -15,7 +15,7 @@ describe('VALIDATORS: EmailValidator', () => {
             try {
                 const result = EmailValidator.validate(email)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -27,7 +27,7 @@ describe('VALIDATORS: EmailValidator', () => {
                 email = undefined!
                 EmailValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL.replace('{0}', undefined))
             }
@@ -38,7 +38,7 @@ describe('VALIDATORS: EmailValidator', () => {
                 email = null!
                 EmailValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL.replace('{0}', null))
             }
@@ -49,7 +49,7 @@ describe('VALIDATORS: EmailValidator', () => {
                 email = ''
                 EmailValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL.replace('{0}', ''))
             }
@@ -60,7 +60,7 @@ describe('VALIDATORS: EmailValidator', () => {
                 email = 'invalid_email@mailcom'
                 EmailValidator.validate(email)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.INVALID_EMAIL
                     .replace('{0}', 'invalid_email@mailcom'))

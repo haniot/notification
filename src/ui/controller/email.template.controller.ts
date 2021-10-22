@@ -50,7 +50,7 @@ export class EmailTemplateController {
             const result: EmailTemplate = await this._emailService.updateTemplate(template)
             if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
             return res.status(HttpStatus.NO_CONTENT).send()
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }
@@ -66,7 +66,7 @@ export class EmailTemplateController {
             res.set('Content-Type', FileFormatType.OCTET_STREAM)
             res.set('Content-Disposition', `filename=${resource}.pug`)
             res.status(HttpStatus.OK).end(result)
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }

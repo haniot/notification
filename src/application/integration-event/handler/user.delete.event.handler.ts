@@ -27,7 +27,7 @@ export class UserDeleteEventHandler implements IIntegrationEventHandler<EmailEve
             UserValidator.validate(user)
             await this._emailRepository.removeAllFromUser(user.id!)
             this._logger.info(`Action for event ${event.event_name} successfully performed!`)
-        } catch (err) {
+        } catch (err: any) {
             this._logger.warn(`An error occurred while attempting `
                 .concat(`perform the operation with the ${event.event_name} name event. ${err.message}`)
                 .concat(err.description ? ' ' + err.description : ''))

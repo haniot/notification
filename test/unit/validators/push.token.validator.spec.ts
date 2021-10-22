@@ -17,7 +17,7 @@ describe('VALIDATORS: PushTokenValidator', () => {
             try {
                 const result = PushTokenValidator.validate(pushToken)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -29,7 +29,7 @@ describe('VALIDATORS: PushTokenValidator', () => {
                 pushToken.user_id = undefined
                 PushTokenValidator.validate(pushToken)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -41,7 +41,7 @@ describe('VALIDATORS: PushTokenValidator', () => {
             try {
                 PushTokenValidator.validate(new PushToken())
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
@@ -56,7 +56,7 @@ describe('VALIDATORS: PushTokenValidator', () => {
                 pushToken.user_id = '123'
                 PushTokenValidator.validate(pushToken)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.USER.PARAM_ID_NOT_VALID_FORMAT)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.UUID_NOT_VALID_FORMAT_DESC)
@@ -72,7 +72,7 @@ describe('VALIDATORS: PushTokenValidator', () => {
                 pushToken.client_type = 'invalidClientType'
                 PushTokenValidator.validate(pushToken)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} invalidClientType`)

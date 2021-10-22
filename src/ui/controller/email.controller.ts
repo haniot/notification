@@ -42,7 +42,7 @@ export class EmailController {
             email.userId = req.params.user_id
             const result: Email | undefined = await this._emailService.send(email)
             return res.status(HttpStatus.CREATED).send(this.toJSONView(result))
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }
@@ -64,7 +64,7 @@ export class EmailController {
             const count: number = await this._emailService.count(new Query())
             res.setHeader('X-Total-Count', count)
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         } finally {
@@ -87,7 +87,7 @@ export class EmailController {
                 .getByIdAndFromUser(req.params.email_id, req.params.user_id, new Query().fromJSON(req.query))
             if (!result) return res.status(HttpStatus.NOT_FOUND).send(this.getMessageNotFound())
             return res.status(HttpStatus.OK).send(this.toJSONView(result))
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }
@@ -104,7 +104,7 @@ export class EmailController {
         try {
             await this._emailService.remove(req.params.email_id)
             return res.status(HttpStatus.NO_CONTENT).send()
-        } catch (err) {
+        } catch (err: any) {
             const handlerError = ApiExceptionManager.build(err)
             return res.status(handlerError.code).send(handlerError.toJSON())
         }
