@@ -32,7 +32,7 @@ describe('Routes: push', () => {
                 await dbConnection.tryConnect(mongoConfigs.uri, mongoConfigs.options)
                 await DatabaseUtils.deleteMany(PushTokenRepoModel)
                 await DatabaseUtils.deleteMany(PushRepoModel)
-            } catch (err) {
+            } catch (err: any) {
                 throw new Error('Failure on push test: ' + err.message)
             }
         }
@@ -43,7 +43,7 @@ describe('Routes: push', () => {
             await DatabaseUtils.deleteMany(PushTokenRepoModel)
             await DatabaseUtils.deleteMany(PushRepoModel)
             await dbConnection.dispose()
-        } catch (err) {
+        } catch (err: any) {
             throw new Error('Failure on push test: ' + err.message)
         }
     })
@@ -56,7 +56,7 @@ describe('Routes: push', () => {
                     await DatabaseUtils.deleteMany(PushRepoModel)
                     const token: any = await DatabaseUtils.create(PushTokenRepoModel, push_token.toJSON())
                     direct_push.to = [token.user_id]
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on push test: ' + err.message)
                 }
             })
@@ -297,7 +297,7 @@ describe('Routes: push', () => {
                     const token: any = await DatabaseUtils.create(PushTokenRepoModel, push_token.toJSON())
                     direct_push.to = [token.user_id]
                     result = await DatabaseUtils.create(PushRepoModel, direct_push.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on push test: ' + err.message)
                 }
             })
@@ -319,7 +319,7 @@ describe('Routes: push', () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.deleteMany(PushRepoModel)
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on push test: ' + err.message)
                 }
             })
@@ -359,7 +359,7 @@ describe('Routes: push', () => {
                     const token: any = await DatabaseUtils.create(PushTokenRepoModel, push_token.toJSON())
                     direct_push.to = [token.user_id]
                     result = await DatabaseUtils.create(PushRepoModel, direct_push.toJSON())
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on push test: ' + err.message)
                 }
             })
@@ -382,7 +382,7 @@ describe('Routes: push', () => {
                 try {
                     await DatabaseUtils.deleteMany(PushTokenRepoModel)
                     await DatabaseUtils.deleteMany(PushRepoModel)
-                } catch (err) {
+                } catch (err: any) {
                     throw new Error('Failure on push test: ' + err.message)
                 }
             })

@@ -50,7 +50,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
         const emailSendNodeMailer: any = this.convertEmailToNodeMailer(email)
         try {
             await this.smtpTransport.sendMail(emailSendNodeMailer)
-        } catch (err) {
+        } catch (err: any) {
             if (err.code && err.code === 'ESTREAM') {
                 let message = err.message
                 if (err.sourceUrl) message = `Error loading URL file: ${err.sourceUrl}`
@@ -203,7 +203,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
                         views: { root: path.resolve(emailTemplatesPath) }
                     })
                 }
-            } catch (err) {
+            } catch (err: any) {
                 this.logger.error(`The custom templates could not be accessed successfully, so the default will be used. `
                     .concat(err.message))
             }

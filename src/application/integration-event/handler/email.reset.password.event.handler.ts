@@ -40,7 +40,7 @@ export class EmailResetPasswordEventHandler implements IIntegrationEventHandler<
             )
             // 3. If got here, it's because the action was successful.
             this._logger.info(`Action for event ${event.event_name} successfully performed!`)
-        } catch (err) {
+        } catch (err: any) {
             this._logger.warn(`An error occurred while attempting `
                 .concat(`perform the operation with the ${event.event_name} name event. ${err.message}`)
                 .concat(err.description ? ' ' + err.description : ''))

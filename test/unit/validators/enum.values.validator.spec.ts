@@ -13,7 +13,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 const result = EnumValuesValidator.validate(PushTokenClientTypes.WEB, 'client_type', PushTokenClientTypes)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -22,7 +22,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 const result = EnumValuesValidator.validate(PushTypes.DIRECT, 'type', PushTypes)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -31,7 +31,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 const result = EnumValuesValidator.validate(ChoiceTypes.YES, 'keep_it', ChoiceTypes)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -40,7 +40,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 const result = EnumValuesValidator.validate(EmailTemplateTypes.WELCOME, 'type', EmailTemplateTypes)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -49,7 +49,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 const result = EnumValuesValidator.validate(EmailTemplateResources.HTML, 'resource', EmailTemplateResources)
                 assert.isUndefined(result)
-            } catch (err) {
+            } catch (err: any) {
                 assert.fail(err)
             }
         })
@@ -62,7 +62,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate('invalidClientType', 'client_type', PushTokenClientTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} invalidClientType`)
@@ -75,7 +75,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate(undefined!, 'client_type', PushTokenClientTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} undefined`)
@@ -88,7 +88,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate(null!, 'client_type', PushTokenClientTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} null`)
@@ -101,7 +101,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate('', 'client_type', PushTokenClientTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'client_type')} `)
@@ -118,7 +118,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate('invalidPushType', 'type', PushTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} invalidPushType`)
@@ -131,7 +131,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate(undefined!, 'type', PushTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} undefined`)
@@ -144,7 +144,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate(null!, 'type', PushTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} null`)
@@ -157,7 +157,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate('', 'type', PushTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} `)
@@ -174,7 +174,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate('invalidChoiceType', 'keep_it', ChoiceTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'keep_it')} invalidChoiceType`)
@@ -187,7 +187,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate(undefined!, 'keep_it', ChoiceTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'keep_it')} undefined`)
@@ -200,7 +200,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate(null!, 'keep_it', ChoiceTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'keep_it')} null`)
@@ -213,7 +213,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate('', 'keep_it', ChoiceTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'keep_it')} `)
@@ -230,7 +230,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate('invalidEmailTemplateType', 'type', EmailTemplateTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} invalidEmailTemplateType`)
@@ -243,7 +243,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate(undefined!, 'type', EmailTemplateTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} undefined`)
@@ -256,7 +256,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate(null!, 'type', EmailTemplateTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} null`)
@@ -269,7 +269,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate('', 'type', EmailTemplateTypes)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'type')} `)
@@ -286,7 +286,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate('invalidResource', 'resource', EmailTemplateResources)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'resource')} invalidResource`)
@@ -299,7 +299,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate(undefined!, 'resource', EmailTemplateResources)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'resource')} undefined`)
@@ -312,7 +312,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate(null!, 'resource', EmailTemplateResources)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'resource')} null`)
@@ -325,7 +325,7 @@ describe('VALIDATORS: EnumValuesValidator', () => {
             try {
                 EnumValuesValidator.validate('', 'resource', EmailTemplateResources)
                 assert.fail()
-            } catch (err) {
+            } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message',
                     `${Strings.ERROR_MESSAGE.VALIDATE.NOT_MAPPED.replace('{0}', 'resource')} `)
