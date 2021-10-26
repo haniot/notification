@@ -31,6 +31,9 @@ Application settings are defined by environment variables. To define the setting
 | `SMTP_PORT` | SMTP port for sending emails. | `587` |
 | `SMTP_USER` | User/email who will authenticate to the SMTP host.  | `YOUR_SMTP_USER` |
 | `SMTP_PASS` | Password who will authenticate to the SMTP host. | `YOUR_SMTP_PASS` |
+| `SENDER_NAME` | Sender of emails that will be sent by the service. | `YOUR_SENDER_NAME` |
+| `ORIGIN_EMAIL` | Email of origin. | `ORIGIN_EMAIL` |
+| `EMAIL_TEMPLATES_PATH` | Email templates path. If there are no customized email templates, the variable does not need to be configured, so the default templates will be used. If it exists, the configured path must have at least 3 directories with the template files: reset-password, updated-password and welcome. | `EMAIL_TEMPLATES_PATH` |
 | `MONGODB_URI` | Database connection URI used if the application is running in development or production environment. The [URI specifications ](https://docs.mongodb.com/manual/reference/connection-string) defined by MongoDB are accepted. For example: `mongodb://user:pass@host:port/database?options`. | `mongodb://127.0.0.1:27017`<br/>`/mhealth-service` |
 | `MONGODB_URI_TEST` | Database connection URI used if the application is running in test environment. The [URI specifications ](https://docs.mongodb.com/manual/reference/connection-string) defined by MongoDB are accepted. For example: `mongodb://user:pass@host:port/database?options`. | `mongodb://127.0.0.1:27017`<br/>`/mhealth-service-test` |
 | `MONGODB_ENABLE_TLS` | Enables/Disables connection to TLS. When TLS is used for connection, client certificates are required (`MONGODB_KEY_PATH`, `MONGODB_CA_PATH`). | `false` |
@@ -40,6 +43,7 @@ Application settings are defined by environment variables. To define the setting
 | `RABBITMQ_CERT_PATH` | RabbitMQ Certificate | `.certs/rabbitmq/cert.pem` |
 | `RABBITMQ_KEY_PATH` | RabbitMQ Key | `.certs/rabbitmq/key.pem` |
 | `RABBITMQ_CA_PATH` | RabbitMQ Certificate of the Authentication entity (CA). | `.certs/rabbitmq/ca.pem` |
+| `RABBITMQ_RPC_TIMEOUT` | RabbitMQ RPC timeout. | `5000` |
 | `FIREBASE_ENABLE` |  Enables/Disables connection to Firebase admin when Firebase is used for notifications. | `true` |
 | `FIREBASE_CREDENTIALS_PATH` | The Google Firebase Config JSON file path for use firebase admin features. | `/path/to/firebase_credentials_file.json` |
 
@@ -130,6 +134,8 @@ docker run --rm \
   -e SMTP_PORT=587 \  
   -e SMTP_USER="YOUR_SMTP_USER@outlook.com" \    
   -e SMTP_PASS="YOUR_SMTP_PASS" \     
+  -e SENDER_NAME="YOUR_SENDER_NAME" \     
+  -e ORIGIN_EMAIL="ORIGIN_EMAIL" \     
   --name haniot-notification \        
   haniot/notification-service
 ```

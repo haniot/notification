@@ -27,8 +27,8 @@ export abstract class Config {
                 Default.MONGODB_URI_TEST) : (process.env.MONGODB_URI || Default.MONGODB_URI),
             options: (process.env.MONGODB_ENABLE_TLS === 'false') ? undefined : {
                 sslValidate: true,
-                tlsCAFile: fs.readFileSync(process.env.MONGODB_CA_PATH!),
-                tlsCertificateKeyFile: fs.readFileSync(process.env.MONGODB_KEY_PATH!)
+                tlsCAFile: process.env.MONGODB_CA_PATH,
+                tlsCertificateKeyFile: process.env.MONGODB_KEY_PATH
             } as IDBOptions
         } as IMongoConfig
     }
