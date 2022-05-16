@@ -5,7 +5,7 @@ import { JsonUtils } from '../utils/json.utils'
 export class PushMessage implements IJSONSerializable, IJSONDeserializable<PushMessage> {
     private _type?: string
     private _pt?: any
-    private _eng?: any
+    private _en?: any
 
     get type(): string | undefined {
         return this._type
@@ -23,12 +23,12 @@ export class PushMessage implements IJSONSerializable, IJSONDeserializable<PushM
         this._pt = value
     }
 
-    get eng(): any {
-        return this._eng
+    get en(): any {
+        return this._en
     }
 
-    set eng(value: any) {
-        this._eng = value
+    set en(value: any) {
+        this._en = value
     }
 
     public fromJSON(json: any): PushMessage {
@@ -39,7 +39,7 @@ export class PushMessage implements IJSONSerializable, IJSONDeserializable<PushM
 
         if (json.type !== undefined) this.type = json.type
         if (json.pt !== undefined) this.pt = json.pt
-        if (json.eng !== undefined) this.eng = json.eng
+        if (json.en !== undefined) this.en = json.en
 
         return this
     }
@@ -48,7 +48,7 @@ export class PushMessage implements IJSONSerializable, IJSONDeserializable<PushM
         return {
             type: this.type,
             pt: this.pt,
-            eng: this.eng
+            en: this.en
         }
     }
 }
