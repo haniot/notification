@@ -62,7 +62,7 @@ describe('Routes: push', () => {
             })
 
             context('when the Push is incomplete', () => {
-                it('should return status code 400 and info message about missing parameters (message.type, message.pt, message.eng)',
+                it('should return status code 400 and info message about missing parameters (message.type, message.pt, message.en)',
                     () => {
                         const body = {
                             type: direct_push.type,
@@ -80,7 +80,7 @@ describe('Routes: push', () => {
                             .then(err => {
                                 expect(err.body.message).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                                 expect(err.body.description).to.eql(Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
-                                    .replace('{0}', 'message.type, message.pt, message.eng'))
+                                    .replace('{0}', 'message.type, message.pt, message.en'))
                             })
                     })
 
@@ -94,7 +94,7 @@ describe('Routes: push', () => {
                             pt: {
                                 text: direct_push.message?.pt.text
                             },
-                            eng: direct_push.message?.eng
+                            en: direct_push.message?.en
                         },
                         user_id: direct_push.user_id
                     }
@@ -121,7 +121,7 @@ describe('Routes: push', () => {
                             pt: {
                                 title: direct_push.message?.pt.title
                             },
-                            eng: direct_push.message?.eng
+                            en: direct_push.message?.en
                         },
                         user_id: direct_push.user_id
                     }

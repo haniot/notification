@@ -12,7 +12,7 @@ describe('MODELS: PushMessage', () => {
 
                 assert.propertyVal(result, 'type', pushMessageJSON.type)
                 assert.propertyVal(result, 'pt', pushMessageJSON.pt)
-                assert.propertyVal(result, 'eng', pushMessageJSON.eng)
+                assert.propertyVal(result, 'en', pushMessageJSON.en)
             })
 
             it('should return an empty PushMessage from an empty json', () => {
@@ -36,7 +36,7 @@ describe('MODELS: PushMessage', () => {
 
                 assert.propertyVal(result, 'type', pushMessageJSON.type)
                 assert.deepPropertyVal(result, 'pt', pushMessageJSON.pt)
-                assert.deepPropertyVal(result, 'eng', pushMessageJSON.eng)
+                assert.deepPropertyVal(result, 'en', pushMessageJSON.en)
             })
 
             it('should return an empty PushMessage from an empty string', () => {
@@ -61,7 +61,7 @@ describe('MODELS: PushMessage', () => {
 
                 assert.propertyVal(result, 'type', pushMessageJSON.type)
                 assert.propertyVal(result, 'pt', pushMessageJSON.pt)
-                assert.propertyVal(result, 'eng', pushMessageJSON.eng)
+                assert.propertyVal(result, 'en', pushMessageJSON.en)
             })
 
             it('should return a JSON with all attributes equal to undefined from an incomplete PushMessage', () => {
@@ -69,7 +69,7 @@ describe('MODELS: PushMessage', () => {
 
                 assert.isUndefined(result.type)
                 assert.isUndefined(result.pt)
-                assert.isUndefined(result.eng)
+                assert.isUndefined(result.en)
             })
         })
     })
