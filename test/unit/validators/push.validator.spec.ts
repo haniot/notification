@@ -77,42 +77,42 @@ describe('VALIDATORS: PushValidator', () => {
             }
         })
 
-        it('should throw ValidationException for an incomplete Push (missing message.eng)', () => {
+        it('should throw ValidationException for an incomplete Push (missing message.en)', () => {
             try {
-                push.message!.eng = undefined
+                push.message!.en = undefined
                 PushValidator.validate(push)
                 assert.fail()
             } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
-                    .replace('{0}', 'message.eng'))
+                    .replace('{0}', 'message.en'))
             }
         })
 
-        it('should throw ValidationException for an incomplete Push (missing message.eng.title)', () => {
+        it('should throw ValidationException for an incomplete Push (missing message.en.title)', () => {
             try {
-                push.message!.eng.title = undefined
+                push.message!.en.title = undefined
                 PushValidator.validate(push)
                 assert.fail()
             } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
-                    .replace('{0}', 'message.eng.title'))
+                    .replace('{0}', 'message.en.title'))
             }
         })
 
-        it('should throw ValidationException for an incomplete Push (missing message.eng.text)', () => {
+        it('should throw ValidationException for an incomplete Push (missing message.en.text)', () => {
             try {
-                push.message!.eng.text = undefined
+                push.message!.en.text = undefined
                 PushValidator.validate(push)
                 assert.fail()
             } catch (err: any) {
                 assert.instanceOf(err, ValidationException)
                 assert.propertyVal(err, 'message', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS)
                 assert.propertyVal(err, 'description', Strings.ERROR_MESSAGE.VALIDATE.REQUIRED_FIELDS_DESC
-                    .replace('{0}', 'message.eng.text'))
+                    .replace('{0}', 'message.en.text'))
             }
         })
 
