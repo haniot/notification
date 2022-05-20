@@ -47,7 +47,7 @@ describe('MODELS: Push', () => {
                 assert.deepPropertyVal(result, 'to', pushJSON.to)
                 assert.propertyVal(result.message, 'type', pushJSON.message.type)
                 assert.deepPropertyVal(result.message, 'pt', pushJSON.message.pt)
-                assert.deepPropertyVal(result.message, '', pushJSON.message.en)
+                assert.deepPropertyVal(result.message, 'en', pushJSON.message.en)
                 assert.propertyVal(result, 'user_id', pushJSON.user_id)
             })
 
