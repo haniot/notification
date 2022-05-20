@@ -61,7 +61,7 @@ describe('Routes: users.push', () => {
                         expect(res.body[0].to).to.be.eql(direct_push.to)
                         expect(res.body[0].message.type).to.be.eql(direct_push.message?.type)
                         expect(res.body[0].message.pt).to.be.eql(direct_push.message?.pt)
-                        expect(res.body[0].message.eng).to.be.eql(direct_push.message?.eng)
+                        expect(res.body[0].message.en).to.be.eql(direct_push.message?.en)
                     })
             })
         })

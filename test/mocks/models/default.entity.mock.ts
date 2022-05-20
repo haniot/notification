@@ -77,7 +77,7 @@ export abstract class DefaultEntityMock {
             title: 'Isto é um título.',
             text: 'Isto é um texto.'
         },
-        eng: {
+        en: {
             title: 'This is a title.',
             text: 'This is a text.'
         }
