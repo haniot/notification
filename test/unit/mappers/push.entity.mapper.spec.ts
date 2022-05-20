@@ -26,7 +26,7 @@ describe('MAPPERS: PushEntityMapper', () => {
                 assert.propertyVal(result, 'to', push.to)
                 assert.propertyVal(result.message, 'type', push.message?.type)
                 assert.propertyVal(result.message, 'pt', push.message?.pt)
-                assert.propertyVal(result.message, 'eng', push.message?.eng)
+                assert.propertyVal(result.message, 'en', push.message?.en)
                 assert.propertyVal(result, 'user_id', push.user_id)
             })
 
@@ -48,7 +48,7 @@ describe('MAPPERS: PushEntityMapper', () => {
                 assert.propertyVal(result, 'to', pushJSON.to)
                 assert.propertyVal(result.message, 'type', pushJSON.message.type)
                 assert.propertyVal(result.message, 'pt', pushJSON.message.pt)
-                assert.propertyVal(result.message, 'eng', pushJSON.message.eng)
+                assert.propertyVal(result.message, 'en', pushJSON.message.en)
                 assert.propertyVal(result, 'createdAt', pushJSON.created_at)
                 assert.propertyVal(result, 'user_id', pushJSON.user_id)
             })

@@ -9,7 +9,7 @@ export class PushMessageMock {
             title: 'Isto é um título.',
             text: 'Isto é um texto.'
         }
-        pushMessage.eng = {
+        pushMessage.en = {
             title: 'This is a title.',
             text: 'This is a text.'
         }

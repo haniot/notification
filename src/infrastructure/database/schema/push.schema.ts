@@ -11,7 +11,7 @@ const pushSchema: any = {
     message: {
         type: { type: String },
         pt: Object,
-        eng: Object
+        en: Object
     },
     is_read: {
         type: String,

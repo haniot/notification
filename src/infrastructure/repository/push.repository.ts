@@ -86,7 +86,7 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
     private serializePayloadBody(payload: any): any {
         return JSON.stringify({
             pt: payload.pt,
-            eng: payload.eng
+            en: payload.en
         })
     }
 
