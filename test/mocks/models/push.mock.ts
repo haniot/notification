@@ -8,12 +8,13 @@ export class PushMock {
     public generate(type?: string, to?: Array<string>): Push {
         const push: Push = new Push()
         push.id = GeneratorMock.generateObjectId()
+        push.createdAt = '2020-11-18T02:40:10.752Z'
         push.type = type ? type : this.generateType()
+        push.timestamp = '2020-11-18T02:40:10.752Z'
         push.keep_it = push.type === PushTypes.DIRECT ? ChoiceTypes.YES : ChoiceTypes.NO
         if (push.keep_it === ChoiceTypes.YES) push.is_read = ChoiceTypes.NO
         push.to = to ? to : [GeneratorMock.generateObjectId()]
         push.message = new PushMessageMock().generate()
-        push.createdAt = '2020-11-18T02:40:10.752Z'
         push.user_id = GeneratorMock.generateObjectId()
 
         return push

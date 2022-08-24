@@ -5,16 +5,25 @@ import { PushMessage } from './push.message'
 import { JsonUtils } from '../utils/json.utils'
 
 export class Push extends Entity implements IJSONSerializable, IJSONDeserializable<Push> {
+    private _createdAt?: string
     private _type?: string
+    private _timestamp?: string
     private _keep_it?: string
     private _is_read?: string
     private _to?: Array<string>
     private _message?: PushMessage
-    private _createdAt?: string
     private _user_id?: string
 
     constructor() {
         super()
+    }
+
+    get createdAt(): string | undefined {
+        return this._createdAt
+    }
+
+    set createdAt(value: string | undefined) {
+        this._createdAt = value
     }
 
     get type(): string | undefined {
@@ -23,6 +32,14 @@ export class Push extends Entity implements IJSONSerializable, IJSONDeserializab
 
     set type(value: string | undefined) {
         this._type = value
+    }
+
+    get timestamp(): string | undefined {
+        return this._timestamp
+    }
+
+    set timestamp(value: string | undefined) {
+        this._timestamp = value
     }
 
     get keep_it(): string | undefined {
@@ -57,14 +74,6 @@ export class Push extends Entity implements IJSONSerializable, IJSONDeserializab
         this._message = value
     }
 
-    get createdAt(): string | undefined {
-        return this._createdAt
-    }
-
-    set createdAt(value: string | undefined) {
-        this._createdAt = value
-    }
-
     get user_id(): string | undefined {
         return this._user_id
     }
@@ -82,6 +91,7 @@ export class Push extends Entity implements IJSONSerializable, IJSONDeserializab
 
         if (json.id !== undefined) super.id = json.id
         if (json.type !== undefined) this.type = json.type
+        if (json.timestamp !== undefined) this.timestamp = json.timestamp
         if (json.keep_it !== undefined) this.keep_it = json.keep_it
         if (json.is_read !== undefined) this.is_read = json.is_read
         if (json.to !== undefined && json.to instanceof Array) this.to = json.to
@@ -94,12 +104,13 @@ export class Push extends Entity implements IJSONSerializable, IJSONDeserializab
     public toJSON(): any {
         return {
             id: super.id,
+            created_at: this.createdAt,
             type: this.type,
+            timestamp: this.timestamp,
             keep_it: this.keep_it,
             is_read: this.is_read,
             to: this.to?.length ? this.to : undefined,
             message: this.message?.toJSON(),
-            created_at: this.createdAt,
             user_id: this.user_id
         }
     }

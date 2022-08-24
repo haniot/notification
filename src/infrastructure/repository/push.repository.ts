@@ -11,6 +11,7 @@ import HttpStatus from 'http-status-codes'
 import { Strings } from '../../utils/strings'
 import { PushToken } from '../../application/domain/model/push.token'
 import { IPushTokenRepository } from '../../application/port/push.token.repository.interface'
+import { Default } from '../../utils/default'
 
 @injectable()
 export class PushRepository extends BaseRepository<Push, PushEntity> implements IPushRepository {
@@ -36,7 +37,7 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
     public async send(push: Push): Promise<void> {
         try {
             const payloads: Array<any> = await this.mountPayloads(push)
-            for await(const payload of payloads) await this.sendPayload(payload)
+            for await (const payload of payloads) await this.sendPayload(payload)
             return Promise.resolve()
         } catch (err) {
             return Promise.reject(err)
@@ -58,14 +59,20 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
             const message: any = item.message?.toJSON()
             // If the type of push is direct, the 'to' parameter should be an array of ids
             if (item.type === PushTypes.DIRECT) {
-                for await(const owner_id of item.to!) {
+                for await (const owner_id of item.to!) {
                     // Get all push tokens from user, for any type of client
                     const push_tokens: Array<PushToken> = await this._pushTokenRepo.getUserTokens(owner_id)
                     // Create a push payload for each push token
                     push_tokens.forEach(push_token => {
                         result.push({
                             token: push_token.token,
-                            data: { type: message.type, body: this.serializePayloadBody(message) }
+                            data: {
+                                timestamp: item.timestamp,
+                                type: message.type,
+                                body: this.serializePayloadBody(message),
+                                user_id: owner_id,
+                                web_url: process.env.DASHBOARD_HOST || Default.DASHBOARD_HOST
+                            }
                         })
                     })
                 }
@@ -75,7 +82,13 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
             // If the type of push is topic, the 'to' parameters should be an array of topic names
             item.to!.forEach(topic => result.push({
                 topic,
-                data: { type: message.type, body: this.serializePayloadBody(message) }
+                data: {
+                    timestamp: item.timestamp,
+                    type: message.type,
+                    body: this.serializePayloadBody(message),
+                    topic,
+                    web_url: process.env.DASHBOARD_HOST || Default.DASHBOARD_HOST
+                }
             }))
             return Promise.resolve(result)
         } catch (err) {
