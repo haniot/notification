@@ -34,4 +34,7 @@ export abstract class Default {
 
     // The Google Firebase Config JSON file path for use firebase admin features.
     public static readonly FIREBASE_CREDENTIALS_PATH: string = '/path/to/firebase_credentials_file.json'
+
+    // Dashboard Host
+    public static readonly DASHBOARD_HOST: string = 'https://localhost:443'
 }

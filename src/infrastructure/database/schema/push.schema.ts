@@ -6,6 +6,7 @@ interface IPushModel extends Mongoose.Document {
 
 const pushSchema: any = {
     type: String,
+    timestamp: Date,
     keep_it: String,
     to: [String],
     message: {

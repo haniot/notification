@@ -21,6 +21,7 @@ describe('MAPPERS: PushEntityMapper', () => {
 
                 assert.propertyVal(result, 'id', push.id)
                 assert.propertyVal(result, 'type', push.type)
+                assert.deepPropertyVal(result, 'timestamp', new Date(push.timestamp!))
                 assert.propertyVal(result, 'keep_it', push.keep_it)
                 assert.propertyVal(result, 'is_read', push.is_read)
                 assert.propertyVal(result, 'to', push.to)
@@ -42,14 +43,15 @@ describe('MAPPERS: PushEntityMapper', () => {
                 const result: Push = pushTokenEntityMapper.transform(pushJSON)
 
                 assert.propertyVal(result, 'id', pushJSON.id)
+                assert.propertyVal(result, 'createdAt', pushJSON.created_at)
                 assert.propertyVal(result, 'type', pushJSON.type)
+                assert.propertyVal(result, 'timestamp', pushJSON.timestamp.toISOString())
                 assert.propertyVal(result, 'keep_it', pushJSON.keep_it)
                 assert.propertyVal(result, 'is_read', pushJSON.is_read)
                 assert.propertyVal(result, 'to', pushJSON.to)
                 assert.propertyVal(result.message, 'type', pushJSON.message.type)
                 assert.propertyVal(result.message, 'pt', pushJSON.message.pt)
                 assert.propertyVal(result.message, 'en', pushJSON.message.en)
-                assert.propertyVal(result, 'createdAt', pushJSON.created_at)
                 assert.propertyVal(result, 'user_id', pushJSON.user_id)
             })
 
