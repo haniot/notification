@@ -57,6 +57,7 @@ describe('Routes: users.push', () => {
                         expect(res.body.length).to.be.eql(1)
                         expect(res.body[0]).to.have.property('id')
                         expect(res.body[0].type).to.be.eql(direct_push.type)
+                        expect(res.body[0].timestamp).to.be.eql(direct_push.timestamp)
                         expect(res.body[0].is_read).to.be.eql(direct_push.is_read)
                         expect(res.body[0].to).to.be.eql(direct_push.to)
                         expect(res.body[0].message.type).to.be.eql(direct_push.message?.type)

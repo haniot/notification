@@ -92,12 +92,13 @@ export abstract class DefaultEntityMock {
 
     public static readonly PUSH: any = {
         id: GeneratorMock.generateObjectId(),
+        created_at: '2020-11-18T02:40:10.752Z',
         type: PushTypes.DIRECT,
+        timestamp: new Date('2020-11-18T02:40:10.752Z'),
         keep_it: ChoiceTypes.YES,
         is_read: ChoiceTypes.NO,
         to: [GeneratorMock.generateObjectId()],
         message: DefaultEntityMock.PUSH_MESSAGE,
-        created_at: '2020-11-18T02:40:10.752Z',
         user_id: GeneratorMock.generateObjectId()
     }
 

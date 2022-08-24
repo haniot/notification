@@ -12,6 +12,7 @@ describe('MODELS: Push', () => {
 
                 assert.propertyVal(result, 'id', pushJSON.id)
                 assert.propertyVal(result, 'type', pushJSON.type)
+                assert.propertyVal(result, 'timestamp', pushJSON.timestamp)
                 assert.propertyVal(result, 'keep_it', pushJSON.keep_it)
                 assert.propertyVal(result, 'is_read', pushJSON.is_read)
                 assert.propertyVal(result, 'to', pushJSON.to)
@@ -42,6 +43,7 @@ describe('MODELS: Push', () => {
 
                 assert.propertyVal(result, 'id', pushJSON.id)
                 assert.propertyVal(result, 'type', pushJSON.type)
+                assert.propertyVal(result, 'timestamp', pushJSON.timestamp)
                 assert.propertyVal(result, 'keep_it', pushJSON.keep_it)
                 assert.propertyVal(result, 'is_read', pushJSON.is_read)
                 assert.deepPropertyVal(result, 'to', pushJSON.to)
@@ -73,12 +75,13 @@ describe('MODELS: Push', () => {
                 const result: any = push.toJSON()
 
                 assert.propertyVal(result, 'id', pushJSON.id)
+                assert.propertyVal(result, 'created_at', pushJSON.created_at)
                 assert.propertyVal(result, 'type', pushJSON.type)
+                assert.propertyVal(result, 'timestamp', pushJSON.timestamp)
                 assert.propertyVal(result, 'keep_it', pushJSON.keep_it)
                 assert.propertyVal(result, 'is_read', pushJSON.is_read)
                 assert.propertyVal(result, 'to', pushJSON.to)
                 assert.deepPropertyVal(result, 'message', pushJSON.message)
-                assert.propertyVal(result, 'created_at', pushJSON.created_at)
                 assert.propertyVal(result, 'user_id', pushJSON.user_id)
             })
 
@@ -86,12 +89,13 @@ describe('MODELS: Push', () => {
                 const result: any = new Push().toJSON()
 
                 assert.isUndefined(result.id)
+                assert.isUndefined(result.created_at)
                 assert.isUndefined(result.type)
+                assert.isUndefined(result.timestamp)
                 assert.isUndefined(result.keep_it)
                 assert.isUndefined(result.is_read)
                 assert.isUndefined(result.to)
                 assert.isUndefined(result.message)
-                assert.isUndefined(result.created_at)
                 assert.isUndefined(result.user_id)
             })
         })
