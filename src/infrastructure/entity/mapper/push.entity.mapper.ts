@@ -21,6 +21,7 @@ export class PushEntityMapper implements IEntityMapper<Push, PushEntity> {
         if (item.is_read !== undefined) result.is_read = item.is_read
         if (item.to !== undefined) result.to = item.to
         if (item.message !== undefined) result.message = item.message.toJSON()
+        if (item.extra !== undefined) result.extra = item.extra
         if (item.user_id !== undefined) result.user_id = item.user_id
 
         return result
@@ -38,6 +39,7 @@ export class PushEntityMapper implements IEntityMapper<Push, PushEntity> {
         if (json.is_read !== undefined) result.is_read = json.is_read
         if (json.to !== undefined) result.to = json.to
         if (json.message !== undefined) result.message = new PushMessage().fromJSON(json.message)
+        if (json.extra !== undefined) result.extra = json.extra
         if (json.user_id !== undefined) result.user_id = json.user_id
 
         return result
