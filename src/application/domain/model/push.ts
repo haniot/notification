@@ -17,6 +17,7 @@ export class Push extends Entity implements IJSONSerializable, IJSONDeserializab
 
     constructor() {
         super()
+        this.timestamp = new Date().toISOString()
     }
 
     get createdAt(): string | undefined {
