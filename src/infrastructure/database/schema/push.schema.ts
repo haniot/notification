@@ -18,7 +18,8 @@ const pushSchema: any = {
         type: String,
         default: ChoiceTypes.NO
     },
-    user_id: String,
+    extra: Object,
+    user_id: String
 }
 
 const options: any = {

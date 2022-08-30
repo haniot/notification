@@ -59,9 +59,9 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
             const message: any = item.message?.toJSON()
             // If the type of push is direct, the 'to' parameter should be an array of ids
             if (item.type === PushTypes.DIRECT) {
-                for await (const owner_id of item.to!) {
+                for await (const recipientId of item.to!) {
                     // Get all push tokens from user, for any type of client
-                    const push_tokens: Array<PushToken> = await this._pushTokenRepo.getUserTokens(owner_id)
+                    const push_tokens: Array<PushToken> = await this._pushTokenRepo.getUserTokens(recipientId)
                     // Create a push payload for each push token
                     push_tokens.forEach(push_token => {
                         result.push({
@@ -70,7 +70,9 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
                                 timestamp: item.timestamp,
                                 type: message.type,
                                 body: this.serializePayloadBody(message),
-                                user_id: owner_id,
+                                recipient_id: recipientId,
+                                user_id: item.user_id,
+                                extra: item.extra ? JSON.stringify(item.extra) : JSON.stringify({}),
                                 web_url: process.env.DASHBOARD_HOST || Default.DASHBOARD_HOST
                             }
                         })
@@ -87,6 +89,8 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
                     type: message.type,
                     body: this.serializePayloadBody(message),
                     topic,
+                    user_id: item.user_id,
+                    extra: item.extra ? JSON.stringify(item.extra) : JSON.stringify({}),
                     web_url: process.env.DASHBOARD_HOST || Default.DASHBOARD_HOST
                 }
             }))
