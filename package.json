@@ -1,6 +1,6 @@
 {
   "name": "notification",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "Microservice for sending messages: email, sms or push. In this version only the sending of email will be available.",
   "main": "dist/server.js",
   "scripts": {

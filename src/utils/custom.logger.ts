@@ -67,6 +67,9 @@ export class CustomLogger implements ILogger {
         if ((process.env.NODE_ENV || Default.NODE_ENV) === 'test') {
             this._options.level = 'none'
             this._options.silent = true
+        } else if ((process.env.NODE_ENV || Default.NODE_ENV) === 'production') {
+            this._options.level = 'info'
+            this._options.silent = false
         } else {
             this._options.level = 'debug'
             this._options.silent = false
