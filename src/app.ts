@@ -59,7 +59,7 @@ export class App {
      */
     private initMiddleware(): void {
         this.setupInversifyExpress()
-        this.setupSwaggerUI()
+        if ((process.env.NODE_ENV || Default.NODE_ENV) !== 'production') this.setupSwaggerUI()
         this.setupErrorsHandler()
     }
 
