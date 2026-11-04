@@ -1,8 +1,8 @@
+import { App } from 'firebase-admin/app'
 import { inject, injectable } from 'inversify'
-import * as admin from 'firebase-admin'
-import { IConnectionFirebase } from '../port/connection.firebase.interface'
 import { Identifier } from '../../di/identifiers'
 import { IConnectionFirebaseFactory, IFirebaseOptions } from '../port/connection.factory.interface'
+import { IConnectionFirebase } from '../port/connection.firebase.interface'
 
 /**
  * Implementation of the interface that provides connection with Firebase.
@@ -13,18 +13,18 @@ import { IConnectionFirebaseFactory, IFirebaseOptions } from '../port/connection
  */
 @injectable()
 export class ConnectionFirebase implements IConnectionFirebase {
-    private _connection!: admin.app.App
+    private _connection!: App
 
     constructor(
         @inject(Identifier.FIREBASE_CONNECTION_FACTORY) private readonly _connectionFactory: IConnectionFirebaseFactory
     ) {
     }
 
-    get connection(): admin.app.App {
+    get connection(): App {
         return this._connection
     }
 
-    set connection(value: admin.app.App ) {
+    set connection(value: App) {
         this._connection = value
     }
 

@@ -34,7 +34,7 @@ export class Query implements IQuery {
      * @param filters
      */
     constructor(fields?: Array<string>, ordination?: Map<string, number>,
-                pagination?: IPagination, filters?: object) {
+        pagination?: IPagination, filters?: object) {
         this.fields = fields ? fields : []
         this.ordination = ordination ? ordination : new Map()
         this.pagination = pagination ? pagination : new Pagination()

@@ -1,4 +1,4 @@
-import admin from 'firebase-admin'
+import { App } from 'firebase-admin/app'
 
 export interface IConnectionFactory {
     createConnection(uri: string, options?: IDBOptions | IEventBusOptions): Promise<any>
@@ -8,7 +8,7 @@ export interface IDBOptions {
 }
 
 export interface IConnectionFirebaseFactory {
-    createInstance(options: IFirebaseOptions): Promise<admin.app.App>
+    createInstance(options: IFirebaseOptions): Promise<App>
 }
 
 export interface IFirebaseOptions {

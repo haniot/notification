@@ -19,7 +19,7 @@ import { App } from './src/app'
  *
  *  The fastest way is to create a copy of the .env.example file.
  */
-require('dotenv').config()
+import 'dotenv/config'
 
 const logger: ILogger = DIContainer.get<ILogger>(Identifier.LOGGER)
 const app: Application = (DIContainer.get<App>(Identifier.APP)).getExpress()

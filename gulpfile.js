@@ -2,18 +2,16 @@
 
 // DEPENDENCIES
 const gulp = require('gulp'),
-    tslint = require('gulp-tslint'),
+    eslint = require('gulp-eslint-new'),
     ts = require('gulp-typescript'),
     nodemon = require('gulp-nodemon')
 
-// TSLINT
-gulp.task('ts-lint', () => {
-    const config = {formatter: 'verbose'}
+// ESLINT
+gulp.task('es-lint', () => {
     return gulp.src(['src/**/*.ts'])
-        .pipe(tslint(config))
-        .pipe(tslint.report({
-            reportLimit: 5
-        }))
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError())
 })
 
 // COPY FILES
@@ -42,19 +40,18 @@ gulp.task('watch', (done) => {
 })
 
 // BUILD DEFAULT
-gulp.task('build', gulp.series(['ts-lint', 'copy-files'], function compiler() {
-        const tsProject = ts.createProject(
-            'tsconfig.json',
-            {typescript: require('typescript')}
-        )
-        return tsProject.src()
-            .pipe(tsProject())
-            .js.pipe(gulp.dest('dist'))
-            .on('error', (err) => {
-                console.error('Build error:', err.message)
-                // process.exit(1)
-            })
-    }
+gulp.task('build', gulp.series(['es-lint', 'copy-files'], function compiler() {
+    const tsProject = ts.createProject(
+        'tsconfig.json',
+        { typescript: require('typescript') }
+    )
+    return tsProject.src()
+        .pipe(tsProject())
+        .js.pipe(gulp.dest('dist'))
+        .on('error', (err) => {
+            console.error('Build error:', err.message)
+        })
+}
 ))
 
 // BUILD DEV

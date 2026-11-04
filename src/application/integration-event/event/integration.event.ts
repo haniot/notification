@@ -1,5 +1,6 @@
 import { IJSONSerializable } from '../../domain/utils/json.serializable.interface'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export abstract class IntegrationEvent<T> implements IJSONSerializable {
 
     protected constructor(readonly event_name: string, readonly type: string, readonly timestamp?: Date) {
