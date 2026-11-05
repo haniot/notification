@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 import { ObjectIdValidator } from '../../../src/application/domain/validator/object.id.validator'
-import { ObjectID } from 'bson'
+import { ObjectId } from 'bson'
 import { Strings } from '../../../src/utils/strings'
 import { ValidationException } from '../../../src/application/domain/exception/validation.exception'
 
@@ -8,7 +8,7 @@ describe('VALIDATORS: ObjectIdValidator', () => {
     context('when the ObjectId is valid', () => {
         it('should return undefined when the validation was successful', () => {
             try {
-                const result = ObjectIdValidator.validate(`${new ObjectID()}`)
+                const result = ObjectIdValidator.validate(`${new ObjectId()}`)
                 assert.isUndefined(result)
             } catch (err: any) {
                 assert.fail(err)

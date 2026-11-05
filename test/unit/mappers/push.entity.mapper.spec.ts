@@ -32,7 +32,9 @@ describe('MAPPERS: PushEntityMapper', () => {
             })
 
             it('should return an empty PushEntity from empty Push', () => {
-                const result: PushEntity = pushTokenEntityMapper.transform(new Push())
+                const push = new Push()
+                push.timestamp = undefined
+                const result: PushEntity = pushTokenEntityMapper.transform(push)
 
                 assert.isEmpty(result)
             })
