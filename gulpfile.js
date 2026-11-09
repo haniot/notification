@@ -3,8 +3,7 @@
 // DEPENDENCIES
 const gulp = require('gulp'),
     eslint = require('gulp-eslint-new'),
-    ts = require('gulp-typescript'),
-    nodemon = require('gulp-nodemon')
+    ts = require('gulp-typescript')
 
 // ESLINT
 gulp.task('es-lint', () => {
@@ -22,23 +21,6 @@ gulp.task('copy-files', () => {
         gulp.src(COPY_TEMPLATE).pipe(gulp.dest('dist/src/ui/templates'))
 })
 
-// WATCH
-gulp.task('watch', (done) => {
-    gulp.watch('./**/*.ts')
-    nodemon({
-        script: 'dist/server.js',
-        tasks: ['build'],
-        ext: 'ts json',
-        ignore: ['node_modules/', 'package.json', 'tsconfig.json']
-    }).on('restart', () => {
-        console.log('##################################### // ######################################')
-        console.log('########################### (0/ Server restarted... ###########################')
-    }).on('crash', function () {
-        console.error('Application has crashed!')
-    })
-    done()
-})
-
 // BUILD DEFAULT
 gulp.task('build', gulp.series(['es-lint', 'copy-files'], function compiler() {
     const tsProject = ts.createProject(
@@ -53,6 +35,3 @@ gulp.task('build', gulp.series(['es-lint', 'copy-files'], function compiler() {
         })
 }
 ))
-
-// BUILD DEV
-gulp.task('dev', gulp.series(['build', 'watch']))

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "gulp build",
     "start": "node dist/server.js",
-    "start:dev": "gulp dev",
+    "start:dev": "nodemon",
     "eslint": "eslint .",
     "test": "nyc --clean --reporter=text-summary mocha test/**/*.spec.ts",
     "test:unit": "nyc --clean --all --reporter=text-summary mocha test/unit/**/*.spec.ts",
@@ -52,9 +52,9 @@
     "all": true
   },
   "dependencies": {
-    "amqp-client-node": "^1.0.11",
+    "amqp-client-node": "github:nutes-uepb/amqp-client-node#feature/audit-fixes",
     "body-parser": "^2.4.0",
-    "dotenv": "^18.0.9",
+    "dotenv": "^18.0.10",
     "email-templates": "^13.0.1",
     "express": "^4.22.3",
     "firebase-admin": "^14.5.0",
@@ -64,8 +64,8 @@
     "mongoose": "^7.8.13",
     "morgan": "^1.12.1",
     "multer": "^2.5.0",
-    "nodemailer": "^10.3.1",
-    "query-strings-parser": "^2.1.12-lts",
+    "nodemailer": "^10.4.0",
+    "query-strings-parser": "github:nutes-uepb/query-strings-parser#feature/audit-fixes",
     "reflect-metadata": "^0.2.2",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.19.0",
@@ -90,12 +90,48 @@
     "globals": "^17.14.0",
     "gulp": "^5.0.1",
     "gulp-eslint-new": "^2.6.2",
-    "gulp-nodemon": "^2.5.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "mocha": "^12.0.3",
+    "nodemon": "^3.1.14",
     "nyc": "^18.0.0",
-    "supertest": "^7.3.1",
+    "supertest": "^7.3.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "email-templates": {
+      "nodemailer": "^10.1.4",
+      "html-to-text": "^10.0.1"
+    },
+    "@google-cloud/firestore-api": {
+      "glob": "^14.0.2",
+      "minimatch": "^11.0.5"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.1"
+    },
+    "eslint": {
+      "minimatch": "^11.0.5"
+    },
+    "mocha": {
+      "glob": "^14.0.2",
+      "minimatch": "^11.0.5"
+    },
+    "nodemon": {
+      "minimatch": "^11.0.5"
+    },
+    "nyc": {
+      "glob": "^14.0.2",
+      "minimatch": "^11.0.5"
+    },
+    "anymatch": {
+      "picomatch": "^2.3.2"
+    },
+    "micromatch": {
+      "picomatch": "^2.3.2"
+    },
+    "readdirp": {
+      "picomatch": "^2.3.2"
+    }
   }
 }
