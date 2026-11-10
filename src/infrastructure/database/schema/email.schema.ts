@@ -9,34 +9,34 @@ const addressObj = {
 }
 
 const emailSchema = new Mongoose.Schema({
-        reply: addressObj,
-        from: addressObj,
-        to: [addressObj],
-        cc: [addressObj],
-        bcc: [addressObj],
-        subject: { type: String },
-        text: { type: String },
-        html: { type: String },
-        attachments: [{
-            filename: { type: String },
-            path: { type: String },
-            content_type: { type: String }
-        }],
-        user_id: {
-            type: Mongoose.Schema.Types.ObjectId
-        }
-    },
-    {
-        timestamps: { createdAt: 'created_at', updatedAt: false },
-        toJSON: {
-            transform: (doc, ret) => {
-                ret.id = ret._id
-                delete ret._id
-                delete ret.__v
-                return ret
-            }
+    reply: addressObj,
+    from: addressObj,
+    to: [addressObj],
+    cc: [addressObj],
+    bcc: [addressObj],
+    subject: { type: String },
+    text: { type: String },
+    html: { type: String },
+    attachments: [{
+        filename: { type: String },
+        path: { type: String },
+        content_type: { type: String }
+    }],
+    user_id: {
+        type: Mongoose.Schema.Types.ObjectId
+    }
+},
+{
+    timestamps: { createdAt: 'created_at', updatedAt: false },
+    toJSON: {
+        transform: (doc, ret) => {
+            ret.id = ret._id
+            delete ret._id
+            delete ret.__v
+            return ret
         }
     }
+}
 )
 
 export const EmailRepoModel = Mongoose.model<IEmailModel>('Email', emailSchema)

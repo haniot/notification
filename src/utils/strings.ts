@@ -24,7 +24,8 @@ export abstract class Strings {
 
     public static readonly EMAIL_TEMPLATE: any = {
         NOT_FOUND: 'Email template not found!',
-        NOT_FOUND_DESCRIPTION: 'Email template not found or already removed. A new operation for the same resource is not required.'
+        NOT_FOUND_DESCRIPTION: 'Email template not found or already removed. ' +
+            'A new operation for the same resource is not required.'
     }
 
     public static readonly PUSH: any = {
@@ -46,7 +47,8 @@ export abstract class Strings {
             NOT_MAPPED: 'Value not mapped for {0}:',
             NOT_MAPPED_DESC: 'The mapped values are:',
             AT_LEAST_ONE_RECIPIENT: 'At least one recipient is required.',
-            AT_LEAST_ONE_RECIPIENT_DESC: 'Please enter at least one user id for direct notifications or at least one topic name for topic notifications.',
+            AT_LEAST_ONE_RECIPIENT_DESC: 'Please enter at least one user id for direct notifications ' +
+                'or at least one topic name for topic notifications.',
             USER_HAS_NO_PUSH_TOKEN: 'Some user ids do not have saved push tokens for any type of client: {0}.',
             USER_HAS_NO_PUSH_TOKEN_DESC: 'Please submit a valid user id and try again.',
             INVALID_EMAIL: 'Email "{0}" does not have a valid format!',
@@ -58,7 +60,8 @@ export abstract class Strings {
             REQUIRED_TO_EMAIL: 'The to field requires an array of recipients with a email address!',
             REQUIRED_CC_EMAIL: 'The cc field requires an array of recipients with a email address!',
             REQUIRED_BCC_EMAIL: 'The bcc field requires an array of recipients with a email address!',
-            REQUIRED_ATTACHMENTS_PATH: 'The attachment field requires a variety of attachments with at least the file path or URL.'
+            REQUIRED_ATTACHMENTS_PATH: 'The attachment field requires a variety of attachments ' +
+                'with at least the file path or URL.'
         }
     }
 
@@ -68,14 +71,16 @@ export abstract class Strings {
         INVALID_TOKEN: 'The recipient token is invalid: {0}',
         INVALID_TOKEN_DESC: 'Please provide a new token to recipient and try again later.',
         TOKEN_NOT_REGISTERED: 'The recipient is not registered: {0}',
-        TOKEN_NOT_REGISTERED_DESC: 'Probably the token has been expired or deleted. Please provide a new token and try again later.',
+        TOKEN_NOT_REGISTERED_DESC: 'Probably the token has been expired or deleted. ' +
+            'Please provide a new token and try again later.',
         MESSAGE_RATE_EXCEEDED: 'The maximum message rate has been reached for the destination: {0}.',
         MESSAGE_RATE_EXCEEDED_DESC: 'Please wait for a while before resending messages to this destination again.',
         DIRECT_MESSAGE_RATE_EXCEEDED: 'The maximum message rate has been reached for token: {0}.',
         DIRECT_MESSAGE_RATE_EXCEEDED_DESC: 'Please wait for a while before resending messages to this token again.',
         TOPICS_MESSAGE_RATE_EXCEEDED: 'The maximum message rate has been reached for topic: {0}.',
         TOPICS_MESSAGE_RATE_EXCEEDED_DESC: 'Please wait for a while before resending messages to this topic again.',
-        MISMATCHED_CREDENTIAL: 'The credential used into Firebase Admin SDK is not allowed to send messages to the push token: {0}',
+        MISMATCHED_CREDENTIAL: 'The credential used into Firebase Admin SDK is not allowed ' +
+            'to send messages to the push token: {0}',
         MISMATCHED_CREDENTIAL_DESC: 'Please verify if the push token and the SDK credential belonging to the same project.',
         AUTHENTICATION_ERROR: 'The Firebase Admin SDK could not connect with the FCM Server.',
         AUTHENTICATION_ERROR_DESC: 'Please verify your SDK credentials and try again.',

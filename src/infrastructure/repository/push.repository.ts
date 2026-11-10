@@ -1,17 +1,18 @@
-import { BaseRepository } from './base/base.repository'
-import { Push, PushTypes } from '../../application/domain/model/push'
-import { PushEntity } from '../entity/push.entity'
-import { IPushRepository } from '../../application/port/push.repository.interface'
+import { getMessaging } from 'firebase-admin/messaging'
+import HttpStatus from 'http-status-codes'
 import { inject, injectable } from 'inversify'
+import { FirebaseClientException } from '../../application/domain/exception/firebase.client.exception'
+import { Push, PushTypes } from '../../application/domain/model/push'
+import { PushToken } from '../../application/domain/model/push.token'
+import { IPushRepository } from '../../application/port/push.repository.interface'
+import { IPushTokenRepository } from '../../application/port/push.token.repository.interface'
 import { Identifier } from '../../di/identifiers'
 import { ILogger } from '../../utils/custom.logger'
-import { IConnectionFirebase } from '../port/connection.firebase.interface'
-import { FirebaseClientException } from '../../application/domain/exception/firebase.client.exception'
-import HttpStatus from 'http-status-codes'
-import { Strings } from '../../utils/strings'
-import { PushToken } from '../../application/domain/model/push.token'
-import { IPushTokenRepository } from '../../application/port/push.token.repository.interface'
 import { Default } from '../../utils/default'
+import { Strings } from '../../utils/strings'
+import { PushEntity } from '../entity/push.entity'
+import { IConnectionFirebase } from '../port/connection.firebase.interface'
+import { BaseRepository } from './base/base.repository'
 
 @injectable()
 export class PushRepository extends BaseRepository<Push, PushEntity> implements IPushRepository {
@@ -46,7 +47,7 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
 
     private sendPayload(payload: any): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            this._firebase.connection.messaging().send(payload)
+            getMessaging(this._firebase.connection).send(payload)
                 .then(res => resolve(!!res))
                 .catch(err => reject(this.firebaseAdminErrorListener(err)))
         })
@@ -152,13 +153,15 @@ export class PushRepository extends BaseRepository<Push, PushEntity> implements 
                 'messaging/topics-message-rate-exceeded': () => {
                     return new FirebaseClientException(
                         HttpStatus.TOO_MANY_REQUESTS,
-                        Strings.FIREBASE_ADMIN_ERROR.TOPICS_MESSAGE_RATE_EXCEEDED.replace(': {0}', recipient ? `: ${recipient}` : '.'),
+                        Strings.FIREBASE_ADMIN_ERROR.TOPICS_MESSAGE_RATE_EXCEEDED
+                            .replace(': {0}', recipient ? `: ${recipient}` : '.'),
                         Strings.FIREBASE_ADMIN_ERROR.TOPICS_MESSAGE_RATE_EXCEEDED_DESC)
                 },
                 'messaging/device-message-rate-exceeded': () => {
                     return new FirebaseClientException(
                         HttpStatus.TOO_MANY_REQUESTS,
-                        Strings.FIREBASE_ADMIN_ERROR.DIRECT_MESSAGE_RATE_EXCEEDED.replace(': {0}', recipient ? `: ${recipient}` : '.'),
+                        Strings.FIREBASE_ADMIN_ERROR.DIRECT_MESSAGE_RATE_EXCEEDED
+                            .replace(': {0}', recipient ? `: ${recipient}` : '.'),
                         Strings.FIREBASE_ADMIN_ERROR.DIRECT_MESSAGE_RATE_EXCEEDED_DESC)
                 },
                 'messaging/mismatched-credential': () => {

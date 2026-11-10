@@ -60,7 +60,7 @@ export class ConnectionRabbitMQ implements IConnectionEventBus {
     }
 
     public subscribe(queueName: string, exchangeName: string, routingKey: string,
-                     callback: (err: any, message: object) => void, options?: object): Promise<void> {
+        callback: (err: any, message: object) => void, options?: object): Promise<void> {
         if (!this.isOpen) return Promise.reject(new EventBusException('No connection open!'))
         return this._connection.sub(queueName, exchangeName, routingKey, callback, options)
     }

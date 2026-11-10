@@ -12,8 +12,7 @@ export abstract class Default {
     public static readonly NODE_ENV: string = 'development' // development, test, production
     public static readonly PORT_HTTP: number = 7000
     public static readonly PORT_HTTPS: number = 7001
-    public static readonly SWAGGER_URI: string = 'https://api.swaggerhub.com/apis/haniot/' +
-        'notification-service/v1/swagger.json'
+    public static readonly SWAGGER_PATH: string = './src/ui/swagger/api_1.0.0.yaml'
     public static readonly LOGO_URI: string = 'https://i.imgur.com/O7PxGWQ.png'
 
     // MongoDB

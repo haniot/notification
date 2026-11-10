@@ -1,0 +1,8 @@
+/* TypeScript project file to be used exclusively by ESLint. */
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "./**/*.ts"
+  ],
+  "exclude": []
+}

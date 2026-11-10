@@ -1,18 +1,19 @@
-import 'reflect-metadata'
-import morgan from 'morgan'
-import helmet from 'helmet'
 import bodyParser from 'body-parser'
-import HttpStatus from 'http-status-codes'
-import swaggerUi from 'swagger-ui-express'
-import qs from 'query-strings-parser'
 import express, { Application, NextFunction, Request, Response } from 'express'
+import helmet from 'helmet'
+import HttpStatus from 'http-status-codes'
 import { inject, injectable } from 'inversify'
 import { InversifyExpressServer } from 'inversify-express-utils'
-import { ApiException } from './ui/exception/api.exception'
-import { Default } from './utils/default'
+import morgan from 'morgan'
+import qs from 'query-strings-parser'
+import 'reflect-metadata'
+import swaggerUi from 'swagger-ui-express'
+import yaml from 'yamljs'
 import { DIContainer } from './di/di'
 import { Identifier } from './di/identifiers'
+import { ApiException } from './ui/exception/api.exception'
 import { ILogger } from './utils/custom.logger'
+import { Default } from './utils/default'
 import { Strings } from './utils/strings'
 
 /**
@@ -59,7 +60,7 @@ export class App {
      */
     private initMiddleware(): void {
         this.setupInversifyExpress()
-        this.setupSwaggerUI()
+        if ((process.env.NODE_ENV || Default.NODE_ENV) !== 'production') this.setupSwaggerUI()
         this.setupErrorsHandler()
     }
 
@@ -97,8 +98,8 @@ export class App {
 
             app.use(morgan(':remote-addr :remote-user ":method :url HTTP/:http-version" ' +
                 ':status :res[content-length] :response-time ms ":referrer" ":user-agent"', {
-                    stream: { write: (str: string) => this._logger.info(str) }
-                }
+                stream: { write: (str: string) => this._logger.info(str) }
+            }
             ))
         })
         this.express.use(inversifyExpress.build())
@@ -112,12 +113,12 @@ export class App {
      */
     private setupSwaggerUI(): void {
         const options = {
-            swaggerUrl: Default.SWAGGER_URI,
             customCss: '.swagger-ui .topbar { display: none }',
             customfavIcon: Default.LOGO_URI,
             customSiteTitle: `API Reference | ${Strings.APP.TITLE}`
         }
-        this.express.use('/v1/reference', swaggerUi.serve, swaggerUi.setup({}, options))
+        this.express.use(
+            '/v1/reference', swaggerUi.serve, swaggerUi.setup(yaml.load(Default.SWAGGER_PATH), options))
     }
 
     /**
