@@ -1,0 +1,565 @@
+openapi: 3.0.0
+info:
+  version: '1.0.0'
+  title: 'HANIoT Notification Service'
+  description: |
+    Service for sending messages: _**email**_, _**sms**_ or _**push**_. In this version only the sending of email will be available.
+  contact:
+    email: haniot@nutes.uepb.edu.br
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - description: Localhost
+    url: https://localhost:7001
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/haniot/notification-service/v1
+tags:
+  - name: users.emails
+    description: Operations for the Email resource.    
+  - name: emails.templates
+    description: Operations for the Email Template resource.        
+  - name: users.push.tokens
+    description: Operations for tokens used in push notification.        
+  - name: push
+    description: Operations for the Push resource.        
+  - name: users.push
+    description: Operations for user push notification.
+    
+paths:
+  # users.emails
+  /v1/users/{user_id}/emails:
+    post:
+      security:
+        - JWTAuth: ['nt:c']  
+      tags:
+        - users.emails
+      summary: Send email.
+      description: Sends email and associates to a user.
+      operationId: sendEmail
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Id of user.
+          example: '5cf2a5cd8f58c88674dd761f'
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Email sent.
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/Email'                          
+        '400':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/400'
+        '401':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+        '500':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500'
+      requestBody:
+        description: Data for sending the email
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+    get:
+      security:
+        - JWTAuth: ['nt:r'] 
+      tags:
+        - users.emails
+      summary: Retrieve sent mail list.
+      description: |
+        Returns list sent emails from a user. 
+        
+        This API supports filters in the query. Although Swagger does not support query filters, 
+        you can get information about filter queries by visiting this
+        [link](https://github.com/nutes-uepb/query-strings-parser/wiki/3.4-Filtering).
+      operationId: getAllEmailsFromUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Id of user.
+          example: '5cf2a5cd8f58c88674dd761f'
+          schema:
+            type: string
+        - $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/pageParam'
+        - $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/limitParam'
+        - $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/sortParam'
+      responses:
+        '200':
+          description: List of emails.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      description: Unique identifier of sent email.
+                      example: 5cf3c681fea0096b00abc0bd
+                    to:
+                      type: array
+                      description: Message recipients.
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Recipient's name.
+                            example: Recipient1 name
+                          email:
+                            type: string
+                            description: Recipient's email.
+                            example: recipient1@example.com    
+                    subject:
+                      type: string
+                      description: Message subject.
+                      example: 'Sending with HANIoT Notification Service is fun.'
+                    text:
+                      type: string
+                      description: Text version of the message.
+                      example: 'Hello World!'
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: The date and time the message was sent in UTC format, according to ISO 8601.
+                      example: '2019-06-02T13:57:30'
+                      readOnly: true                      
+          
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500' 
+  /v1/users/{user_id}/emails/{email_id}: 
+    get:
+      security:
+        - JWTAuth: ['nt:r'] 
+      tags:
+        - users.emails
+      summary: Recover email data.
+      description: |
+        Returns data from the sent email associated with the user.
+      operationId: getEmailByIdAndFromUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Id of user.
+          example: '5cf2a5cd8f58c88674dd761f'
+          schema:
+            type: string
+        - name: email_id
+          in: path
+          required: true
+          description: Id of email.
+          example: '5cf3c681fea0096b00abc0bd'
+          schema:
+            type: string
+        - $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/fieldsParam'
+      responses:
+        '200':
+          description: Email data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+        '404':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/404'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500'
+    delete:
+      security:
+        - JWTAuth: ['nt:d']  
+      tags:
+        - users.emails
+      summary: Delete email data.
+      description: Removes data from the sent email associated with the user.
+      operationId: removeEmailByIdAndFromUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Id of user.
+          example: '5cf2a5cd8f58c88674dd761f'
+          schema:
+            type: string
+        - name: email_id
+          in: path
+          required: true
+          description: Id of email.
+          example: '5cf3c681fea0096b00abc0bd'
+          schema:
+            type: string
+      responses:
+        '204':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/204'
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500'
+
+  # emails.templates
+  /v1/emails/templates/{type}:
+    put:
+      deprecated: true
+      security:
+        - JWTAuth: ['nt:st']
+      tags:
+        - emails.templates
+      summary: Register or update email templates.
+      description: |
+        Register or upate a email template.
+      operationId: addOrUpdateEmailTemplates
+      parameters:
+        - name: type
+          in: path
+          required: true
+          description: Email type
+          example: 'welcome'
+          schema:
+            type: string
+            enum: ['welcome', 'reset-password', 'updated-password', 'pilot-study-data']
+      responses:
+        '204':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/204'
+        '400':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/400'
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                html:
+                  type: string
+                  format: binary
+                  description: Html file.
+                subject:
+                  type: string
+                  format: binary
+                  description: Subject file.
+                text:
+                  type: string
+                  format: binary
+                  description: Text file.
+        description: Email templates data.
+        required: true
+  /v1/emails/templates/{type}/{resource}:
+    get:
+      deprecated: true
+      security:
+        - JWTAuth: ['nt:st']
+      tags:
+        - emails.templates
+      summary: Download email template.
+      description: Download a single email template by type.
+      operationId: downloadEmailTemplate
+      parameters:
+        - name: type
+          in: path
+          required: true
+          description: Email type
+          example: 'welcome'
+          schema:
+            type: string
+            enum: ['welcome', 'reset-password', 'updated-password', 'pilot-study-data']
+        - name: resource
+          in: path
+          required: true
+          description: Name of resource
+          example: 'html'
+          schema:
+            type: string
+            enum: ['html', 'subject', 'text']
+      responses:
+        '200':
+          description: Successful request.
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+                description: Html file.
+                
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+          
+  # users.push.tokens
+  /v1/users/{user_id}/push/tokens:
+    get:
+      security:
+        - JWTAuth: ['nt:r']  
+      tags:
+        - users.push.tokens
+      summary: Retrieve user push tokens.
+      description: |
+        Returns the push notification tokens from user.
+      operationId: getPushTokensFromUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Id of user.
+          example: '5cf2a5cd8f58c88674dd761f'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of topics.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  web_token:
+                    type: string
+                    example: 'UEBV0JkR86LRomPSInC0'
+                  mobile_token:
+                    type: string
+                    example: 'ONdVIBZ4ryQ23Ws7iQr4'
+          
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500' 
+    
+  /v1/users/{user_id}/push/{client_type}/tokens:
+    put:
+      security:
+        - JWTAuth: ['nt:c']
+      tags:
+        - users.push.tokens
+      summary: Register or update push token.
+      description: |
+        Register or upate a push token from user.
+      operationId: addOrUpdatePushToken
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Id of user.
+          example: '5cf2a5cd8f58c88674dd761f'
+          schema:
+            type: string
+        - name: client_type
+          in: path
+          required: true
+          description: Type of client.
+          example: 'mobile'
+          schema:
+            type: string
+            enum: ['web', 'mobile']
+      responses:
+        '204':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/204'
+        '400':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/400'
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+      requestBody:
+        content:
+         application/json:
+            schema:
+              $ref: '#/components/schemas/PushToken'
+        description: Push token data.
+        required: true
+    delete:
+      security:
+        - JWTAuth: ['nt:d']  
+      tags:
+        - users.push.tokens
+      summary: Delete push token data.
+      description: Removes data from the push token associated with the user.
+      operationId: removePushTokenFromUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Id of user.
+          example: '5cf2a5cd8f58c88674dd761f'
+          schema:
+            type: string
+        - name: client_type
+          in: path
+          required: true
+          description: Type of client.
+          example: 'mobile'
+          schema:
+            type: string
+            enum: ['web', 'mobile']
+      responses:
+        '204':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/204'
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500'
+
+  # users.push
+  /v1/push:
+    post:
+      security:
+        - JWTAuth: ['nt:c']  
+      tags:
+        - push
+      summary: Send push.
+      description: Send a push notification to user.
+      operationId: sendPush
+      responses:
+        '201':
+          description: Push sended.
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/Push'
+        '400':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/400'
+        '401':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+        '500':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500'
+      requestBody:
+        description: Data for sending the notification,
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Push'
+  /v1/push/{push_id}:
+    delete:
+      security:
+        - JWTAuth: ['nt:d']  
+      tags:
+        - push
+      summary: Delete push.
+      description: Removes push notification from user.
+      operationId: removePushFromUser
+      parameters:
+        - name: push_id
+          in: path
+          required: true
+          description: Id of push.
+          example: '5f5a7871df801de58a37c156'
+          schema:
+            type: string
+      responses:
+        '204':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/204'
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500'
+  /v1/push/{push_id}/read:
+    post:
+      security:
+        - JWTAuth: ['nt:u']  
+      tags:
+        - push
+      summary: Confirm push notification read.
+      description: Send a confirmation that the push notification is read.
+      operationId: confirmPushRead
+      parameters:
+        - name: push_id
+          in: path
+          required: true
+          description: Id of push.
+          example: '5f5a7871df801de58a37c156'
+          schema:
+            type: string
+      responses:
+        '204':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/204'
+        '400':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/400'
+        '401':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+        '500':
+           $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500'
+  
+  /v1/users/{user_id}/push:
+     get:
+      security:
+        - JWTAuth: ['nt:r']  
+      tags:
+        - users.push
+      summary: Retrieve push list from user.
+      description: |
+        Returns list of push notifications from user.
+      operationId: getAllPushFromUser
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Id of user.
+          example: '5cf2a5cd8f58c88674dd761f'
+          schema:
+            type: string
+        - $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/pageParam'
+        - $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/limitParam'
+        - $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/sortParam'
+        - $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/parameters/filterParam'
+      responses:
+        '200':
+          description: List of push notifications.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Push'
+          
+        '401':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/401'
+        '403':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/403'
+        '500':
+          $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/1.0.0#/components/responses/500' 
+
+components:
+  securitySchemes:
+    JWTAuth:            
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Email:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/v2#/components/schemas/Email'
+    PushToken:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/v2#/components/schemas/PushToken'
+    Push:
+      $ref: 'https://api.swaggerhub.com/domains/haniot/haniot-components/v2#/components/schemas/Push'

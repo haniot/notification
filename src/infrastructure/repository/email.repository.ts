@@ -204,7 +204,7 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
                     })
                 }
             } catch (err: any) {
-                this.logger.error(`The custom templates could not be accessed successfully, so the default will be used. `
+                this.logger.error('The custom templates could not be accessed successfully, so the default will be used. '
                     .concat(err.message))
             }
         }
@@ -248,9 +248,9 @@ export class EmailRepository extends BaseRepository<Email, EmailEntity> implemen
                 subjectFilePath = this.replaceForwardSlashes(subjectFilePath)
                 textFilePath = this.replaceForwardSlashes(textFilePath)
             }
-            await fs.writeFileSync(htmlFilePath, Buffer.from(item.html?.buffer!))
-            await fs.writeFileSync(subjectFilePath, Buffer.from(item.subject?.buffer!))
-            await fs.writeFileSync(textFilePath, Buffer.from(item.text?.buffer!))
+            await fs.writeFileSync(htmlFilePath, Buffer.from(item.html!.buffer!))
+            await fs.writeFileSync(subjectFilePath, Buffer.from(item.subject!.buffer!))
+            await fs.writeFileSync(textFilePath, Buffer.from(item.text!.buffer!))
             return Promise.resolve(item)
         } catch (err) {
             return Promise.reject(err)

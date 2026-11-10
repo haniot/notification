@@ -106,12 +106,6 @@ npm run test:cov
 ```
 Navigate to the `coverage` directory and open the `index.html` file in the browser to see the result. Some statistics are also displayed in the terminal.
 
-### Generating code documentation  
-```sh  
-npm run build:doc
-```
-The html documentation will be generated in the /docs directory by [typedoc](https://typedoc.org/).
-
 ## Using Docker  
 In the Docker Hub, you can find the image of the most recent version of this repository. With this image it is easy to create your own containers.
 ```sh

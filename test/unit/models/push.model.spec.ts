@@ -86,7 +86,9 @@ describe('MODELS: Push', () => {
             })
 
             it('should return a JSON with all attributes equal to undefined from an incomplete Push', () => {
-                const result: any = new Push().toJSON()
+                const push = new Push()
+                push.timestamp = undefined
+                const result: any = push.toJSON()
 
                 assert.isUndefined(result.id)
                 assert.isUndefined(result.created_at)

@@ -68,7 +68,7 @@ export class EventBusRabbitMQ implements IEventBus {
      * @return {Promise<boolean>}
      */
     public async subscribe(event: IntegrationEvent<any>, handler: IIntegrationEventHandler<IntegrationEvent<any>>,
-                           routingKey: string): Promise<any> {
+        routingKey: string): Promise<any> {
         return new Promise<boolean>(async (resolve, reject) => {
             if (!this.connectionSub.isOpen) {
                 return reject(new EventBusException('No connection open!'))
